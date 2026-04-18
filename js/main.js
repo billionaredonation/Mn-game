@@ -1,10 +1,3 @@
-function getPlayerInitials(name) {
-  if (!name) return "MN";
-  const clean = name.trim();
-  if (!clean) return "MN";
-  return clean.slice(0, 2).toUpperCase();
-}
-
 function initMainHome() {
   const playerNameEl = document.getElementById("playerName");
   const playerMetaEl = document.getElementById("playerMeta");
@@ -15,35 +8,97 @@ function initMainHome() {
   const levelEl = document.getElementById("levelValue");
   const xpEl = document.getElementById("xpValue");
   const startBonusEl = document.getElementById("startBonusValue");
-
-  const resetBtn = document.getElementById("resetProfileBtn");
   const iconCards = document.querySelectorAll(".icon-card");
 
   const city = getCityById(window.MN_STATE.cityId);
 
-  playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
-  playerMetaEl.textContent =
-    window.MN_STATE.gender === "female"
-      ? "Женский персонаж"
-      : "Мужской персонаж";
-
-  playerBadgeEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
-  playerCityChipEl.textContent = window.MN_STATE.cityName || "Без города";
-  cityBonusEl.textContent = city ? city.bonus : "Бонус не выбран";
-  balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
-  levelEl.textContent = String(window.MN_STATE.level);
-  xpEl.textContent = `${window.MN_STATE.xp} XP`;
-  startBonusEl.textContent = city ? city.shortBonus : "—";
+  if (playerNameEl) playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  if (playerMetaEl) {
+    playerMetaEl.textContent = `${window.MN_STATE.gender || "Персонаж"} • ID ${window.MN_STATE.playerId || "—"}`;
+  }
+  if (playerBadgeEl) playerBadgeEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
+  if (playerCityChipEl) playerCityChipEl.textContent = window.MN_STATE.cityName || "Без города";
+  if (cityBonusEl) cityBonusEl.textContent = city ? city.bonus : "Бонус не выбран";
+  if (balanceEl) balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
+  if (levelEl) levelEl.textContent = String(window.MN_STATE.level);
+  if (xpEl) xpEl.textContent = `${window.MN_STATE.xp} XP`;
+  if (startBonusEl) startBonusEl.textContent = city ? (city.short_bonus || city.bonus) : "—";
 
   iconCards.forEach((card) => {
     card.addEventListener("click", () => {
       const section = card.dataset.section;
+
+      if (section === "Профиль") {
+        loadScreen("GL_Displays/profile.html", initProfileScreen);
+        return;
+      }
+
+      if (section === "Навыки") {
+        loadScreen("GL_Displays/skills.html", initSkillsScreen);
+        return;
+      }
+
       alert(`Раздел "${section}" подключим следующим шагом.`);
     });
   });
-
-  resetBtn.addEventListener("click", () => {
-    clearState();
-    loadScreen("welcome/welcome-1-start.html", initWelcome1);
-  });
 }
+
+function initProfileScreen() {
+  const city = getCityById(window.MN_STATE.cityId);
+
+  const avatarEl = document.getElementById("profileAvatar");
+  const nicknameEl = document.getElementById("profileNickname");
+  const genderEl = document.getElementById("profileGender");
+
+  const cityTagEl = document.getElementById("profileCity");
+  const playerIdEl = document.getElementById("profilePlayerId");
+
+  const nicknameRowEl = document.getElementById("profileNicknameRow");
+  const genderRowEl = document.getElementById("profileGenderRow");
+  const cityRowEl = document.getElementById("profileCityRow");
+  const cityBonusRowEl = document.getElementById("profileCityBonusRow");
+
+  const balanceEl = document.getElementById("profileBalance");
+  const levelEl = document.getElementById("profileLevel");
+  const xpEl = document.getElementById("profileXp");
+  const reputationEl = document.getElementById("profileReputation");
+  const energyEl = document.getElementById("profileEnergy");
+  const uuidEl = document.getElementById("profileUuid");
+
+  const backBtn = document.getElementById("profileBackBtn");
+
+  if (avatarEl) avatarEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
+  if (nicknameEl) nicknameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  if (genderEl) genderEl.textContent = window.MN_STATE.gender || "Персонаж";
+
+  if (cityTagEl) cityTagEl.textContent = window.MN_STATE.cityName || "Без города";
+  if (playerIdEl) playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
+
+  if (nicknameRowEl) nicknameRowEl.textContent = window.MN_STATE.nickname || "—";
+  if (genderRowEl) genderRowEl.textContent = window.MN_STATE.gender || "—";
+  if (cityRowEl) cityRowEl.textContent = window.MN_STATE.cityName || "—";
+  if (cityBonusRowEl) cityBonusRowEl.textContent = city ? city.bonus : "—";
+
+  if (balanceEl) balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
+  if (levelEl) levelEl.textContent = String(window.MN_STATE.level);
+  if (xpEl) xpEl.textContent = `${window.MN_STATE.xp} XP`;
+  if (reputationEl) reputationEl.textContent = String(window.MN_STATE.reputation || 0);
+  if (energyEl) energyEl.textContent = String(window.MN_STATE.energy || 100);
+  if (uuidEl) uuidEl.textContent = window.MN_STATE.playerUuid || "—";
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/main-home.html", initMainHome);
+    });
+  }
+}
+
+function initSkillsScreen() {
+  const backBtn = document.getElementById("skillsBackBtn");
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/main-home.html", initMainHome);
+    });
+  }
+        }
