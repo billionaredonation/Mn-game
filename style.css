@@ -5,8 +5,6 @@
   --text: #f8fafc;
   --muted: #cbd5e1;
   --line: rgba(255, 255, 255, 0.12);
-  --glass: rgba(255, 255, 255, 0.08);
-  --glass-strong: rgba(255, 255, 255, 0.14);
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   --radius-xl: 28px;
   --radius-lg: 20px;
@@ -88,6 +86,7 @@ body {
   justify-content: center;
   position: relative;
   z-index: 2;
+  animation: fadeIn 0.35s ease;
 }
 
 .screen.active {
@@ -103,7 +102,7 @@ body {
     rgba(255, 255, 255, 0.15),
     rgba(255, 255, 255, 0.06)
   );
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -117,13 +116,13 @@ body {
 .eyebrow {
   margin: 0 0 10px;
   font-size: 12px;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   color: var(--muted);
 }
 
 h1, h2 {
   margin: 0;
-  line-height: 1.1;
+  line-height: 1.08;
 }
 
 h1 {
@@ -132,7 +131,7 @@ h1 {
 }
 
 h2 {
-  font-size: 28px;
+  font-size: 30px;
   margin-bottom: 10px;
 }
 
@@ -178,6 +177,10 @@ h2 {
   margin: 0 0 20px;
 }
 
+.hint.error {
+  color: #fecaca;
+}
+
 .primary-btn {
   width: 100%;
   height: 56px;
@@ -196,33 +199,13 @@ h2 {
   transform: scale(0.98);
 }
 
-.primary-btn:hover {
-  opacity: 0.96;
-}
-
-@media (min-width: 768px) {
-  .app {
-    padding: 28px 24px 36px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
-
-  .logo {
-    font-size: 56px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-
-  .glass-card {
-    max-width: 520px;
   }
-
-  .hero-card,
-  .form-card {
-    padding: 34px 30px;
-  }
-
-  h1 {
-    font-size: 42px;
-  }
-
-  h2 {
-    font-size: 32px;
-  }
-    }
