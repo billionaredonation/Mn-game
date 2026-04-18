@@ -142,6 +142,21 @@ function initWelcome4() {
       return;
     }
 
+    const city = getCityById(window.MN_STATE.cityId);
+
+    if (city && !localStorage.getItem("mn_balance")) {
+      window.MN_STATE.balance = city.startBalance;
+    }
+
+    if (!localStorage.getItem("mn_level")) {
+      window.MN_STATE.level = 1;
+    }
+
+    if (!localStorage.getItem("mn_xp")) {
+      window.MN_STATE.xp = 0;
+    }
+
+    saveState();
     loadScreen("welcome/welcome-5-main.html", initWelcome5);
   });
 }
@@ -150,16 +165,23 @@ function initWelcome5() {
   const nicknameEl = document.getElementById("summaryNickname");
   const cityEl = document.getElementById("summaryCity");
   const genderEl = document.getElementById("summaryGender");
+  const bonusEl = document.getElementById("summaryBonus");
+  const moneyEl = document.getElementById("summaryBalance");
+
   const enterBtn = document.getElementById("enterMainBtn");
   const restartBtn = document.getElementById("restartWelcomeBtn");
+
+  const city = getCityById(window.MN_STATE.cityId);
 
   nicknameEl.textContent = window.MN_STATE.nickname || "—";
   cityEl.textContent = window.MN_STATE.cityName || "—";
   genderEl.textContent =
     window.MN_STATE.gender === "female" ? "Женский" : "Мужской";
+  bonusEl.textContent = city ? city.shortBonus : "—";
+  moneyEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
 
   enterBtn.addEventListener("click", () => {
-    alert("Главный экран подключим следующим шагом.");
+    loadScreen("GL_Displays/main-home.html", initMainHome);
   });
 
   restartBtn.addEventListener("click", () => {
