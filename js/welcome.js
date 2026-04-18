@@ -1,3 +1,32 @@
+function shortBonusText(city) {
+  if (!city) return "";
+
+  const map = {
+    kyiv: "+7% Финансы",
+    lviv: "+7% Сервис",
+    odesa: "+7% Торговля",
+    kharkiv: "+7% Технологии",
+    dnipro: "+7% Промка",
+    zaporizhzhia: "+7% Заводы",
+    vinnytsia: "+7% Агро",
+    poltava: "+7% Ресурсы",
+    chernihiv: "+7% Логистика",
+    sumy: "+7% Производство",
+    mykolaiv: "+7% Верфи",
+    kherson: "+7% Экспорт",
+    cherkasy: "+7% Пищевая",
+    zhytomyr: "+7% Стройка",
+    rivne: "+7% Ремесло",
+    ternopil: "+7% Навыки",
+    "ivano-frankivsk": "+7% Туризм",
+    lutsk: "+7% Склады",
+    uzhhorod: "+7% Экспорт",
+    kropyvnytskyi: "+7% Фермерство"
+  };
+
+  return map[city.id] || city.short_bonus || city.bonus || "";
+}
+
 function renderCityButtons() {
   const cityList = document.getElementById("cityList");
   if (!cityList) return;
@@ -6,13 +35,14 @@ function renderCityButtons() {
 
   window.MN_CITIES_DB.forEach((city) => {
     const button = document.createElement("button");
-    button.className = "option-btn city-option";
+    button.type = "button";
+    button.className = "city-card";
     button.dataset.cityId = city.id;
     button.dataset.cityName = city.name;
 
     button.innerHTML = `
-      ${city.name}
-      <span class="city-bonus">${city.bonus}</span>
+      <span class="city-card-name">${city.name}</span>
+      <span class="city-card-bonus">${shortBonusText(city)}</span>
     `;
 
     if (window.MN_STATE.cityId === city.id) {
@@ -20,7 +50,7 @@ function renderCityButtons() {
     }
 
     button.addEventListener("click", () => {
-      document.querySelectorAll(".city-option").forEach((btn) => {
+      document.querySelectorAll(".city-card").forEach((btn) => {
         btn.classList.remove("selected");
       });
 
@@ -138,7 +168,7 @@ function initWelcome5() {
   document.getElementById("summaryNickname").textContent = window.MN_STATE.nickname || "—";
   document.getElementById("summaryCity").textContent = window.MN_STATE.cityName || "—";
   document.getElementById("summaryGender").textContent = window.MN_STATE.gender || "—";
-  document.getElementById("summaryBonus").textContent = city ? city.short_bonus : "—";
+  document.getElementById("summaryBonus").textContent = city ? shortBonusText(city) : "—";
   document.getElementById("summaryBalance").textContent = city ? `${formatMoney(city.start_balance)} ₴` : "—";
 
   document.getElementById("enterMainBtn").addEventListener("click", async () => {
@@ -168,9 +198,7 @@ function initWelcome5() {
 document.addEventListener("DOMContentLoaded", async () => {
   const ok = await testSupabaseConnection();
 
-  if (!ok) {
-    return;
-  }
+  if (!ok) return;
 
   if (window.MN_STATE.playerUuid) {
     const player = await getPlayerByUuid(window.MN_STATE.playerUuid);
