@@ -1,3 +1,9 @@
+function formatGender(value) {
+  if (value === "male") return "Мужской";
+  if (value === "female") return "Женский";
+  return value || "Персонаж";
+}
+
 function initMainHome() {
   const playerNameEl = document.getElementById("playerName");
   const playerMetaEl = document.getElementById("playerMeta");
@@ -14,7 +20,7 @@ function initMainHome() {
 
   if (playerNameEl) playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
   if (playerMetaEl) {
-    playerMetaEl.textContent = `${window.MN_STATE.gender || "Персонаж"} • ID ${window.MN_STATE.playerId || "—"}`;
+    playerMetaEl.textContent = `${formatGender(window.MN_STATE.gender)} • ID ${window.MN_STATE.playerId || "—"}`;
   }
   if (playerBadgeEl) playerBadgeEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
   if (playerCityChipEl) playerCityChipEl.textContent = window.MN_STATE.cityName || "Без города";
@@ -69,13 +75,13 @@ function initProfileScreen() {
 
   if (avatarEl) avatarEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
   if (nicknameEl) nicknameEl.textContent = window.MN_STATE.nickname || "Игрок";
-  if (genderEl) genderEl.textContent = window.MN_STATE.gender || "Персонаж";
+  if (genderEl) genderEl.textContent = formatGender(window.MN_STATE.gender);
 
   if (cityTagEl) cityTagEl.textContent = window.MN_STATE.cityName || "Без города";
   if (playerIdEl) playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
 
   if (nicknameRowEl) nicknameRowEl.textContent = window.MN_STATE.nickname || "—";
-  if (genderRowEl) genderRowEl.textContent = window.MN_STATE.gender || "—";
+  if (genderRowEl) genderRowEl.textContent = formatGender(window.MN_STATE.gender);
   if (cityRowEl) cityRowEl.textContent = window.MN_STATE.cityName || "—";
   if (cityBonusRowEl) cityBonusRowEl.textContent = city ? city.bonus : "—";
 
@@ -101,4 +107,4 @@ function initSkillsScreen() {
       loadScreen("GL_Displays/main-home.html", initMainHome);
     });
   }
-        }
+    }
