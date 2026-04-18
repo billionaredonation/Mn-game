@@ -1,0 +1,28 @@
+.welcome-title {
+  margin-bottom: 14px;
+}
+
+.welcome-text {
+  font-size: 15px;
+  line-height: 1.55;
+  margin: 0 0 24px;
+  color: var(--muted);
+}
+
+.summary-box {
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 20px;
+}
+
+.summary-line {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.summary-line:last-child {
+  margin-bottom: 0;
+}
