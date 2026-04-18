@@ -2,11 +2,58 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>MN Game</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body style="background:#111;color:white;font-family:Arial;text-align:center;padding-top:100px;">
-  <h1>MN Game</h1>
-  <p>Mini App запускается.</p>
+<body>
+  <div class="app">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <header class="topbar">
+      <div class="logo">MN</div>
+    </header>
+
+    <main class="screen active" id="start-screen">
+      <section class="glass-card hero-card">
+        <div class="hero-content">
+          <p class="eyebrow">MINI APP</p>
+          <h1>Добро пожаловать в MN Game</h1>
+          <p class="hero-text">
+            Мир денег, статуса и роста начинается здесь.
+          </p>
+
+          <button class="primary-btn" id="startBtn">
+            Начать
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <main class="screen" id="nickname-screen">
+      <section class="glass-card form-card">
+        <p class="eyebrow">СОЗДАНИЕ ПРОФИЛЯ</p>
+        <h2>Введите ник</h2>
+        <p class="subtext">Это имя увидят другие игроки.</p>
+
+        <input
+          type="text"
+          id="nicknameInput"
+          class="text-input"
+          maxlength="16"
+          placeholder="Ваш ник..."
+        />
+
+        <p class="hint">От 3 до 16 символов</p>
+
+        <button class="primary-btn" id="nextBtn">
+          Далее
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
-</html>
+        </html>
