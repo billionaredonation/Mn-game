@@ -1,0 +1,17 @@
+<section class="screen-card">
+  <p class="eyebrow">СОЗДАНИЕ ПРОФИЛЯ</p>
+  <h2>Введите ник</h2>
+  <p class="subtext">Это имя увидят другие игроки.</p>
+
+  <input
+    type="text"
+    id="nicknameInput"
+    class="text-input"
+    maxlength="16"
+    placeholder="Ваш ник..."
+  />
+
+  <p class="hint" id="nicknameHint">От 3 до 16 символов</p>
+
+  <button class="primary-btn" id="welcome2NextBtn">Далее</button>
+</section>
