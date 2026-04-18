@@ -1,0 +1,8 @@
+<section class="screen-card">
+  <p class="eyebrow">MINI APP</p>
+  <h1 class="welcome-title">Добро пожаловать в MN Game</h1>
+  <p class="welcome-text">
+    Мир денег, статуса и роста начинается здесь.
+  </p>
+  <button class="primary-btn" id="welcome1NextBtn">Начать</button>
+</section>
