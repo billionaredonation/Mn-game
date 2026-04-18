@@ -4,11 +4,12 @@ function renderCityButtons() {
 
   cityList.innerHTML = "";
 
-  window.MN_CITIES.forEach((city) => {
+  window.MN_CITIES_DB.forEach((city) => {
     const button = document.createElement("button");
     button.className = "option-btn city-option";
     button.dataset.cityId = city.id;
     button.dataset.cityName = city.name;
+
     button.innerHTML = `
       ${city.name}
       <span class="city-bonus">${city.bonus}</span>
@@ -41,8 +42,7 @@ function renderCityButtons() {
 }
 
 function initWelcome1() {
-  const nextBtn = document.getElementById("welcome1NextBtn");
-  nextBtn.addEventListener("click", () => {
+  document.getElementById("welcome1NextBtn").addEventListener("click", () => {
     loadScreen("welcome/welcome-2-nickname.html", initWelcome2);
   });
 }
@@ -74,28 +74,23 @@ function initWelcome2() {
     window.MN_STATE.nickname = nickname;
     saveState();
 
-    hint.textContent = "Ник сохранён";
-    hint.classList.remove("error");
-    hint.classList.add("success");
-
-    setTimeout(() => {
-      loadScreen("welcome/welcome-3-city.html", initWelcome3);
-    }, 250);
+    loadScreen("welcome/welcome-3-city.html", initWelcome3);
   });
 }
 
-function initWelcome3() {
+async function initWelcome3() {
+  const hint = document.getElementById("cityHint");
+  hint.textContent = "Загрузка городов...";
+  hint.classList.remove("error", "success");
+
+  window.MN_CITIES_DB = await loadCitiesFromDB();
   renderCityButtons();
 
-  const nextBtn = document.getElementById("welcome3NextBtn");
-  const hint = document.getElementById("cityHint");
+  hint.textContent = window.MN_STATE.cityName
+    ? `Выбран город: ${window.MN_STATE.cityName}`
+    : "Выберите один город";
 
-  if (window.MN_STATE.cityName) {
-    hint.textContent = `Выбран город: ${window.MN_STATE.cityName}`;
-    hint.classList.add("success");
-  }
-
-  nextBtn.addEventListener("click", () => {
+  document.getElementById("welcome3NextBtn").addEventListener("click", () => {
     if (!window.MN_STATE.cityId) {
       hint.textContent = "Сначала выберите город";
       hint.classList.remove("success");
@@ -109,14 +104,9 @@ function initWelcome3() {
 
 function initWelcome4() {
   const genderButtons = document.querySelectorAll(".gender-option");
-  const nextBtn = document.getElementById("welcome4NextBtn");
   const hint = document.getElementById("genderHint");
 
   genderButtons.forEach((button) => {
-    if (button.dataset.gender === window.MN_STATE.gender) {
-      button.classList.add("selected");
-    }
-
     button.addEventListener("click", () => {
       genderButtons.forEach((btn) => btn.classList.remove("selected"));
       button.classList.add("selected");
@@ -124,72 +114,75 @@ function initWelcome4() {
       window.MN_STATE.gender = button.dataset.gender;
       saveState();
 
-      hint.textContent =
-        window.MN_STATE.gender === "male"
-          ? "Выбран мужской персонаж"
-          : "Выбран женский персонаж";
-
+      hint.textContent = `Выбран пол: ${window.MN_STATE.gender}`;
       hint.classList.remove("error");
       hint.classList.add("success");
     });
   });
 
-  nextBtn.addEventListener("click", () => {
+  document.getElementById("welcome4NextBtn").addEventListener("click", () => {
     if (!window.MN_STATE.gender) {
-      hint.textContent = "Сначала выберите пол персонажа";
+      hint.textContent = "Сначала выберите пол";
       hint.classList.remove("success");
       hint.classList.add("error");
       return;
     }
 
-    const city = getCityById(window.MN_STATE.cityId);
-
-    if (city && !localStorage.getItem("mn_balance")) {
-      window.MN_STATE.balance = city.startBalance;
-    }
-
-    if (!localStorage.getItem("mn_level")) {
-      window.MN_STATE.level = 1;
-    }
-
-    if (!localStorage.getItem("mn_xp")) {
-      window.MN_STATE.xp = 0;
-    }
-
-    saveState();
     loadScreen("welcome/welcome-5-main.html", initWelcome5);
   });
 }
 
 function initWelcome5() {
-  const nicknameEl = document.getElementById("summaryNickname");
-  const cityEl = document.getElementById("summaryCity");
-  const genderEl = document.getElementById("summaryGender");
-  const bonusEl = document.getElementById("summaryBonus");
-  const moneyEl = document.getElementById("summaryBalance");
-
-  const enterBtn = document.getElementById("enterMainBtn");
-  const restartBtn = document.getElementById("restartWelcomeBtn");
-
   const city = getCityById(window.MN_STATE.cityId);
 
-  nicknameEl.textContent = window.MN_STATE.nickname || "—";
-  cityEl.textContent = window.MN_STATE.cityName || "—";
-  genderEl.textContent =
-    window.MN_STATE.gender === "female" ? "Женский" : "Мужской";
-  bonusEl.textContent = city ? city.shortBonus : "—";
-  moneyEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
+  document.getElementById("summaryNickname").textContent = window.MN_STATE.nickname || "—";
+  document.getElementById("summaryCity").textContent = window.MN_STATE.cityName || "—";
+  document.getElementById("summaryGender").textContent = window.MN_STATE.gender || "—";
+  document.getElementById("summaryBonus").textContent = city ? city.short_bonus : "—";
+  document.getElementById("summaryBalance").textContent = city ? `${formatMoney(city.start_balance)} ₴` : "—";
 
-  enterBtn.addEventListener("click", () => {
-    loadScreen("GL_Displays/main-home.html", initMainHome);
-  });
+  document.getElementById("enterMainBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("enterMainBtn");
 
-  restartBtn.addEventListener("click", () => {
-    clearState();
-    loadScreen("welcome/welcome-1-start.html", initWelcome1);
+    try {
+      btn.disabled = true;
+      btn.textContent = "Создание профиля...";
+
+      const result = await createPlayerInDB({
+        nickname: window.MN_STATE.nickname,
+        gender: window.MN_STATE.gender,
+        cityId: window.MN_STATE.cityId
+      });
+
+      applyPlayerDataToState(result.player, result.city);
+      loadScreen("GL_Displays/main-home.html", initMainHome);
+    } catch (error) {
+      console.error(error);
+      alert("Не удалось создать игрока. Возможно, ник уже занят.");
+      btn.disabled = false;
+      btn.textContent = "В главный экран";
+    }
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const ok = await testSupabaseConnection();
+
+  if (!ok) {
+    return;
+  }
+
+  if (window.MN_STATE.playerUuid) {
+    const player = await getPlayerByUuid(window.MN_STATE.playerUuid);
+
+    if (player) {
+      window.MN_CITIES_DB = await loadCitiesFromDB();
+      const city = getCityById(player.city_id);
+      applyPlayerDataToState(player, city);
+      loadScreen("GL_Displays/main-home.html", initMainHome);
+      return;
+    }
+  }
+
   loadScreen("welcome/welcome-1-start.html", initWelcome1);
 });
