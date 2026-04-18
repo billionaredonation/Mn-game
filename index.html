@@ -17,15 +17,12 @@
 
     <main class="screen active" id="start-screen">
       <section class="glass-card hero-card">
-        <div class="hero-content">
-          <p class="eyebrow">MINI APP</p>
-          <h1>Добро пожаловать в MN Game</h1>
-          <p class="hero-text">
-            Мир денег, статуса и роста начинается здесь.
-          </p>
-
-          <button class="primary-btn" id="startBtn">Начать</button>
-        </div>
+        <p class="eyebrow">MINI APP</p>
+        <h1>Добро пожаловать в MN Game</h1>
+        <p class="hero-text">
+          Мир денег, статуса и роста начинается здесь.
+        </p>
+        <button class="primary-btn" id="startBtn">Начать</button>
       </section>
     </main>
 
@@ -46,6 +43,36 @@
         <p class="hint" id="hintText">От 3 до 16 символов</p>
 
         <button class="primary-btn" id="nextBtn">Далее</button>
+      </section>
+    </main>
+
+    <main class="screen" id="city-screen">
+      <section class="glass-card form-card">
+        <p class="eyebrow">ВЫБОР ГОРОДА</p>
+        <h2>Выберите город</h2>
+        <p class="subtext">С этого города начнётся ваш путь.</p>
+
+        <div class="city-list" id="cityList">
+          <button class="city-btn" data-city="Киев">Киев</button>
+          <button class="city-btn" data-city="Львов">Львов</button>
+          <button class="city-btn" data-city="Одесса">Одесса</button>
+          <button class="city-btn" data-city="Харьков">Харьков</button>
+          <button class="city-btn" data-city="Днепр">Днепр</button>
+        </div>
+
+        <p class="hint" id="cityHint">Выберите один город</p>
+
+        <button class="primary-btn" id="cityNextBtn">Войти в игру</button>
+      </section>
+    </main>
+
+    <main class="screen" id="done-screen">
+      <section class="glass-card form-card">
+        <p class="eyebrow">ПРОФИЛЬ СОЗДАН</p>
+        <h2>Добро пожаловать</h2>
+        <p class="subtext" id="summaryText">Профиль успешно создан.</p>
+
+        <button class="primary-btn" id="restartBtn">Начать заново</button>
       </section>
     </main>
   </div>
