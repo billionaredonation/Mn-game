@@ -83,6 +83,22 @@ function initWorkScreen() {
   const mineBtn = document.getElementById("openMineJobBtn");
   const backBtn = document.getElementById("workBackBtn");
 
+  const playerNameEl = document.getElementById("workPlayerName");
+  const playerIdEl = document.getElementById("workPlayerId");
+  const balanceEl = document.getElementById("workPlayerBalance");
+
+  if (playerNameEl) {
+    playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  }
+
+  if (playerIdEl) {
+    playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
+  }
+
+  if (balanceEl) {
+    balanceEl.textContent = `${formatMoney(window.MN_STATE.balance || 0)} ₴`;
+  }
+
   if (farmBtn) {
     farmBtn.addEventListener("click", () => {
       loadScreen("GL_Displays/farm.html", initFarmScreen);
@@ -224,4 +240,4 @@ async function initSkillsScreen() {
       loadScreen("GL_Displays/main-home.html", initMainHome);
     });
   }
-  }
+    }
