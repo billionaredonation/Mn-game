@@ -112,7 +112,38 @@ window.createPlayerInDB = async function ({ nickname, gender, cityId }) {
     throw new Error(error.message || "Не удалось создать игрока");
   }
 
+  const { error: skillError } = await window.sb
+    .from("player_skills")
+    .insert({
+      player_uuid: data.id,
+      skill_code: "farmer",
+      xp: 0,
+      level: 1
+    });
+
+  if (skillError) {
+    console.error("Ошибка создания стартового навыка:", skillError);
+    throw new Error(skillError.message || "Не удалось создать стартовый навык");
+  }
+
   return { player: data, city };
+};
+
+window.loadPlayerSkills = async function (playerUuid) {
+  if (!playerUuid) return [];
+
+  const { data, error } = await window.sb
+    .from("player_skills")
+    .select("*")
+    .eq("player_uuid", playerUuid)
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error("Ошибка загрузки навыков:", error);
+    return [];
+  }
+
+  return data || [];
 };
 
 window.testSupabaseConnection = async function () {
