@@ -99,12 +99,11 @@ function initWorkScreen() {
     balanceEl.textContent = `${formatMoney(window.MN_STATE.balance || 0)} ₴`;
   }
 
-  if (basicBtn) {
-  basicBtn.onclick = () => {
-    alert("basic farm click ok");
-    loadScreen("GL_Displays/farm.html", initFarmScreen);
-  };
-}
+  if (farmBtn) {
+    farmBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
+    });
+  }
 
   if (mineBtn) {
     mineBtn.addEventListener("click", () => {
@@ -356,4 +355,4 @@ function initFarmRareScreen() {
       loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
     };
   }
-                           }
+    }
