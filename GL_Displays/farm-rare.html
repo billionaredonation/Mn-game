@@ -1,5 +1,72 @@
-<section class="screen-card">
-  <h2>Ферма редких культур</h2>
-  <p>Скоро будет доступна...</p>
-  <button class="primary-btn" id="rareBackBtn">Назад</button>
+<section class="screen-card farm-screen">
+  <div class="farm-top">
+    <div class="farm-head-text">
+      <p class="eyebrow">РЕДКАЯ ФЕРМА</p>
+      <h2>Редкие культуры</h2>
+      <p class="subtext">Морковь — база. Банан даёт x2 XP. Ягоды дают x2 деньги. Вредителей тут больше.</p>
+    </div>
+  </div>
+
+  <div class="farm-progress-card">
+    <div class="farm-progress-top">
+      <strong class="farm-profession-title">
+        Фермер <span id="farmLevelChip">Ур. 1</span>
+      </strong>
+      <span class="farm-progress-text" id="farmXpValue">0 / 10000 XP</span>
+    </div>
+
+    <div class="farm-progress-bar">
+      <div class="farm-progress-fill" id="farmProgressFill" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <div class="farm-mini-stats">
+    <div class="farm-mini-item">
+      <span>Собрано</span>
+      <strong id="farmHitsValue">0</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Ошибки</span>
+      <strong id="farmMistakesValue">0</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Добыто</span>
+      <strong id="farmGrossMoneyValue">0 ₴</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Штраф</span>
+      <strong id="farmPenaltyValue">0 ₴</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Итого</span>
+      <strong id="farmNetMoneyValue">0 ₴</strong>
+    </div>
+  </div>
+
+  <div class="farm-penalty-card">
+    <div class="farm-penalty-top">
+      <span class="farm-penalty-label">Серия ошибок</span>
+      <strong class="farm-penalty-value" id="farmErrorChainText">0 / 3</strong>
+    </div>
+
+    <div class="farm-penalty-bar">
+      <div class="farm-penalty-fill" id="farmErrorChainFill" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <div class="farm-board" id="farmBoard"></div>
+
+  <div class="farm-bottom-info">
+    <span id="farmRewardPerAction">+10 ₴</span>
+    <span id="farmXpPerAction">+1 XP</span>
+    <span id="farmAutosaveInfo">0 / 3</span>
+  </div>
+
+  <div class="farm-controls">
+    <button class="primary-btn" id="farmBackBtn">Назад</button>
+  </div>
 </section>
