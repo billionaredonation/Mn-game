@@ -344,8 +344,7 @@ function openFarmInfoModal(title, text) {
     }
   };
 }
-
-function initFarmSelectScreen() {
+ function initFarmSelectScreen() {
   const basicBtn = document.getElementById("openFarmBasicBtn");
   const rareBtn = document.getElementById("openFarmRareBtn");
   const backBtn = document.getElementById("farmSelectBackBtn");
@@ -406,7 +405,7 @@ function initFarmSelectScreen() {
       loadScreen("GL_Displays/work.html", initWorkScreen);
     };
   }
-                 }
+}                 
 
 
 function initFarmRareScreen() {
