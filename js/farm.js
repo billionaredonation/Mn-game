@@ -1,4 +1,4 @@
-    function initFarmScreen() {
+function initFarmScreen() {
   const board = document.getElementById("farmBoard");
   const backBtn = document.getElementById("farmBackBtn");
 
@@ -165,4 +165,4 @@
 
   updateUI();
   spawn();
-      }
+          }
