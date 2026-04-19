@@ -33,31 +33,32 @@ async function initFarmScreen() {
   let farmerLevel = 1;
 
   function rewardByLevel(lvl) {
-    if (lvl === 1) return { money: 10, xp: 2 };
-    if (lvl === 2) return { money: 15, xp: 4 };
-    if (lvl === 3) return { money: 20, xp: 6 };
-    if (lvl === 4) return { money: 30, xp: 8 };
-    if (lvl === 5) return { money: 40, xp: 10 };
-    if (lvl === 6) return { money: 60, xp: 15 };
-    if (lvl === 7) return { money: 90, xp: 20 };
-    if (lvl === 8) return { money: 130, xp: 30 };
-    if (lvl === 9) return { money: 180, xp: 40 };
-    return { money: 250, xp: 50 };
-  }
+  if (lvl === 1) return { money: 10, xp: 1.0 };
+  if (lvl === 2) return { money: 15, xp: 1.5 };
+  if (lvl === 3) return { money: 20, xp: 2.0 };
+  if (lvl === 4) return { money: 30, xp: 2.5 };
+  if (lvl === 5) return { money: 40, xp: 3.0 };
+  if (lvl === 6) return { money: 60, xp: 3.5 };
+  if (lvl === 7) return { money: 90, xp: 4.0 };
+  if (lvl === 8) return { money: 130, xp: 4.5 };
+  if (lvl === 9) return { money: 180, xp: 5.0 };
+  return { money: 250, xp: 6.0 };
+}
+  function getFarmerLevelByXp(xp, storedLevel = 1) {
+  let derived = 1;
 
-  function getFarmerLevelByXp(xp) {
-    if (xp >= 10000) return 10;
-    if (xp >= 7500) return 9;
-    if (xp >= 6500) return 8;
-    if (xp >= 5000) return 7;
-    if (xp >= 2500) return 6;
-    if (xp >= 2000) return 5;
-    if (xp >= 1000) return 4;
-    if (xp >= 500) return 3;
-    if (xp >= 100) return 2;
-    return 1;
-  }
+  if (xp >= 10000) derived = 10;
+  else if (xp >= 8500) derived = 9;
+  else if (xp >= 7000) derived = 8;
+  else if (xp >= 5000) derived = 7;
+  else if (xp >= 3500) derived = 6;
+  else if (xp >= 2500) derived = 5;
+  else if (xp >= 2000) derived = 4;
+  else if (xp >= 1000) derived = 3;
+  else if (xp >= 500) derived = 2;
 
+  return Math.max(Number(storedLevel || 1), derived);
+}
   function clampMoney(value) {
     return Math.max(0, Math.round(value));
   }
@@ -67,8 +68,8 @@ async function initFarmScreen() {
   }
 
   function getCurrentFarmerLevel() {
-    return getFarmerLevelByXp(getCurrentFarmerXp());
-  }
+  return getFarmerLevelByXp(getCurrentFarmerXp(), farmerLevel);
+}
 
   function getNetMoney() {
     return clampMoney(grossMoney - penaltyMoney);
