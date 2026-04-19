@@ -323,9 +323,10 @@ async function initFarmScreen() {
     backBtn.onclick = async () => {
       await saveProgress();
       loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
+    };
   }
 
   await loadFarmerProgress();
   updateUI();
   spawn();
-  }
+}
