@@ -62,4 +62,73 @@ function getSkillConfig(skillCode, xp = 0) {
   };
 }
 
+function renderSkillsList(skills) {
+  const container = document.getElementById("skillsList");
+  if (!container) return;
+
+  if (!skills || !skills.length) {
+    container.innerHTML = `
+      <div class="profile-main-card">
+        <p class="eyebrow">ПУСТО</p>
+        <div class="empty-state">
+          <div class="empty-state-icon">📘</div>
+          <h3>Навыков пока нет</h3>
+          <p>Как только появятся профессии и прокачка, навыки будут отображаться здесь.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = skills.map((skill) => {
+    const config = getSkillConfig(skill.skill_code, Number(skill.xp || 0));
+
+    return `
+      <div class="skill-card">
+        <div class="skill-card-top">
+          <div class="skill-icon">${config.icon}</div>
+
+          <div class="skill-top-info">
+            <div class="skill-title-row">
+              <h3>${config.title}</h3>
+              <span class="skill-level-chip">Ур. ${config.level}</span>
+            </div>
+
+            <p class="skill-description">${config.description}</p>
+          </div>
+        </div>
+
+        <div class="skill-progress-wrap">
+          <div class="skill-progress-meta">
+            <span>${config.xp} / ${config.maxXp} XP</span>
+            <span>${config.progressPercent}%</span>
+          </div>
+
+          <div class="skill-progress-bar">
+            <div class="skill-progress-fill" style="width: ${config.progressPercent}%"></div>
+          </div>
+        </div>
+
+        <div class="skill-stats-grid">
+          <div class="skill-mini-stat">
+            <span class="skill-mini-label">За действие</span>
+            <strong class="skill-mini-value">+${config.reward} ₴</strong>
+          </div>
+
+          <div class="skill-mini-stat">
+            <span class="skill-mini-label">Опыт</span>
+            <strong class="skill-mini-value">+${config.actionXp} XP</strong>
+          </div>
+        </div>
+
+        <div class="skill-next-row">
+          <span>Следующий порог</span>
+          <strong>${config.nextXp} XP</strong>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
 window.getSkillConfig = getSkillConfig;
+window.renderSkillsList = renderSkillsList;
