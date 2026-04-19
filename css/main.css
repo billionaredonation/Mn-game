@@ -987,3 +987,20 @@ canvas {
 .farm-cell:active{
   transform:scale(.96);
 }
+
+
+.farm-board{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:16px 0;
+}
+
+.farm-cell{
+  height:72px;
+  border:none;
+  border-radius:18px;
+  font-size:30px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+}
