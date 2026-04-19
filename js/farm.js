@@ -263,23 +263,32 @@ async function initFarmScreen() {
   }
 
   async function applyHarvestReward() {
-    const currentLevel = getCurrentFarmerLevel();
-    const reward = rewardByLevel(currentLevel);
+  const oldLevel = getCurrentFarmerLevel();
+  const currentReward = rewardByLevel(oldLevel);
 
-    hits += 1;
-    grossMoney += reward.money;
+  hits += 1;
+  grossMoney += currentReward.money;
 
-    unsavedNetMoney += reward.money;
-    chainNetMoney += reward.money;
-    unsavedFarmerXp += reward.xp;
+  unsavedNetMoney += currentReward.money;
+  chainNetMoney += currentReward.money;
+  unsavedFarmerXp += currentReward.xp;
 
-    successChain += 1;
+  const newLevel = getCurrentFarmerLevel();
 
-    if (successChain >= 3) {
-      pendingReputation += 1;
-      await saveProgress();
-    }
+  if (newLevel > oldLevel) {
+    showToast(
+      `🎉 Навык Фермер повышен до ${newLevel} уровня!`,
+      "success"
+    );
   }
+
+  successChain += 1;
+
+  if (successChain >= 3) {
+    pendingReputation += 1;
+    await saveProgress();
+  }
+}
 
   function spawn() {
     if (!board) return;
