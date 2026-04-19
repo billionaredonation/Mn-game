@@ -50,32 +50,66 @@ window.getPlayerByUuid = async function (playerUuid) {
   return data;
 };
 
+window.checkNicknameExists = async function (nickname) {
+  const { data, error } = await window.sb
+    .from("players")
+    .select("id,nickname")
+    .ilike("nickname", nickname.trim())
+    .limit(1);
+
+  if (error) {
+    console.error("Ошибка проверки ника:", error);
+    return false;
+  }
+
+  return Array.isArray(data) && data.length > 0;
+};
+
 window.createPlayerInDB = async function ({ nickname, gender, cityId }) {
+  const cleanNickname = (nickname || "").trim();
+
+  if (cleanNickname.length < 3) {
+    throw new Error("Ник слишком короткий");
+  }
+
+  if (!cityId) {
+    throw new Error("Город не выбран");
+  }
+
+  if (gender !== "male" && gender !== "female") {
+    throw new Error("Пол выбран некорректно");
+  }
+
   const city = await getCityFromDB(cityId);
 
   if (!city) {
     throw new Error("Город не найден");
   }
 
+  const nicknameExists = await checkNicknameExists(cleanNickname);
+
+  if (nicknameExists) {
+    throw new Error("Этот ник уже занят");
+  }
+
   const { data, error } = await window.sb
     .from("players")
     .insert({
-      nickname,
+      nickname: cleanNickname,
       gender,
       city_id: cityId,
       balance: city.start_balance,
       level: 1,
       xp: 0,
       energy: 100,
-      reputation: 0,
-      diamonds: 0
+      reputation: 0
     })
     .select()
     .single();
 
   if (error) {
     console.error("Ошибка создания игрока:", error);
-    throw error;
+    throw new Error(error.message || "Не удалось создать игрока");
   }
 
   return { player: data, city };
