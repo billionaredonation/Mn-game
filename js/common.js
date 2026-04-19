@@ -67,3 +67,64 @@ window.getPlayerInitials = function (name) {
   if (!name) return "MN";
   return name.trim().slice(0, 2).toUpperCase();
 };
+
+  
+window.showToast = function (text, type = "info") {
+  let wrap = document.getElementById("mnToastWrap");
+
+  if (!wrap) {
+    wrap = document.createElement("div");
+    wrap.id = "mnToastWrap";
+    wrap.style.position = "fixed";
+    wrap.style.left = "50%";
+    wrap.style.bottom = "24px";
+    wrap.style.transform = "translateX(-50%)";
+    wrap.style.zIndex = "9999";
+    wrap.style.display = "flex";
+    wrap.style.flexDirection = "column";
+    wrap.style.gap = "10px";
+    wrap.style.width = "calc(100% - 32px)";
+    wrap.style.maxWidth = "420px";
+    document.body.appendChild(wrap);
+  }
+
+  const toast = document.createElement("div");
+  toast.textContent = text;
+
+  toast.style.padding = "12px 16px";
+  toast.style.borderRadius = "14px";
+  toast.style.backdropFilter = "blur(12px)";
+  toast.style.background = "rgba(35,40,60,0.92)";
+  toast.style.color = "#fff";
+  toast.style.fontSize = "15px";
+  toast.style.fontWeight = "600";
+  toast.style.boxShadow = "0 8px 24px rgba(0,0,0,0.35)";
+  toast.style.opacity = "0";
+  toast.style.transform = "translateY(20px)";
+  toast.style.transition = "all .25s ease";
+
+  if (type === "success") {
+    toast.style.border = "1px solid rgba(80,255,140,.35)";
+  }
+
+  if (type === "error") {
+    toast.style.border = "1px solid rgba(255,90,90,.35)";
+  }
+
+  wrap.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(20px)";
+
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }, 2200);
+};
+
