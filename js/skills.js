@@ -24,16 +24,11 @@ function getSkillConfig(skillCode, xp = 0, storedLevel = 1) {
     const realLevel = Math.max(Number(storedLevel || 1), derived.level);
     const current = levels.find((lvl) => lvl.level === realLevel) || derived;
     const nextLevel = levels.find((lvl) => lvl.level === realLevel + 1) || null;
-
     const maxXp = 10000;
-    const currentFloor = current.minXp;
-    const currentCeil = nextLevel ? nextLevel.minXp : maxXp;
-    const currentRange = Math.max(currentCeil - currentFloor, 1);
-    const progressInsideLevel = Math.min(Math.max(xp - currentFloor, 0), currentRange);
 
     const progressPercent = realLevel >= 10
       ? 100
-      : Math.min(Math.round((progressInsideLevel / currentRange) * 100), 100);
+      : Math.min(Math.round((xp / maxXp) * 100), 100);
 
     return {
       code: "farmer",
