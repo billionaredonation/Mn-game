@@ -74,6 +74,23 @@ async function initFarmScreen() {
     return clampMoney(grossMoney - penaltyMoney);
   }
 
+  function showMoneyToast(amount, type = "plus") {
+    const toast = document.createElement("div");
+    toast.className = `money-toast ${type}`;
+    toast.textContent = amount > 0 ? `+${amount} ₴` : `${amount} ₴`;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add("show");
+    });
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 260);
+    }, 1100);
+  }
+
   async function loadFarmerProgress() {
     const localXp = Number(localStorage.getItem("mn_farmer_xp") || 0);
     const localLevel = Number(localStorage.getItem("mn_farmer_level") || 1);
@@ -142,9 +159,7 @@ async function initFarmScreen() {
         })
         .eq("id", window.MN_STATE.playerUuid);
 
-      if (playerUpdate.error) {
-        throw playerUpdate.error;
-      }
+      if (playerUpdate.error) throw playerUpdate.error;
 
       const skillUpsert = await window.sb
         .from("player_skills")
@@ -161,9 +176,7 @@ async function initFarmScreen() {
           }
         );
 
-      if (skillUpsert.error) {
-        throw skillUpsert.error;
-      }
+      if (skillUpsert.error) throw skillUpsert.error;
     } catch (error) {
       console.warn("Не удалось синхронизировать ферму с БД:", error);
     }
@@ -203,6 +216,10 @@ async function initFarmScreen() {
       farmerLevel
     );
 
+    if (savedMoney > 0) {
+      showMoneyToast(savedMoney, "plus");
+    }
+
     console.log("Farm save:", { savedMoney, savedXp, savedRep });
   }
 
@@ -219,19 +236,29 @@ async function initFarmScreen() {
       penaltyMoney += penalty;
       unsavedNetMoney = clampMoney(unsavedNetMoney - penalty);
       chainNetMoney = clampMoney(chainNetMoney - penalty);
+
+      showMoneyToast(-penalty, "minus");
     } else if (errorChain === 2) {
       const penalty = Math.round(reward.money * 0.4);
 
       penaltyMoney += penalty;
       unsavedNetMoney = clampMoney(unsavedNetMoney - penalty);
       chainNetMoney = clampMoney(chainNetMoney - penalty);
+
+      showMoneyToast(-penalty, "minus");
     } else if (errorChain >= 3) {
-      penaltyMoney += chainNetMoney;
-      unsavedNetMoney = clampMoney(unsavedNetMoney - chainNetMoney);
+      const burned = chainNetMoney;
+
+      penaltyMoney += burned;
+      unsavedNetMoney = clampMoney(unsavedNetMoney - burned);
 
       chainNetMoney = 0;
       errorChain = 0;
       successChain = 0;
+
+      if (burned > 0) {
+        showMoneyToast(-burned, "minus");
+      }
     }
   }
 
@@ -247,7 +274,6 @@ async function initFarmScreen() {
     unsavedFarmerXp += reward.xp;
 
     successChain += 1;
-    errorChain = 0;
 
     if (successChain >= 3) {
       pendingReputation += 1;
@@ -293,4 +319,4 @@ async function initFarmScreen() {
   await loadFarmerProgress();
   updateUI();
   spawn();
-          }
+        }
