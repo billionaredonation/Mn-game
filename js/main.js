@@ -58,6 +58,11 @@ function initMainHome() {
     card.addEventListener("click", () => {
       const section = card.dataset.section;
 
+      if (section === "Работа") {
+        loadScreen("GL_Displays/work.html", initWorkScreen);
+        return;
+      }
+
       if (section === "Профиль") {
         loadScreen("GL_Displays/profile.html", initProfileScreen);
         return;
@@ -68,9 +73,43 @@ function initMainHome() {
         return;
       }
 
-      alert(`Раздел "${section}" подключим следующим шагом.`);
+      alert(`Раздел "${section}" скоро откроем.`);
     });
   });
+}
+
+function initWorkScreen() {
+  const farmBtn = document.getElementById("openFarmJobBtn");
+  const mineBtn = document.getElementById("openMineJobBtn");
+  const backBtn = document.getElementById("workBackBtn");
+
+  if (farmBtn) {
+    farmBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/farm.html", initFarmScreen);
+    });
+  }
+
+  if (mineBtn) {
+    mineBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/mine.html", initMineScreen);
+    });
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/main-home.html", initMainHome);
+    });
+  }
+}
+
+function initMineScreen() {
+  const backBtn = document.getElementById("mineBackBtn");
+
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      loadScreen("GL_Displays/work.html", initWorkScreen);
+    });
+  }
 }
 
 function initProfileScreen() {
@@ -185,4 +224,4 @@ async function initSkillsScreen() {
       loadScreen("GL_Displays/main-home.html", initMainHome);
     });
   }
-      }
+  }
