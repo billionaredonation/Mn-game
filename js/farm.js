@@ -5,6 +5,8 @@ async function initFarmScreen() {
   const hitsEl = document.getElementById("farmHitsValue");
   const mistakesEl = document.getElementById("farmMistakesValue");
   const moneyEl = document.getElementById("farmMoneyValue");
+  const penaltyEl = document.getElementById("farmPenaltyValue");
+  const netMoneyEl = document.getElementById("farmNetMoneyValue");
   const xpEl = document.getElementById("farmXpValue");
   const levelEl = document.getElementById("farmLevelChip");
   const autoEl = document.getElementById("farmAutosaveInfo");
@@ -16,19 +18,16 @@ async function initFarmScreen() {
   let hits = 0;
   let mistakes = 0;
 
-  // общий заработок за текущий заход на ферму
-  let totalSessionMoney = 0;
-
-  // несохранённый буфер
-  let unsavedMoney = 0;
+  let grossMoney = 0;       // всё заработанное
+  let penaltyMoney = 0;     // все штрафы
+  let unsavedMoney = 0;     // что ещё не ушло в баланс
   let unsavedFarmerXp = 0;
   let pendingReputation = 0;
 
-  // прогресс серии
   let successChain = 0;
   let errorChain = 0;
+  let chainGrossMoney = 0;  // заработок текущей серии, который можно сжечь на 3/3
 
-  // общий прогресс навыка фермера
   let totalFarmerXp = 0;
   let farmerLevel = 1;
 
@@ -70,29 +69,16 @@ async function initFarmScreen() {
     return getFarmerLevelByXp(getCurrentFarmerXp());
   }
 
+  function getNetMoney() {
+    return clampMoney(grossMoney - penaltyMoney);
+  }
+
   async function loadFarmerProgress() {
     const localXp = Number(localStorage.getItem("mn_farmer_xp") || 0);
     const localLevel = Number(localStorage.getItem("mn_farmer_level") || 1);
 
-    let dbXp = 0;
-    let dbLevel = 1;
-
-    try {
-      if (window.loadPlayerSkills && window.MN_STATE.playerUuid) {
-        const skills = await window.loadPlayerSkills(window.MN_STATE.playerUuid);
-        const farmerSkill = skills.find((skill) => skill.skill_code === "farmer");
-
-        if (farmerSkill) {
-          dbXp = Number(farmerSkill.xp || 0);
-          dbLevel = Number(farmerSkill.level || 1);
-        }
-      }
-    } catch (error) {
-      console.warn("Не удалось загрузить farmer skill из БД:", error);
-    }
-
-    totalFarmerXp = Math.max(localXp, dbXp);
-    farmerLevel = Math.max(localLevel, dbLevel, getFarmerLevelByXp(totalFarmerXp));
+    totalFarmerXp = localXp;
+    farmerLevel = Math.max(localLevel, getFarmerLevelByXp(totalFarmerXp));
 
     localStorage.setItem("mn_farmer_xp", String(totalFarmerXp));
     localStorage.setItem("mn_farmer_level", String(farmerLevel));
@@ -105,7 +91,9 @@ async function initFarmScreen() {
 
     if (hitsEl) hitsEl.textContent = String(hits);
     if (mistakesEl) mistakesEl.textContent = String(mistakes);
-    if (moneyEl) moneyEl.textContent = `${totalSessionMoney} ₴`;
+    if (moneyEl) moneyEl.textContent = `${grossMoney} ₴`;
+    if (penaltyEl) penaltyEl.textContent = `-${penaltyMoney} ₴`;
+    if (netMoneyEl) netMoneyEl.textContent = `${getNetMoney()} ₴`;
     if (xpEl) xpEl.textContent = `${currentFarmerXp} / 10000 XP`;
     if (levelEl) levelEl.textContent = `Ур. ${currentLevel}`;
     if (autoEl) autoEl.textContent = `${successChain} / 3`;
@@ -120,52 +108,8 @@ async function initFarmScreen() {
       progressFill.style.width = `${Math.min((currentFarmerXp / 10000) * 100, 100)}%`;
     }
 
-    if (errorChainTextEl) {
-      errorChainTextEl.textContent = `${errorChain} / 3`;
-    }
-
-    if (errorChainFillEl) {
-      errorChainFillEl.style.width = `${(errorChain / 3) * 100}%`;
-    }
-  }
-
-  async function syncToDatabase(newBalance, newReputation, newFarmerXp, newFarmerLevel) {
-    if (!window.sb || !window.MN_STATE.playerUuid) return;
-
-    try {
-      const playerUpdate = await window.sb
-        .from("players")
-        .update({
-          balance: newBalance,
-          reputation: newReputation
-        })
-        .eq("id", window.MN_STATE.playerUuid);
-
-      if (playerUpdate.error) {
-        throw playerUpdate.error;
-      }
-
-      const skillUpsert = await window.sb
-        .from("player_skills")
-        .upsert(
-          {
-            player_uuid: window.MN_STATE.playerUuid,
-            skill_code: "farmer",
-            xp: newFarmerXp,
-            level: newFarmerLevel,
-            updated_at: new Date().toISOString()
-          },
-          {
-            onConflict: "player_uuid,skill_code"
-          }
-        );
-
-      if (skillUpsert.error) {
-        throw skillUpsert.error;
-      }
-    } catch (error) {
-      console.warn("Синхронизация фермы с БД не удалась, локально уже сохранено:", error);
-    }
+    if (errorChainTextEl) errorChainTextEl.textContent = `${errorChain} / 3`;
+    if (errorChainFillEl) errorChainFillEl.style.width = `${(errorChain / 3) * 100}%`;
   }
 
   async function saveProgress() {
@@ -173,45 +117,23 @@ async function initFarmScreen() {
       return;
     }
 
-    const newBalance = Number(window.MN_STATE.balance || 0) + unsavedMoney;
-    const newReputation = Number(window.MN_STATE.reputation || 0) + pendingReputation;
-    const newFarmerXp = totalFarmerXp + unsavedFarmerXp;
-    const newFarmerLevel = getFarmerLevelByXp(newFarmerXp);
-
-    // сначала локально, чтобы не терять прогресс
-    window.MN_STATE.balance = newBalance;
-    window.MN_STATE.reputation = newReputation;
+    window.MN_STATE.balance = Number(window.MN_STATE.balance || 0) + unsavedMoney;
+    window.MN_STATE.reputation = Number(window.MN_STATE.reputation || 0) + pendingReputation;
     saveState();
 
-    totalFarmerXp = newFarmerXp;
-    farmerLevel = newFarmerLevel;
+    totalFarmerXp += unsavedFarmerXp;
+    farmerLevel = getFarmerLevelByXp(totalFarmerXp);
 
     localStorage.setItem("mn_farmer_xp", String(totalFarmerXp));
     localStorage.setItem("mn_farmer_level", String(farmerLevel));
-
-    const moneyToSave = unsavedMoney;
-    const xpToSave = unsavedFarmerXp;
-    const repToSave = pendingReputation;
 
     unsavedMoney = 0;
     unsavedFarmerXp = 0;
     pendingReputation = 0;
     successChain = 0;
+    chainGrossMoney = 0;
 
     updateUI();
-
-    await syncToDatabase(
-      Number(window.MN_STATE.balance || 0),
-      Number(window.MN_STATE.reputation || 0),
-      totalFarmerXp,
-      farmerLevel
-    );
-
-    console.log("Farm autosave:", {
-      money: moneyToSave,
-      farmerXp: xpToSave,
-      reputation: repToSave
-    });
   }
 
   function applyMistakePenalty() {
@@ -223,16 +145,17 @@ async function initFarmScreen() {
 
     if (errorChain === 1) {
       const penalty = Math.round(reward.money * 0.2);
+      penaltyMoney += penalty;
       unsavedMoney = clampMoney(unsavedMoney - penalty);
-      totalSessionMoney = clampMoney(totalSessionMoney - penalty);
     } else if (errorChain === 2) {
       const penalty = Math.round(reward.money * 0.4);
+      penaltyMoney += penalty;
       unsavedMoney = clampMoney(unsavedMoney - penalty);
-      totalSessionMoney = clampMoney(totalSessionMoney - penalty);
     } else if (errorChain >= 3) {
-      // аннулируем только текущий несохранённый заработок
-      totalSessionMoney = clampMoney(totalSessionMoney - unsavedMoney);
-      unsavedMoney = 0;
+      // сжигаем заработок текущей серии
+      penaltyMoney += chainGrossMoney;
+      unsavedMoney = clampMoney(unsavedMoney - chainGrossMoney);
+      chainGrossMoney = 0;
       errorChain = 0;
       successChain = 0;
     }
@@ -243,13 +166,12 @@ async function initFarmScreen() {
     const reward = rewardByLevel(currentLevel);
 
     hits += 1;
-    totalSessionMoney += reward.money;
+    grossMoney += reward.money;
+    chainGrossMoney += reward.money;
     unsavedMoney += reward.money;
     unsavedFarmerXp += reward.xp;
 
     successChain += 1;
-
-    // правильное действие сбрасывает штрафную серию
     errorChain = 0;
 
     if (successChain >= 3) {
@@ -296,4 +218,4 @@ async function initFarmScreen() {
   await loadFarmerProgress();
   updateUI();
   spawn();
-          }
+}
