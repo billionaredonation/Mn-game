@@ -300,6 +300,115 @@ function initFarmSelectScreen() {
 }
 
 
+function openFarmInfoModal(title, text) {
+  let overlay = document.getElementById("farmInfoOverlay");
+
+  if (overlay) {
+    overlay.remove();
+  }
+
+  overlay = document.createElement("div");
+  overlay.id = "farmInfoOverlay";
+  overlay.className = "farm-info-overlay";
+
+  overlay.innerHTML = `
+    <div class="farm-info-modal">
+      <div class="farm-info-head">
+        <h3>${title}</h3>
+        <button type="button" class="farm-info-close" id="farmInfoCloseBtn">×</button>
+      </div>
+
+      <p class="farm-info-text">${text}</p>
+
+      <button type="button" class="primary-btn farm-info-ok-btn" id="farmInfoOkBtn">
+        Понятно
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const close = () => {
+    overlay.remove();
+  };
+
+  const closeBtn = document.getElementById("farmInfoCloseBtn");
+  const okBtn = document.getElementById("farmInfoOkBtn");
+
+  if (closeBtn) closeBtn.onclick = close;
+  if (okBtn) okBtn.onclick = close;
+
+  overlay.onclick = (event) => {
+    if (event.target === overlay) {
+      close();
+    }
+  };
+}
+
+function initFarmSelectScreen() {
+  const basicBtn = document.getElementById("openFarmBasicBtn");
+  const rareBtn = document.getElementById("openFarmRareBtn");
+  const backBtn = document.getElementById("farmSelectBackBtn");
+
+  const infoBasic = document.getElementById("farmInfoBasic");
+  const infoRare = document.getElementById("farmInfoRare");
+
+  if (basicBtn) {
+    basicBtn.onclick = () => {
+      loadScreen("GL_Displays/farm.html", initFarmScreen);
+    };
+  }
+
+  if (rareBtn) {
+    rareBtn.onclick = async () => {
+      const skills = await loadPlayerSkills(window.MN_STATE.playerUuid);
+      const farmer = skills.find((s) => s.skill_code === "farmer");
+
+      const farmerConfig = window.getSkillConfig(
+        "farmer",
+        Number(farmer?.xp || 0),
+        Number(farmer?.level || 1)
+      );
+
+      if (farmerConfig.level < 3) {
+        showToast("Требуется 3 уровень фермера", "error");
+        return;
+      }
+
+      loadScreen("GL_Displays/farm-rare.html", initFarmRareScreen);
+    };
+  }
+
+  if (infoBasic) {
+    infoBasic.onclick = (event) => {
+      event.stopPropagation();
+
+      openFarmInfoModal(
+        "Ферма новичков",
+        "Стартовая ферма для безопасной прокачки навыка фермера. Подходит для лёгкого заработка, первых заданий и спокойного старта."
+      );
+    };
+  }
+
+  if (infoRare) {
+    infoRare.onclick = (event) => {
+      event.stopPropagation();
+
+      openFarmInfoModal(
+        "Ферма редких культур",
+        "Ферма для игроков 3 уровня фермера и выше. Здесь будут редкие культуры с усиленными наградами: например виноград даёт ×2 к зарплате за нажатие, а банан даёт ×2 к опыту за нажатие."
+      );
+    };
+  }
+
+  if (backBtn) {
+    backBtn.onclick = () => {
+      loadScreen("GL_Displays/work.html", initWorkScreen);
+    };
+  }
+                 }
+
+
 function initFarmRareScreen() {
   const btn = document.getElementById("rareBackBtn");
 
