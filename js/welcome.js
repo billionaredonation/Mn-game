@@ -1,3 +1,9 @@
+function formatGender(value) {
+  if (value === "male") return "Мужской";
+  if (value === "female") return "Женский";
+  return value || "—";
+}
+
 function shortBonusText(city) {
   if (!city) return "";
 
@@ -144,7 +150,7 @@ function initWelcome4() {
       window.MN_STATE.gender = button.dataset.gender;
       saveState();
 
-      hint.textContent = `Выбран пол: ${window.MN_STATE.gender}`;
+      hint.textContent = `Выбран пол: ${formatGender(window.MN_STATE.gender)}`;
       hint.classList.remove("error");
       hint.classList.add("success");
     });
@@ -165,11 +171,20 @@ function initWelcome4() {
 function initWelcome5() {
   const city = getCityById(window.MN_STATE.cityId);
 
-  document.getElementById("summaryNickname").textContent = window.MN_STATE.nickname || "—";
-  document.getElementById("summaryCity").textContent = window.MN_STATE.cityName || "—";
-  document.getElementById("summaryGender").textContent = window.MN_STATE.gender || "—";
-  document.getElementById("summaryBonus").textContent = city ? shortBonusText(city) : "—";
-  document.getElementById("summaryBalance").textContent = city ? `${formatMoney(city.start_balance)} ₴` : "—";
+  document.getElementById("summaryNickname").textContent =
+    window.MN_STATE.nickname || "—";
+
+  document.getElementById("summaryCity").textContent =
+    window.MN_STATE.cityName || "—";
+
+  document.getElementById("summaryGender").textContent =
+    formatGender(window.MN_STATE.gender);
+
+  document.getElementById("summaryBonus").textContent =
+    city ? shortBonusText(city) : "—";
+
+  document.getElementById("summaryBalance").textContent =
+    city ? `${formatMoney(city.start_balance)} ₴` : "—";
 
   document.getElementById("enterMainBtn").addEventListener("click", async () => {
     const btn = document.getElementById("enterMainBtn");
@@ -187,8 +202,14 @@ function initWelcome5() {
       applyPlayerDataToState(result.player, result.city);
       loadScreen("GL_Displays/main-home.html", initMainHome);
     } catch (error) {
-      console.error(error);
-      alert("Не удалось создать игрока. Возможно, ник уже занят.");
+      console.error("CREATE PLAYER ERROR:", error);
+
+      alert(
+        `Ошибка создания игрока:\n${
+          error?.message || JSON.stringify(error)
+        }`
+      );
+
       btn.disabled = false;
       btn.textContent = "В главный экран";
     }
