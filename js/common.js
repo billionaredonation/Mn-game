@@ -9,8 +9,7 @@ window.MN_STATE = {
   level: Number(localStorage.getItem("mn_level") || 1),
   xp: Number(localStorage.getItem("mn_xp") || 0),
   energy: Number(localStorage.getItem("mn_energy") || 100),
-  reputation: Number(localStorage.getItem("mn_reputation") || 0),
-  diamonds: Number(localStorage.getItem("mn_diamonds") || 0)
+  reputation: Number(localStorage.getItem("mn_reputation") || 0)
 };
 
 window.MN_APP = document.getElementById("app");
@@ -28,7 +27,6 @@ window.saveState = function () {
   localStorage.setItem("mn_xp", String(window.MN_STATE.xp || 0));
   localStorage.setItem("mn_energy", String(window.MN_STATE.energy || 100));
   localStorage.setItem("mn_reputation", String(window.MN_STATE.reputation || 0));
-  localStorage.setItem("mn_diamonds", String(window.MN_STATE.diamonds || 0));
 };
 
 window.applyPlayerDataToState = function (player, city) {
@@ -43,7 +41,6 @@ window.applyPlayerDataToState = function (player, city) {
   window.MN_STATE.xp = Number(player.xp || 0);
   window.MN_STATE.energy = Number(player.energy || 100);
   window.MN_STATE.reputation = Number(player.reputation || 0);
-  window.MN_STATE.diamonds = Number(player.diamonds || 0);
 
   saveState();
 };
