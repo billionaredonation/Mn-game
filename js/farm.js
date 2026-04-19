@@ -291,6 +291,54 @@ async function initFarmScreen() {
   }
 }
 
+function spawn() {
+  if (!board) return;
+
+  board.innerHTML = "";
+
+  for (let i = 0; i < 9; i += 1) {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "farm-cell";
+
+    const bad = Math.random() < 0.25;
+    item.textContent = bad ? "🐛" : "🌾";
+
+    item.onclick = async () => {
+      if (bad) {
+        applyMistakePenalty();
+      } else {
+        await applyHarvestReward();
+      }
+
+      updateUI();
+      spawn();
+    };
+
+    board.appendChild(item);
+  }
+}
+
+if (backBtn) {
+  backBtn.onclick = async () => {
+    await saveProgress();
+    loadScreen("GL_Displays/work.html", initWorkScreen);
+  };
+}
+
+await loadFarmerProgress();
+updateUI();
+spawn();
+}
+
+  successChain += 1;
+
+  if (successChain >= 3) {
+    pendingReputation += 1;
+    await saveProgress();
+  }
+}
+
   function spawn() {
     if (!board) return;
 
