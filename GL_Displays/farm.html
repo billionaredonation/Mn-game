@@ -1,70 +1,49 @@
 <section class="screen-card farm-screen">
   <div class="farm-top">
-    <div>
+    <div class="farm-head-text">
       <p class="eyebrow">ФЕРМА</p>
       <h2>Сбор урожая</h2>
       <p class="subtext">Нажимайте на урожай. Не трогайте вредителей.</p>
     </div>
-
-    <div class="farm-level-chip" id="farmLevelChip">Ур. 1</div>
   </div>
 
-  <div class="farm-stats-grid">
-    <div class="farm-stat-box">
-      <span class="farm-stat-label">СОБРАНО</span>
-      <strong class="farm-stat-value" id="farmHitsValue">0</strong>
+  <div class="farm-progress-card">
+    <div class="farm-progress-top">
+      <strong class="farm-profession-title">Фермер <span id="farmLevelChip">Ур. 1</span></strong>
+      <span class="farm-progress-text" id="farmXpValue">0 / 10000 XP</span>
     </div>
 
-    <div class="farm-stat-box">
-      <span class="farm-stat-label">ОШИБКИ</span>
-      <strong class="farm-stat-value" id="farmMistakesValue">0</strong>
-    </div>
-
-    <div class="farm-stat-box">
-      <span class="farm-stat-label">ЗАРАБОТАНО</span>
-      <strong class="farm-stat-value" id="farmMoneyValue">0 ₴</strong>
-    </div>
-
-    <div class="farm-stat-box">
-      <span class="farm-stat-label">XP ФЕРМЕРА</span>
-      <strong class="farm-stat-value" id="farmXpValue">0 XP</strong>
+    <div class="farm-progress-bar">
+      <div class="farm-progress-fill" id="farmProgressFill" style="width:0%;"></div>
     </div>
   </div>
 
-  <div class="profile-main-card">
-    <div class="farm-reward-meta">
-      <div>
-        <span class="farm-reward-label">За правильное действие</span>
-        <strong class="farm-reward-value" id="farmRewardPerAction">+10 ₴</strong>
-      </div>
-
-      <div>
-        <span class="farm-reward-label">Опыт за действие</span>
-        <strong class="farm-reward-value" id="farmXpPerAction">+2 XP</strong>
-      </div>
+  <div class="farm-mini-stats">
+    <div class="farm-mini-item">
+      <span>Собрано</span>
+      <strong id="farmHitsValue">0</strong>
     </div>
-  </div>
 
-  <div class="profile-main-card">
-    <p class="eyebrow">ПРОГРЕСС СЕССИИ</p>
+    <div class="farm-mini-item">
+      <span>Ошибки</span>
+      <strong id="farmMistakesValue">0</strong>
+    </div>
 
-    <div class="profile-rows">
-      <div class="profile-row">
-        <span>Автосейв</span>
-        <strong id="farmAutosaveInfo">каждые 3 действия</strong>
-      </div>
-
-      <div class="profile-row">
-        <span>Сохранено действий</span>
-        <strong id="farmSavedActionsValue">0</strong>
-      </div>
+    <div class="farm-mini-item">
+      <span>Заработано</span>
+      <strong id="farmMoneyValue">0 ₴</strong>
     </div>
   </div>
 
   <div class="farm-board" id="farmBoard"></div>
 
+  <div class="farm-bottom-info">
+    <span id="farmRewardPerAction">+10 ₴</span>
+    <span id="farmXpPerAction">+2 XP</span>
+    <span id="farmAutosaveInfo">Автосейв ×3</span>
+  </div>
+
   <div class="farm-controls">
-    <button class="secondary-btn" id="farmSaveBtn">Сохранить сейчас</button>
     <button class="primary-btn" id="farmBackBtn">Назад</button>
   </div>
-    </section>
+</section>
