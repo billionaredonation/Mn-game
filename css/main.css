@@ -1124,3 +1124,49 @@ canvas {
   border-color: rgba(255, 110, 110, 0.32);
   background: rgba(66, 24, 24, 0.94);
 }
+
+
+.farm-pick-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.farm-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.job-info{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  text-align:left;
+  gap:4px;
+}
+
+.job-info strong{
+  font-size:18px;
+  line-height:1.1;
+}
+
+.job-info span{
+  font-size:14px;
+  opacity:.85;
+  line-height:1.25;
+}
+
+.info-mini-btn{
+  width:32px;
+  height:32px;
+  border:none;
+  border-radius:50%;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  font-size:18px;
+  font-weight:700;
+  flex-shrink:0;
+}
