@@ -241,3 +241,60 @@ async function initSkillsScreen() {
     });
   }
     }
+
+
+
+function initFarmSelectScreen() {
+  const basicBtn = document.getElementById("openFarmBasicBtn");
+  const rareBtn = document.getElementById("openFarmRareBtn");
+  const backBtn = document.getElementById("farmSelectBackBtn");
+
+  const infoBasic = document.getElementById("farmInfoBasic");
+  const infoRare = document.getElementById("farmInfoRare");
+
+  if (basicBtn) {
+    basicBtn.onclick = () => {
+      loadScreen("GL_Displays/farm.html", initFarmScreen);
+    };
+  }
+
+  if (rareBtn) {
+    rareBtn.onclick = async () => {
+      const skills = await loadPlayerSkills(window.MN_STATE.playerUuid);
+      const farmer = skills.find(s => s.skill_code === "farmer");
+
+      const level = window.getSkillConfig(
+        "farmer",
+        Number(farmer?.xp || 0),
+        Number(farmer?.level || 1)
+      ).level;
+
+      if (level < 3) {
+        showToast("Требуется 3 уровень фермера", "error");
+        return;
+      }
+
+      loadScreen("GL_Displays/farm-rare.html", initFarmRareScreen);
+    };
+  }
+
+  if (infoBasic) {
+    infoBasic.onclick = (e) => {
+      e.stopPropagation();
+      showToast("Стартовая ферма: стабильный доход и прокачка.", "info");
+    };
+  }
+
+  if (infoRare) {
+    infoRare.onclick = (e) => {
+      e.stopPropagation();
+      showToast("Редкие культуры дают x2 награды и опыта.", "info");
+    };
+  }
+
+  if (backBtn) {
+    backBtn.onclick = () => {
+      loadScreen("GL_Displays/work.html", initWorkScreen);
+    };
+  }
+}
