@@ -1004,3 +1004,45 @@ canvas {
   background:rgba(255,255,255,.08);
   color:#fff;
 }
+
+
+.farm-screen{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.farm-board{
+  display:grid !important;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  min-height:240px;
+  width:100%;
+  margin:8px 0 4px;
+}
+
+.farm-cell{
+  height:72px;
+  border:none;
+  border-radius:18px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font-size:30px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.farm-controls{
+  margin-top:4px;
+}
+
+.farm-bottom-info{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:14px;
+  opacity:.95;
+  flex-wrap:wrap;
+}
