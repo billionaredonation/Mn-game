@@ -18,17 +18,41 @@ function initMainHome() {
 
   const city = getCityById(window.MN_STATE.cityId);
 
-  if (playerNameEl) playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  if (playerNameEl) {
+    playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  }
+
   if (playerMetaEl) {
     playerMetaEl.textContent = `${formatGender(window.MN_STATE.gender)} • ID ${window.MN_STATE.playerId || "—"}`;
   }
-  if (playerBadgeEl) playerBadgeEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
-  if (playerCityChipEl) playerCityChipEl.textContent = window.MN_STATE.cityName || "Без города";
-  if (cityBonusEl) cityBonusEl.textContent = city ? city.bonus : "Бонус не выбран";
-  if (balanceEl) balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
-  if (levelEl) levelEl.textContent = String(window.MN_STATE.level);
-  if (xpEl) xpEl.textContent = `${window.MN_STATE.xp} XP`;
-  if (startBonusEl) startBonusEl.textContent = city ? (city.short_bonus || city.bonus) : "—";
+
+  if (playerBadgeEl) {
+    playerBadgeEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
+  }
+
+  if (playerCityChipEl) {
+    playerCityChipEl.textContent = window.MN_STATE.cityName || "Без города";
+  }
+
+  if (cityBonusEl) {
+    cityBonusEl.textContent = city ? city.bonus : "Бонус не выбран";
+  }
+
+  if (balanceEl) {
+    balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
+  }
+
+  if (levelEl) {
+    levelEl.textContent = String(window.MN_STATE.level);
+  }
+
+  if (xpEl) {
+    xpEl.textContent = `${window.MN_STATE.xp} XP`;
+  }
+
+  if (startBonusEl) {
+    startBonusEl.textContent = city ? (city.short_bonus || city.bonus) : "—";
+  }
 
   iconCards.forEach((card) => {
     card.addEventListener("click", () => {
@@ -73,24 +97,65 @@ function initProfileScreen() {
 
   const backBtn = document.getElementById("profileBackBtn");
 
-  if (avatarEl) avatarEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
-  if (nicknameEl) nicknameEl.textContent = window.MN_STATE.nickname || "Игрок";
-  if (genderEl) genderEl.textContent = formatGender(window.MN_STATE.gender);
+  if (avatarEl) {
+    avatarEl.textContent = getPlayerInitials(window.MN_STATE.nickname);
+  }
 
-  if (cityTagEl) cityTagEl.textContent = window.MN_STATE.cityName || "Без города";
-  if (playerIdEl) playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
+  if (nicknameEl) {
+    nicknameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  }
 
-  if (nicknameRowEl) nicknameRowEl.textContent = window.MN_STATE.nickname || "—";
-  if (genderRowEl) genderRowEl.textContent = formatGender(window.MN_STATE.gender);
-  if (cityRowEl) cityRowEl.textContent = window.MN_STATE.cityName || "—";
-  if (cityBonusRowEl) cityBonusRowEl.textContent = city ? city.bonus : "—";
+  if (genderEl) {
+    genderEl.textContent = formatGender(window.MN_STATE.gender);
+  }
 
-  if (balanceEl) balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
-  if (levelEl) levelEl.textContent = String(window.MN_STATE.level);
-  if (xpEl) xpEl.textContent = `${window.MN_STATE.xp} XP`;
-  if (reputationEl) reputationEl.textContent = String(window.MN_STATE.reputation || 0);
-  if (energyEl) energyEl.textContent = String(window.MN_STATE.energy || 100);
-  if (uuidEl) uuidEl.textContent = window.MN_STATE.playerUuid || "—";
+  if (cityTagEl) {
+    cityTagEl.textContent = window.MN_STATE.cityName || "Без города";
+  }
+
+  if (playerIdEl) {
+    playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
+  }
+
+  if (nicknameRowEl) {
+    nicknameRowEl.textContent = window.MN_STATE.nickname || "—";
+  }
+
+  if (genderRowEl) {
+    genderRowEl.textContent = formatGender(window.MN_STATE.gender);
+  }
+
+  if (cityRowEl) {
+    cityRowEl.textContent = window.MN_STATE.cityName || "—";
+  }
+
+  if (cityBonusRowEl) {
+    cityBonusRowEl.textContent = city ? city.bonus : "—";
+  }
+
+  if (balanceEl) {
+    balanceEl.textContent = `${formatMoney(window.MN_STATE.balance)} ₴`;
+  }
+
+  if (levelEl) {
+    levelEl.textContent = String(window.MN_STATE.level);
+  }
+
+  if (xpEl) {
+    xpEl.textContent = `${window.MN_STATE.xp} XP`;
+  }
+
+  if (reputationEl) {
+    reputationEl.textContent = String(window.MN_STATE.reputation || 0);
+  }
+
+  if (energyEl) {
+    energyEl.textContent = String(window.MN_STATE.energy || 100);
+  }
+
+  if (uuidEl) {
+    uuidEl.textContent = window.MN_STATE.playerUuid || "—";
+  }
 
   if (backBtn) {
     backBtn.addEventListener("click", () => {
@@ -99,12 +164,25 @@ function initProfileScreen() {
   }
 }
 
-function initSkillsScreen() {
+async function initSkillsScreen() {
   const backBtn = document.getElementById("skillsBackBtn");
+  const playerNameEl = document.getElementById("skillsPlayerName");
+  const playerIdEl = document.getElementById("skillsPlayerId");
+
+  if (playerNameEl) {
+    playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  }
+
+  if (playerIdEl) {
+    playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
+  }
+
+  const skills = await loadPlayerSkills(window.MN_STATE.playerUuid);
+  renderSkillsList(skills);
 
   if (backBtn) {
     backBtn.addEventListener("click", () => {
       loadScreen("GL_Displays/main-home.html", initMainHome);
     });
   }
-    }
+      }
