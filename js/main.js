@@ -101,7 +101,7 @@ function initWorkScreen() {
 
   if (farmBtn) {
     farmBtn.addEventListener("click", () => {
-      loadScreen("GL_Displays/farm.html", initFarmScreen);
+      loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
     });
   }
 
