@@ -99,11 +99,12 @@ function initWorkScreen() {
     balanceEl.textContent = `${formatMoney(window.MN_STATE.balance || 0)} ₴`;
   }
 
-  if (farmBtn) {
-    farmBtn.addEventListener("click", () => {
-      loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
-    });
-  }
+  if (basicBtn) {
+  basicBtn.onclick = () => {
+    alert("basic farm click ok");
+    loadScreen("GL_Displays/farm.html", initFarmScreen);
+  };
+}
 
   if (mineBtn) {
     mineBtn.addEventListener("click", () => {
