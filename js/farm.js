@@ -33,34 +33,42 @@ async function initFarmScreen() {
   let farmerLevel = 1;
 
   function rewardByLevel(lvl) {
-  if (lvl === 1) return { money: 10, xp: 1.0 };
-  if (lvl === 2) return { money: 15, xp: 1.5 };
-  if (lvl === 3) return { money: 20, xp: 2.0 };
-  if (lvl === 4) return { money: 30, xp: 2.5 };
-  if (lvl === 5) return { money: 40, xp: 3.0 };
-  if (lvl === 6) return { money: 60, xp: 3.5 };
-  if (lvl === 7) return { money: 90, xp: 4.0 };
-  if (lvl === 8) return { money: 130, xp: 4.5 };
-  if (lvl === 9) return { money: 180, xp: 5.0 };
-  return { money: 250, xp: 6.0 };
-}
+    if (lvl === 1) return { money: 10, xp: 1.0 };
+    if (lvl === 2) return { money: 15, xp: 1.5 };
+    if (lvl === 3) return { money: 20, xp: 2.0 };
+    if (lvl === 4) return { money: 30, xp: 2.5 };
+    if (lvl === 5) return { money: 40, xp: 3.0 };
+    if (lvl === 6) return { money: 60, xp: 3.5 };
+    if (lvl === 7) return { money: 90, xp: 4.0 };
+    if (lvl === 8) return { money: 130, xp: 4.5 };
+    if (lvl === 9) return { money: 180, xp: 5.0 };
+    return { money: 250, xp: 6.0 };
+  }
+
   function getFarmerLevelByXp(xp, storedLevel = 1) {
-  let derived = 1;
+    let derived = 1;
 
-  if (xp >= 10000) derived = 10;
-  else if (xp >= 8500) derived = 9;
-  else if (xp >= 7000) derived = 8;
-  else if (xp >= 5000) derived = 7;
-  else if (xp >= 3500) derived = 6;
-  else if (xp >= 2500) derived = 5;
-  else if (xp >= 2000) derived = 4;
-  else if (xp >= 1000) derived = 3;
-  else if (xp >= 500) derived = 2;
+    if (xp >= 10000) derived = 10;
+    else if (xp >= 8500) derived = 9;
+    else if (xp >= 7000) derived = 8;
+    else if (xp >= 5000) derived = 7;
+    else if (xp >= 3500) derived = 6;
+    else if (xp >= 2500) derived = 5;
+    else if (xp >= 2000) derived = 4;
+    else if (xp >= 1000) derived = 3;
+    else if (xp >= 500) derived = 2;
 
-  return Math.max(Number(storedLevel || 1), derived);
-}
+    return Math.max(Number(storedLevel || 1), derived);
+  }
+
   function clampMoney(value) {
     return Math.max(0, Math.round(value));
+  }
+
+  function formatXpValue(value) {
+    const num = Number(value || 0);
+    if (Number.isInteger(num)) return String(num);
+    return num.toFixed(1).replace(/\.0$/, "");
   }
 
   function getCurrentFarmerXp() {
@@ -68,28 +76,24 @@ async function initFarmScreen() {
   }
 
   function getCurrentFarmerLevel() {
-  return getFarmerLevelByXp(getCurrentFarmerXp(), farmerLevel);
-}
+    return getFarmerLevelByXp(getCurrentFarmerXp(), farmerLevel);
+  }
 
   function getNetMoney() {
     return clampMoney(grossMoney - penaltyMoney);
   }
 
   function showMoneyToast(amount, type = "plus") {
-    const toast = document.createElement("div");
-    toast.className = `money-toast ${type}`;
-    toast.textContent = amount > 0 ? `+${amount} ₴` : `${amount} ₴`;
+    if (typeof window.showToast !== "function") return;
 
-    document.body.appendChild(toast);
+    const abs = Math.abs(Math.round(amount));
+    if (abs <= 0) return;
 
-    requestAnimationFrame(() => {
-      toast.classList.add("show");
-    });
-
-    setTimeout(() => {
-      toast.classList.remove("show");
-      setTimeout(() => toast.remove(), 260);
-    }, 1100);
+    if (type === "minus") {
+      window.showToast(`−${abs} ₴`, "error");
+    } else {
+      window.showToast(`+${abs} ₴`, "success");
+    }
   }
 
   async function loadFarmerProgress() {
@@ -97,7 +101,7 @@ async function initFarmScreen() {
     const localLevel = Number(localStorage.getItem("mn_farmer_level") || 1);
 
     totalFarmerXp = localXp;
-    farmerLevel = Math.max(localLevel, getFarmerLevelByXp(totalFarmerXp));
+    farmerLevel = getFarmerLevelByXp(totalFarmerXp, localLevel);
 
     try {
       if (window.loadPlayerSkills && window.MN_STATE.playerUuid) {
@@ -106,7 +110,10 @@ async function initFarmScreen() {
 
         if (farmerSkill) {
           totalFarmerXp = Math.max(totalFarmerXp, Number(farmerSkill.xp || 0));
-          farmerLevel = Math.max(farmerLevel, Number(farmerSkill.level || 1));
+          farmerLevel = getFarmerLevelByXp(
+            totalFarmerXp,
+            Number(farmerSkill.level || farmerLevel)
+          );
         }
       }
     } catch (error) {
@@ -121,24 +128,23 @@ async function initFarmScreen() {
     const currentLevel = getCurrentFarmerLevel();
     const currentReward = rewardByLevel(currentLevel);
     const currentFarmerXp = getCurrentFarmerXp();
-    const netMoney = getNetMoney();
 
     if (hitsEl) hitsEl.textContent = String(hits);
     if (mistakesEl) mistakesEl.textContent = String(mistakes);
 
-    if (grossMoneyEl) grossMoneyEl.textContent = `${grossMoney} ₴`;
-    if (penaltyEl) penaltyEl.textContent = `${penaltyMoney} ₴`;
-    if (netMoneyEl) netMoneyEl.textContent = `${netMoney} ₴`;
+    if (grossMoneyEl) grossMoneyEl.textContent = `${formatMoney(grossMoney)} ₴`;
+    if (penaltyEl) penaltyEl.textContent = `${formatMoney(penaltyMoney)} ₴`;
+    if (netMoneyEl) netMoneyEl.textContent = `${formatMoney(getNetMoney())} ₴`;
 
-    if (xpEl) xpEl.textContent = `${currentFarmerXp} / 10000 XP`;
+    if (xpEl) xpEl.textContent = `${formatXpValue(currentFarmerXp)} / 10000 XP`;
     if (levelEl) levelEl.textContent = `Ур. ${currentLevel}`;
     if (autoEl) autoEl.textContent = `${successChain} / 3`;
 
     const rewardMoneyEl = document.getElementById("farmRewardPerAction");
     const rewardXpEl = document.getElementById("farmXpPerAction");
 
-    if (rewardMoneyEl) rewardMoneyEl.textContent = `+${currentReward.money} ₴`;
-    if (rewardXpEl) rewardXpEl.textContent = `+${currentReward.xp} XP`;
+    if (rewardMoneyEl) rewardMoneyEl.textContent = `+${formatMoney(currentReward.money)} ₴`;
+    if (rewardXpEl) rewardXpEl.textContent = `+${formatXpValue(currentReward.xp)} XP`;
 
     if (progressFill) {
       progressFill.style.width = `${Math.min((currentFarmerXp / 10000) * 100, 100)}%`;
@@ -188,19 +194,19 @@ async function initFarmScreen() {
       return;
     }
 
-    window.MN_STATE.balance = Number(window.MN_STATE.balance || 0) + unsavedNetMoney;
-    window.MN_STATE.reputation = Number(window.MN_STATE.reputation || 0) + pendingReputation;
-    saveState();
-
-    totalFarmerXp += unsavedFarmerXp;
-    farmerLevel = getFarmerLevelByXp(totalFarmerXp);
-
-    localStorage.setItem("mn_farmer_xp", String(totalFarmerXp));
-    localStorage.setItem("mn_farmer_level", String(farmerLevel));
-
     const savedMoney = unsavedNetMoney;
     const savedXp = unsavedFarmerXp;
     const savedRep = pendingReputation;
+
+    window.MN_STATE.balance = Number(window.MN_STATE.balance || 0) + savedMoney;
+    window.MN_STATE.reputation = Number(window.MN_STATE.reputation || 0) + savedRep;
+    saveState();
+
+    totalFarmerXp += savedXp;
+    farmerLevel = getFarmerLevelByXp(totalFarmerXp, farmerLevel);
+
+    localStorage.setItem("mn_farmer_xp", String(totalFarmerXp));
+    localStorage.setItem("mn_farmer_level", String(farmerLevel));
 
     unsavedNetMoney = 0;
     unsavedFarmerXp = 0;
@@ -220,8 +226,6 @@ async function initFarmScreen() {
     if (savedMoney > 0) {
       showMoneyToast(savedMoney, "plus");
     }
-
-    console.log("Farm save:", { savedMoney, savedXp, savedRep });
   }
 
   function applyMistakePenalty() {
@@ -233,19 +237,15 @@ async function initFarmScreen() {
 
     if (errorChain === 1) {
       const penalty = Math.round(reward.money * 0.2);
-
       penaltyMoney += penalty;
       unsavedNetMoney = clampMoney(unsavedNetMoney - penalty);
       chainNetMoney = clampMoney(chainNetMoney - penalty);
-
       showMoneyToast(-penalty, "minus");
     } else if (errorChain === 2) {
       const penalty = Math.round(reward.money * 0.4);
-
       penaltyMoney += penalty;
       unsavedNetMoney = clampMoney(unsavedNetMoney - penalty);
       chainNetMoney = clampMoney(chainNetMoney - penalty);
-
       showMoneyToast(-penalty, "minus");
     } else if (errorChain >= 3) {
       const burned = chainNetMoney;
@@ -264,80 +264,32 @@ async function initFarmScreen() {
   }
 
   async function applyHarvestReward() {
-  const oldLevel = getCurrentFarmerLevel();
-  const currentReward = rewardByLevel(oldLevel);
+    const oldLevel = getCurrentFarmerLevel();
+    const currentReward = rewardByLevel(oldLevel);
 
-  hits += 1;
-  grossMoney += currentReward.money;
+    hits += 1;
+    grossMoney += currentReward.money;
 
-  unsavedNetMoney += currentReward.money;
-  chainNetMoney += currentReward.money;
-  unsavedFarmerXp += currentReward.xp;
+    unsavedNetMoney += currentReward.money;
+    chainNetMoney += currentReward.money;
+    unsavedFarmerXp += currentReward.xp;
 
-  const newLevel = getCurrentFarmerLevel();
+    const newLevel = getCurrentFarmerLevel();
 
-  if (newLevel > oldLevel) {
-    showToast(
-      `🎉 Навык Фермер повышен до ${newLevel} уровня!`,
-      "success"
-    );
+    if (newLevel > oldLevel && typeof window.showToast === "function") {
+      window.showToast(
+        `🎉 Навык Фермер повышен до ${newLevel} уровня!`,
+        "success"
+      );
+    }
+
+    successChain += 1;
+
+    if (successChain >= 3) {
+      pendingReputation += 1;
+      await saveProgress();
+    }
   }
-
-  successChain += 1;
-
-  if (successChain >= 3) {
-    pendingReputation += 1;
-    await saveProgress();
-  }
-}
-
-function spawn() {
-  if (!board) return;
-
-  board.innerHTML = "";
-
-  for (let i = 0; i < 9; i += 1) {
-    const item = document.createElement("button");
-    item.type = "button";
-    item.className = "farm-cell";
-
-    const bad = Math.random() < 0.25;
-    item.textContent = bad ? "🐛" : "🌾";
-
-    item.onclick = async () => {
-      if (bad) {
-        applyMistakePenalty();
-      } else {
-        await applyHarvestReward();
-      }
-
-      updateUI();
-      spawn();
-    };
-
-    board.appendChild(item);
-  }
-}
-
-if (backBtn) {
-  backBtn.onclick = async () => {
-    await saveProgress();
-    loadScreen("GL_Displays/work.html", initWorkScreen);
-  };
-}
-
-await loadFarmerProgress();
-updateUI();
-spawn();
-}
-
-  successChain += 1;
-
-  if (successChain >= 3) {
-    pendingReputation += 1;
-    await saveProgress();
-  }
-}
 
   function spawn() {
     if (!board) return;
@@ -377,4 +329,4 @@ spawn();
   await loadFarmerProgress();
   updateUI();
   spawn();
-        }
+  }
