@@ -348,11 +348,7 @@ async function initFarmSelectScreen() {
 }
 
 function initFarmRareScreen() {
-  const btn = document.getElementById("rareBackBtn");
-
-  if (btn) {
-    btn.onclick = () => {
-      loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
-    };
+  if (typeof window.initFarmRareGame === "function") {
+    window.initFarmRareGame();
   }
-    }
+}
