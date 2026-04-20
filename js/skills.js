@@ -44,6 +44,7 @@ function getSkillConfig(skillCode, xp = 0, storedLevel = 1) {
       progressPercent
     };
   }
+
   if (skillCode === "miner") {
     const levels = [
       { level: 1, minXp: 0, reward: 2, actionXp: 0.4, nextXp: 500 },
@@ -88,24 +89,10 @@ function getSkillConfig(skillCode, xp = 0, storedLevel = 1) {
       nextXp: nextLevel ? nextLevel.minXp : maxXp,
       progressPercent
     };
-      }
-          
+  }
 
-  return {
-    code: skillCode,
-    title: skillCode,
-    icon: "📘",
-    description: "Навык без описания.",
-    level: Number(storedLevel || 1),
-    xp: xp || 0,
-    maxXp: 10000,
-    reward: 0,
-    actionXp: 0,
-    nextXp: 10000,
-    progressPercent: 0
-  };
+  return null;
 }
-
 
 function formatSkillXp(value) {
   const num = Number(value || 0);
@@ -121,7 +108,19 @@ function renderSkillsList(skills) {
   const container = document.getElementById("skillsList");
   if (!container) return;
 
-  if (!skills || !skills.length) {
+  const validSkills = (skills || [])
+    .map((skill) => {
+      const config = getSkillConfig(
+        skill.skill_code,
+        Number(skill.xp || 0),
+        Number(skill.level || 1)
+      );
+
+      return config;
+    })
+    .filter(Boolean);
+
+  if (!validSkills.length) {
     container.innerHTML = `
       <div class="profile-main-card">
         <p class="eyebrow">ПУСТО</p>
@@ -135,13 +134,7 @@ function renderSkillsList(skills) {
     return;
   }
 
-  container.innerHTML = skills.map((skill) => {
-    const config = getSkillConfig(
-      skill.skill_code,
-      Number(skill.xp || 0),
-      Number(skill.level || 1)
-    );
-
+  container.innerHTML = validSkills.map((config) => {
     return `
       <div class="skill-card">
         <div class="skill-card-top">
