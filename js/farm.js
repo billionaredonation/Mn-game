@@ -14,6 +14,7 @@ async function initFarmScreen() {
 
   const errorChainTextEl = document.getElementById("farmErrorChainText");
   const errorChainFillEl = document.getElementById("farmErrorChainFill");
+  const autosaveFillEl = document.getElementById("farmAutosaveVisualFill");
 
   let hits = 0;
   let mistakes = 0;
@@ -128,6 +129,10 @@ async function initFarmScreen() {
     const currentLevel = getCurrentFarmerLevel();
     const currentReward = rewardByLevel(currentLevel);
     const currentFarmerXp = getCurrentFarmerXp();
+    
+    if (autosaveFillEl) {
+     autosaveFillEl.style.width = `${(successChain / 3) * 100}%`;
+    }
 
     if (hitsEl) hitsEl.textContent = String(hits);
     if (mistakesEl) mistakesEl.textContent = String(mistakes);
