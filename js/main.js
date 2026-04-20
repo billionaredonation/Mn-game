@@ -118,15 +118,7 @@ function initWorkScreen() {
   }
 }
 
-function initMineScreen() {
-  const backBtn = document.getElementById("mineBackBtn");
 
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      loadScreen("GL_Displays/work.html", initWorkScreen);
-    });
-  }
-}
 
 function initProfileScreen() {
   const city = getCityById(window.MN_STATE.cityId);
