@@ -466,39 +466,50 @@ window.initFarmRareGame = async function () {
     localStorage.setItem("mn_farmer_level", String(farmerLevel));
   }
 
-  function updateUI() {
-    const currentLevel = getCurrentFarmerLevel();
-    const currentReward = rewardByLevel(currentLevel);
-    const currentFarmerXp = getCurrentFarmerXp();
+function updateUI() {
+  const currentLevel = getCurrentFarmerLevel();
+  const currentReward = rewardByLevel(currentLevel);
+  const currentFarmerXp = getCurrentFarmerXp();
 
-    if (hitsEl) hitsEl.textContent = String(hits);
-    if (mistakesEl) mistakesEl.textContent = String(mistakes);
+  if (hitsEl) hitsEl.textContent = String(hits);
+  if (mistakesEl) mistakesEl.textContent = String(mistakes);
 
-    if (grossMoneyEl) grossMoneyEl.textContent = `${formatMoney(grossMoney)} ₴`;
-    if (penaltyEl) penaltyEl.textContent = `${formatMoney(penaltyMoney)} ₴`;
-    if (netMoneyEl) netMoneyEl.textContent = `${formatMoney(getNetMoney())} ₴`;
+  if (grossMoneyEl) grossMoneyEl.textContent = `${formatMoney(grossMoney)} ₴`;
+  if (penaltyEl) penaltyEl.textContent = `${formatMoney(penaltyMoney)} ₴`;
+  if (netMoneyEl) netMoneyEl.textContent = `${formatMoney(getNetMoney())} ₴`;
 
-    if (xpEl) xpEl.textContent = `${formatXpValue(currentFarmerXp)} / 10000 XP`;
-    if (levelEl) levelEl.textContent = `Ур. ${currentLevel}`;
-    if (autoEl) autoEl.textContent = `${successChain} / 3`;
-    if (autosaveFillEl) {
-     autosaveFillEl.style.width = `${(successChain / 3) * 100}%`;
-    }
+  if (xpEl) xpEl.textContent = `${formatXpValue(currentFarmerXp)} / 10000 XP`;
+  if (levelEl) levelEl.textContent = `Ур. ${currentLevel}`;
+  if (autoEl) autoEl.textContent = `${successChain} / 3`;
 
-    const rewardMoneyEl = document.getElementById("farmRewardPerAction");
-    const rewardXpEl = document.getElementById("farmXpPerAction");
-
-    if (rewardMoneyEl) rewardMoneyEl.textContent = `+${formatMoney(currentReward.money)} ₴`;
-    if (rewardXpEl) rewardXpEl.textContent = `+${formatXpValue(currentReward.xp)} XP`;
-
-    if (progressFill) {
-      progressFill.style.width = `${Math.min((currentFarmerXp / 10000) * 100, 100)}%`;
-    }
-
-    if (errorChainTextEl) errorChainTextEl.textContent = `${errorChain} / 3`;
-    if (errorChainFillEl) errorChainFillEl.style.width = `${(errorChain / 3) * 100}%`;
+  if (autosaveFillEl) {
+    autosaveFillEl.style.width = `${(successChain / 3) * 100}%`;
   }
 
+  const rewardMoneyEl = document.getElementById("farmRewardPerAction");
+  const rewardXpEl = document.getElementById("farmXpPerAction");
+
+  if (rewardMoneyEl) {
+    rewardMoneyEl.textContent = `+${formatMoney(currentReward.money)} ₴`;
+  }
+
+  if (rewardXpEl) {
+    rewardXpEl.textContent = `+${formatXpValue(currentReward.xp)} XP`;
+  }
+
+  if (progressFill) {
+    progressFill.style.width =
+      `${Math.min((currentFarmerXp / 10000) * 100, 100)}%`;
+  }
+
+  if (errorChainTextEl) {
+    errorChainTextEl.textContent = `${errorChain} / 3`;
+  }
+
+  if (errorChainFillEl) {
+    errorChainFillEl.style.width = `${(errorChain / 3) * 100}%`;
+  }
+}
   async function syncToDatabase(newBalance, newReputation, newFarmerXp, newFarmerLevel) {
     if (!window.sb || !window.MN_STATE.playerUuid) return;
 
