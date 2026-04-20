@@ -60,6 +60,52 @@ function getSkillConfig(skillCode, xp = 0, storedLevel = 1) {
   };
 }
 
+if (skillCode === "miner") {
+    const levels = [
+      { level: 1, minXp: 0, reward: 2, actionXp: 0.4, nextXp: 500 },
+      { level: 2, minXp: 500, reward: 3, actionXp: 0.5, nextXp: 1000 },
+      { level: 3, minXp: 1000, reward: 10, actionXp: 1.5, nextXp: 2000 },
+      { level: 4, minXp: 2000, reward: 15, actionXp: 1.7, nextXp: 2500 },
+      { level: 5, minXp: 2500, reward: 18, actionXp: 2.0, nextXp: 3500 },
+      { level: 6, minXp: 3500, reward: 22, actionXp: 2.3, nextXp: 5000 },
+      { level: 7, minXp: 5000, reward: 28, actionXp: 2.7, nextXp: 7000 },
+      { level: 8, minXp: 7000, reward: 35, actionXp: 3.2, nextXp: 8500 },
+      { level: 9, minXp: 8500, reward: 45, actionXp: 3.8, nextXp: 10000 },
+      { level: 10, minXp: 10000, reward: 60, actionXp: 4.5, nextXp: 10000 }
+    ];
+
+    let derived = levels[0];
+
+    for (const lvl of levels) {
+      if (xp >= lvl.minXp) {
+        derived = lvl;
+      }
+    }
+
+    const realLevel = Math.max(Number(storedLevel || 1), derived.level);
+    const current = levels.find((lvl) => lvl.level === realLevel) || derived;
+    const nextLevel = levels.find((lvl) => lvl.level === realLevel + 1) || null;
+    const maxXp = 10000;
+
+    const progressPercent = realLevel >= 10
+      ? 100
+      : Math.min(Math.round((xp / maxXp) * 100), 100);
+
+    return {
+      code: "miner",
+      title: "Шахтёр",
+      icon: "⛏️",
+      description: "Добыча земли, песка, камня и металла в шахте.",
+      level: realLevel,
+      xp,
+      maxXp,
+      reward: current.reward,
+      actionXp: current.actionXp,
+      nextXp: nextLevel ? nextLevel.minXp : maxXp,
+      progressPercent
+    };
+}
+
 function formatSkillXp(value) {
   const num = Number(value || 0);
 
