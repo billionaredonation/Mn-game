@@ -363,3 +363,5 @@ async function initMineScreen() {
     alert("Mine error: " + e.message);
   }
 }
+
+window.initMineScreen = initMineScreen;
