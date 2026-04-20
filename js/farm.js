@@ -466,7 +466,7 @@ window.initFarmRareGame = async function () {
     localStorage.setItem("mn_farmer_level", String(farmerLevel));
   }
 
-function updateUI() {
+ function updateUI() {
   const currentLevel = getCurrentFarmerLevel();
   const currentReward = rewardByLevel(currentLevel);
   const currentFarmerXp = getCurrentFarmerXp();
