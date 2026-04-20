@@ -130,9 +130,11 @@ async function initFarmScreen() {
     const currentReward = rewardByLevel(currentLevel);
     const currentFarmerXp = getCurrentFarmerXp();
     
+    if (autoEl) autoEl.textContent = `${successChain} / 3`;
+
     if (autosaveFillEl) {
      autosaveFillEl.style.width = `${(successChain / 3) * 100}%`;
-    }
+  }
 
     if (hitsEl) hitsEl.textContent = String(hits);
     if (mistakesEl) mistakesEl.textContent = String(mistakes);
