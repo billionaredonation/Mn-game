@@ -1,24 +1,72 @@
-<section class="screen-card skills-screen">
-  <div class="profile-head">
-    <div class="profile-avatar">⛏️</div>
-
-    <div class="profile-head-info">
+<section class="screen-card farm-screen">
+  <div class="farm-top">
+    <div class="farm-head-text">
       <p class="eyebrow">ШАХТА</p>
-      <h2>Шахта</h2>
-      <p class="subtext">Этот раздел пока в разработке.</p>
+      <h2>Добыча ресурсов</h2>
+      <p class="subtext">Земля и песок рискованные. Камень и металл стабильнее.</p>
     </div>
   </div>
 
-  <div class="profile-main-card">
-    <div class="empty-state">
-      <div class="empty-state-icon">🪨</div>
-      <h3>Шахта скоро появится</h3>
-      <p>
-        Здесь будет добыча руды, развитие навыка шахтёра,
-        редкие ресурсы и отдельная механика работы.
-      </p>
+  <div class="farm-progress-card">
+    <div class="farm-progress-top">
+      <strong class="farm-profession-title">
+        Шахтёр <span id="mineLevelChip">Ур. 1</span>
+      </strong>
+      <span class="farm-progress-text" id="mineXpValue">0 / 10000 XP</span>
+    </div>
+
+    <div class="farm-progress-bar">
+      <div class="farm-progress-fill" id="mineProgressFill" style="width: 0%;"></div>
     </div>
   </div>
 
-  <button class="primary-btn" id="mineBackBtn">Назад</button>
+  <div class="farm-mini-stats">
+    <div class="farm-mini-item">
+      <span>Добыто</span>
+      <strong id="mineHitsValue">0</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Ошибки</span>
+      <strong id="mineMistakesValue">0</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Вал</span>
+      <strong id="mineGrossMoneyValue">0 ₴</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Штраф</span>
+      <strong id="minePenaltyValue">0 ₴</strong>
+    </div>
+
+    <div class="farm-mini-item">
+      <span>Итого</span>
+      <strong id="mineNetMoneyValue">0 ₴</strong>
+    </div>
+  </div>
+
+  <div class="farm-penalty-card">
+    <div class="farm-penalty-top">
+      <span class="farm-penalty-label">Автосейв</span>
+      <strong class="farm-penalty-value" id="mineAutosaveInfo">0 / 3</strong>
+    </div>
+
+    <div class="farm-penalty-bar">
+      <div class="farm-penalty-fill" id="mineAutosaveFill" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <div class="farm-board" id="mineBoard"></div>
+
+  <div class="farm-bottom-info">
+    <span id="mineRewardInfo">Земля +2 ₴</span>
+    <span id="mineXpInfo">Металл +1.7 XP</span>
+    <span>Песок: шанс обвала</span>
+  </div>
+
+  <div class="farm-controls">
+    <button class="primary-btn" id="mineBackBtn">Назад</button>
+  </div>
 </section>
