@@ -481,6 +481,9 @@ window.initFarmRareGame = async function () {
     if (xpEl) xpEl.textContent = `${formatXpValue(currentFarmerXp)} / 10000 XP`;
     if (levelEl) levelEl.textContent = `Ур. ${currentLevel}`;
     if (autoEl) autoEl.textContent = `${successChain} / 3`;
+    if (autosaveFillEl) {
+     autosaveFillEl.style.width = `${(successChain / 3) * 100}%`;
+    }
 
     const rewardMoneyEl = document.getElementById("farmRewardPerAction");
     const rewardXpEl = document.getElementById("farmXpPerAction");
