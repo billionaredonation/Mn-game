@@ -1416,9 +1416,11 @@ canvas {
 
 .mine-progress-fill,
 .mine-save-fill {
+  width: 0%;
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, rgba(255, 158, 84, 0.95), rgba(255, 210, 120, 0.95));
+  transition: width 0.25s ease;
 }
 
 .mine-stats-grid {
