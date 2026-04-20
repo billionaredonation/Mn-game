@@ -356,9 +356,10 @@ async function initMineScreen() {
   }
 
   try {
-  await loadMinerProgress();
-  updateUI();
-  spawn();
-} catch (e) {
-  alert("Mine error: " + e.message);
+    await loadMinerProgress();
+    updateUI();
+    spawn();
+  } catch (e) {
+    alert("Mine error: " + e.message);
+  }
 }
