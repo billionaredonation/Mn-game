@@ -356,6 +356,7 @@ window.initFarmRareGame = async function () {
 
   const errorChainTextEl = document.getElementById("farmErrorChainText");
   const errorChainFillEl = document.getElementById("farmErrorChainFill");
+  const autosaveFillEl = document.getElementById("farmAutosaveVisualFill");
 
   let hits = 0;
   let mistakes = 0;
