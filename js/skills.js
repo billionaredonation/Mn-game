@@ -44,23 +44,7 @@ function getSkillConfig(skillCode, xp = 0, storedLevel = 1) {
       progressPercent
     };
   }
-
-  return {
-    code: skillCode,
-    title: skillCode,
-    icon: "📘",
-    description: "Навык без описания.",
-    level: Number(storedLevel || 1),
-    xp: xp || 0,
-    maxXp: 10000,
-    reward: 0,
-    actionXp: 0,
-    nextXp: 10000,
-    progressPercent: 0
-  };
-}
-
-if (skillCode === "miner") {
+  if (skillCode === "miner") {
     const levels = [
       { level: 1, minXp: 0, reward: 2, actionXp: 0.4, nextXp: 500 },
       { level: 2, minXp: 500, reward: 3, actionXp: 0.5, nextXp: 1000 },
@@ -104,7 +88,24 @@ if (skillCode === "miner") {
       nextXp: nextLevel ? nextLevel.minXp : maxXp,
       progressPercent
     };
+      }
+          
+
+  return {
+    code: skillCode,
+    title: skillCode,
+    icon: "📘",
+    description: "Навык без описания.",
+    level: Number(storedLevel || 1),
+    xp: xp || 0,
+    maxXp: 10000,
+    reward: 0,
+    actionXp: 0,
+    nextXp: 10000,
+    progressPercent: 0
+  };
 }
+
 
 function formatSkillXp(value) {
   const num = Number(value || 0);
