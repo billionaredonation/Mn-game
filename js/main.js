@@ -84,40 +84,19 @@ function initWorkScreen() {
   const backBtn = document.getElementById("workBackBtn");
 
   const playerNameEl = document.getElementById("workPlayerName");
-  const playerIdEl = document.getElementById("workPlayerId");
-  const balanceEl = document.getElementById("workPlayerBalance");
+  const playerIdEl   = document.getElementById("workPlayerId");
+  const balanceEl    = document.getElementById("workPlayerBalance");
 
-  if (playerNameEl) {
-    playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
-  }
+  if (playerNameEl) playerNameEl.textContent = window.MN_STATE.nickname || "Игрок";
+  if (playerIdEl)   playerIdEl.textContent   = `ID ${window.MN_STATE.playerId || "—"}`;
+  if (balanceEl)    balanceEl.textContent    = `${formatMoney(window.MN_STATE.balance || 0)} ₴`;
 
-  if (playerIdEl) {
-    playerIdEl.textContent = `ID ${window.MN_STATE.playerId || "—"}`;
-  }
-
-  if (balanceEl) {
-    balanceEl.textContent = `${formatMoney(window.MN_STATE.balance || 0)} ₴`;
-  }
-
+  /* --- ферма ------------------------------------------------------ */
   if (farmBtn) {
     farmBtn.addEventListener("click", () => {
       loadScreen("GL_Displays/farm-select.html", initFarmSelectScreen);
     });
   }
-
-  if (mineBtn) {
-    mineBtn.addEventListener("click", () => {
-      loadScreen("GL_Displays/mine.html", initMineScreen);
-    });
-  }
-
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      loadScreen("GL_Displays/main-home.html", initMainHome);
-    });
-  }
-}
-
 
 
 function initProfileScreen() {
