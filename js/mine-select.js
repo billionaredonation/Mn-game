@@ -4,22 +4,23 @@ import { toast }    from './common.js';
 const tgId = Telegram.WebApp.initDataUnsafe.user.id;
 
 (async () => {
-  const { data: p } = await supabase
+  /* узнаём уровень шахтёра */
+  const { data:p } = await supabase
       .from('players')
       .select('miner_lvl')
       .eq('tg_id', tgId)
       .single();
 
-  const r   = document.getElementById('btn-rare');
-  const n   = document.getElementById('btn-normal');
+  const normalBtn = document.getElementById('btn-normal');
+  const rareBtn   = document.getElementById('btn-rare');
 
-  if (p.miner_lvl >= 4) r.classList.remove('locked');
+  /* открываем редкую, если lvl ≥ 4 */
+  if (p.miner_lvl >= 4) rareBtn.classList.remove('locked');
 
-  n.onclick = () => location.href = 'mine.html?type=normal';
-  r.onclick = () => {
-      if (p.miner_lvl < 4)
-        toast('Редкая шахта открывается на 4-м уровне');
-      else
-        location.href = 'mine.html?type=rare';
+  /* маршруты */
+  normalBtn.onclick = () => location.href = 'mine.html';               // старая шахта
+  rareBtn.onclick   = () => {
+    if (p.miner_lvl < 4) { toast('Редкая откроется на 4-м уровне'); }
+    else { location.href = 'GL_Displays/mine-rare.html'; }             // новая шахта
   };
 })();
