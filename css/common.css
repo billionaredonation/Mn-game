@@ -257,3 +257,23 @@ h2 {
     transform: translateY(0);
   }
 }
+
+
+.mine-wrapper{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin:12px 0;
+}
+.mine-card{
+  width:140px;
+  text-align:center;
+  border:1px solid #555;
+  border-radius:8px;
+  padding:6px;
+  cursor:pointer;
+  transition:.2s;
+}
+.mine-card:hover{ transform:scale(1.07); }
+.mine-card.locked{ opacity:.35; cursor:not-allowed; }
