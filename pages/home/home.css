@@ -1,0 +1,20 @@
+.home {
+  background: #1d1f21;
+  color: #ffffff;
+}
+
+.home h2 {
+  max-width: 360px;
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.home p {
+  max-width: 340px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #c9c9c9;
+}
