@@ -1,7 +1,7 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 
-const MAP_IMG = './UkraineMap.png';
+const MAP_IMG = './UkraineMap.png?v=3';
 
 const CITY_POINTS = [
   { id: 'lviv',          name: 'Львов',       x: 18, y: 35 },
