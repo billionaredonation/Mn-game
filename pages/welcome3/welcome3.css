@@ -1,5 +1,28 @@
-.map-wrapper{
-  width:90vw; max-width:480px; margin:16px auto;
-  border:2px solid #555; border-radius:8px; overflow:hidden;
+.welcome3 {
+  background: #1d1f21;
+  color: #ffffff;
 }
-.map-wrapper img{ width:100%; display:block; cursor:crosshair; }
+
+.welcome3 h2 {
+  margin: 0 0 14px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.map-wrapper {
+  width: 92vw;
+  max-width: 520px;
+  margin: 12px auto 0;
+  border: 2px solid #3a3d42;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #111;
+}
+
+.map-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  user-select: none;
+}
