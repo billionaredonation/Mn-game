@@ -2,30 +2,27 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>City RP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>City RP MVP</title>
 
-  <!-- обязательный SDK -->
+  <!-- Telegram Web-App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="styles.css" />
+
+  <!-- базовые цвета/кнопки -->
+  <link rel="stylesheet" href="styles/base.css" />
+
+  <!-- page-scoped стили -->
+  <link rel="stylesheet" href="pages/welcome1/welcome1.css" />
+  <link rel="stylesheet" href="pages/welcome2/welcome2.css" />
+  <link rel="stylesheet" href="pages/welcome3/welcome3.css" />
+  <link rel="stylesheet" href="pages/home/home.css" />
 </head>
+
 <body>
-  <section id="start" class="screen">
-    <h1>Привет, новичок!</h1>
-    <p>Залетай играть 😉</p>
-    <button id="btnStart" class="btn">Играть</button>
-  </section>
+  <!-- сюда будут рендериться страницы -->
+  <div id="app"></div>
 
-  <section id="nickname" class="screen hidden">
-    <h2>Выбери ник</h2>
-    <input id="nickInput" maxlength="16" placeholder="Ваш ник" />
-    <button id="btnNick" class="btn">Далее</button>
-  </section>
-
-  <section id="map" class="screen hidden">
-    <h2>Карта появится на следующем шаге…</h2>
-  </section>
-
-  <script src="app.js" type="module"></script>
+  <!-- ядро -->
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>
