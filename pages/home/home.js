@@ -6,9 +6,25 @@ register('home', (root) => {
 
   root.innerHTML = `
     <h2>Добро пожаловать, ${state.nickname || 'игрок'} из ${state.city || 'города'}!</h2>
+
     <p>Главный экран MVP — тут позже появятся иконки.</p>
 
-    <button class="btn" id="resetBtn">Сбросить прогресс</button>
+    <button 
+      id="resetBtn"
+      style="
+        margin-top: 30px;
+        padding: 14px 24px;
+        border: none;
+        border-radius: 12px;
+        background: #dc2626;
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+      "
+    >
+      Сбросить прогресс
+    </button>
   `;
 
   root.querySelector('#resetBtn').onclick = () => {
