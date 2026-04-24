@@ -1,0 +1,5 @@
+.map-wrapper{
+  width:90vw; max-width:480px; margin:16px auto;
+  border:2px solid #555; border-radius:8px; overflow:hidden;
+}
+.map-wrapper img{ width:100%; display:block; cursor:crosshair; }
