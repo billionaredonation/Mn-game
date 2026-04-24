@@ -1,16 +1,17 @@
-import { show }           from './router.js';
-import './router.js';      // создаёт screens коллекцию
-import './state.js';
+import { show } from './router.js?v=3';
+import { state } from './state.js?v=3';
 
-// страницы-регистрации
-import '../pages/welcome1/welcome1.js';
-import '../pages/welcome2/welcome2.js';
-import '../pages/welcome3/welcome3.js';
-import '../pages/home/home.js';
+import '../pages/welcome1/welcome1.js?v=3';
+import '../pages/welcome2/welcome2.js?v=3';
+import '../pages/welcome3/welcome3.js?v=3';
+import '../pages/home/home.js?v=3';
 
-// раскрываем web-view
 window.Telegram?.WebApp?.expand();
 
-// определяем стартовый экран
-import { state } from './state.js';
-show(state.nickname ? (state.city ? 'home' : 'welcome3') : 'welcome1');
+if (!state.nickname) {
+  show('welcome1');
+} else if (!state.city) {
+  show('welcome3');
+} else {
+  show('home');
+}
