@@ -3,27 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My City RP</title>
+  <title>City RP</title>
+
+  <!-- обязательный SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Экран 0: приветствие -->
   <section id="start" class="screen">
     <h1>Привет, новичок!</h1>
     <p>Залетай играть 😉</p>
     <button id="btnStart" class="btn">Играть</button>
   </section>
 
-  <!-- Экран 1: выбор ника -->
   <section id="nickname" class="screen hidden">
     <h2>Выбери ник</h2>
     <input id="nickInput" maxlength="16" placeholder="Ваш ник" />
     <button id="btnNick" class="btn">Далее</button>
   </section>
 
-  <!-- Экран 2: заглушка для карты (появится на шаге 2) -->
   <section id="map" class="screen hidden">
-    <h2>Карта загрузится позже…</h2>
+    <h2>Карта появится на следующем шаге…</h2>
   </section>
 
   <script src="app.js" type="module"></script>
