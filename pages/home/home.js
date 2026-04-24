@@ -4,9 +4,10 @@ import { state } from '../../src/state.js';
 register('home', (root) => {
   root.className = 'page home';
 
-  root.innerHTML = `
-    <h2>Добро пожаловать, ${state.nickname || 'игрок'} из ${state.city || 'города'}!</h2>
+  const cityLabel = state.cityName || state.city || 'города';
 
+  root.innerHTML = `
+    <h2>Добро пожаловать, ${state.nickname || 'игрок'} из ${cityLabel}!</h2>
     <p>Главный экран MVP — тут позже появятся иконки.</p>
 
     <button 
@@ -32,6 +33,7 @@ register('home', (root) => {
 
     state.nickname = null;
     state.city = null;
+    state.cityName = null;
 
     show('welcome1');
   };
