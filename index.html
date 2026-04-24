@@ -2,40 +2,30 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
-  <meta name="theme-color" content="#0b1020" />
-
-  <title>MN Game</title>
-
-  <link rel="stylesheet" href="css/common.css?v=26" />
-  <link rel="stylesheet" href="css/welcome.css?v=26" />
-  <link rel="stylesheet" href="css/main.css?v=28" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My City RP</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
-  <div class="app-shell">
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
+  <!-- Экран 0: приветствие -->
+  <section id="start" class="screen">
+    <h1>Привет, новичок!</h1>
+    <p>Залетай играть 😉</p>
+    <button id="btnStart" class="btn">Играть</button>
+  </section>
 
-    <header class="topbar">
-      <div class="logo">MN</div>
-    </header>
+  <!-- Экран 1: выбор ника -->
+  <section id="nickname" class="screen hidden">
+    <h2>Выбери ник</h2>
+    <input id="nickInput" maxlength="16" placeholder="Ваш ник" />
+    <button id="btnNick" class="btn">Далее</button>
+  </section>
 
-    <main id="app"></main>
-  </div>
+  <!-- Экран 2: заглушка для карты (появится на шаге 2) -->
+  <section id="map" class="screen hidden">
+    <h2>Карта загрузится позже…</h2>
+  </section>
 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="js/common.js?v=26"></script>
-  <script src="js/supabase.js?v=26"></script>
-  <script src="js/skills.js?v=28"></script>
-  <script src="js/farm.js?v=30"></script>
-  <script src="js/mine.js?v=28"></script>
-  <script src="js/main.js?v=29"></script>
-  <script src="js/welcome.js?v=26"></script>
+  <script src="app.js" type="module"></script>
 </body>
 </html>
