@@ -26,3 +26,13 @@
   cursor: pointer;
   user-select: none;
 }
+
+.selected-city-text {
+  margin: 14px 0 0;
+  font-size: 15px;
+  color: #c9c9c9;
+}
+
+#nextBtn.active {
+  background: #16a34a;
+}
