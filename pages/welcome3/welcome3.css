@@ -35,37 +35,70 @@
   pointer-events: none;
 }
 
-.regions-svg {
+.regions-layer {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
   z-index: 3;
 }
 
-.region-polygon {
-  fill: transparent;
-  stroke: transparent;
-  stroke-width: 0.5;
-  cursor: pointer;
+.ukraine-regions-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ukraine-region {
+  fill: transparent !important;
+  stroke: rgba(255, 255, 255, 0.3) !important;
+  stroke-width: 0.8 !important;
+  cursor: default;
   transition:
     fill 0.16s ease,
     stroke 0.16s ease,
     filter 0.16s ease;
 }
 
-.region-polygon:hover,
-.region-polygon:focus {
-  fill: rgba(160, 160, 160, 0.42);
-  stroke: rgba(230, 230, 230, 0.9);
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35));
+.ukraine-region.is-selectable {
+  cursor: pointer;
+}
+
+.ukraine-region.is-selectable:hover,
+.ukraine-region.is-selectable:focus {
+  fill: rgba(170, 170, 170, 0.42) !important;
+  stroke: rgba(255, 255, 255, 0.95) !important;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.38));
   outline: none;
 }
 
-.region-polygon.is-selected {
-  fill: rgba(34, 197, 94, 0.48);
-  stroke: rgba(120, 255, 170, 0.95);
-  filter: drop-shadow(0 0 6px rgba(34, 197, 94, 0.65));
+.ukraine-region.is-selectable.is-selected {
+  fill: rgba(34, 197, 94, 0.5) !important;
+  stroke: rgba(120, 255, 170, 0.95) !important;
+  filter: drop-shadow(0 0 7px rgba(34, 197, 94, 0.75));
+}
+
+.ukraine-region.is-disabled {
+  pointer-events: none;
+}
+
+.regions-loading,
+.regions-error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max-content;
+  max-width: 80%;
+  transform: translate(-50%, -50%);
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.regions-error {
+  background: rgba(153, 27, 27, 0.92);
 }
 
 .city-selection-box {
@@ -109,5 +142,9 @@
 
   .city-selection-text {
     font-size: 14px;
+  }
+
+  .ukraine-region {
+    stroke-width: 1.1 !important;
   }
 }
