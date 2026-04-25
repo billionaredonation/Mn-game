@@ -36,6 +36,12 @@ const REGION_DATA = {
 register('welcome3', (root) => {
   root.className = 'page welcome3';
 
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
+
+  document.documentElement.classList.toggle('is-mobile', isMobile);
+  document.documentElement.classList.toggle('low-performance', Boolean(lowMemory));
+
   root.innerHTML = `
     <div class="welcome3-loader" id="welcome3Loader">
       <div class="loader-logo">MN</div>
@@ -77,7 +83,9 @@ register('welcome3', (root) => {
       <div class="map-modal-header">
         <div>
           <h3>Выбор стартового города</h3>
-          <p id="modalHint">Двигай карту, приближай двумя пальцами и выбери область</p>
+          <p id="modalHint">
+            ПК: двигай карту правой кнопкой мыши. Телефон: двигай пальцем, приближай двумя пальцами.
+          </p>
         </div>
 
         <button class="map-modal-close" id="closeMapBtn" type="button">×</button>
@@ -148,6 +156,8 @@ register('welcome3', (root) => {
     baseScale: 1,
     baseRotate: 0
   };
+
+  let transformFrame = null;
 
   function makeRegionInfo(regionId) {
     const regionData = REGION_DATA[regionId];
@@ -273,11 +283,17 @@ register('welcome3', (root) => {
   }
 
   function applyTransform() {
-    fullMapContent.style.transform = `
-      translate3d(${view.x}px, ${view.y}px, 0)
-      scale(${view.scale})
-      rotate(${view.rotate}deg)
-    `;
+    if (transformFrame) return;
+
+    transformFrame = requestAnimationFrame(() => {
+      fullMapContent.style.transform = `
+        translate3d(${view.x}px, ${view.y}px, 0)
+        scale(${view.scale})
+        rotate(${view.rotate}deg)
+      `;
+
+      transformFrame = null;
+    });
   }
 
   function resetTransform() {
@@ -327,6 +343,25 @@ register('welcome3', (root) => {
   }
 
   function onPointerDown(event) {
+    const isMouse = event.pointerType === 'mouse';
+
+    /*
+      ПК:
+      - левая кнопка выбирает область
+      - правая кнопка двигает карту
+
+      Телефон:
+      - один палец двигает карту
+      - два пальца приближают/отдаляют и чуть крутят
+    */
+    if (isMouse && event.button !== 2) {
+      return;
+    }
+
+    if (isMouse) {
+      event.preventDefault();
+    }
+
     pointers.set(event.pointerId, {
       clientX: event.clientX,
       clientY: event.clientY
@@ -548,6 +583,10 @@ register('welcome3', (root) => {
     }
 
     show('home');
+  });
+
+  fullMapViewport.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
   });
 
   fullMapViewport.addEventListener('pointerdown', onPointerDown);
