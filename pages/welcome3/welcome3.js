@@ -133,7 +133,6 @@ register('welcome3', (root) => {
 
   let visualFrame = null;
   let transformFrame = null;
-  let suppressNextClick = false;
 
   const view = {
     x: 0,
@@ -436,14 +435,6 @@ register('welcome3', (root) => {
   }
 
   function onPointerUp(event) {
-    if (gesture.moved) {
-      suppressNextClick = true;
-
-      setTimeout(() => {
-        suppressNextClick = false;
-      }, 250);
-    }
-
     pointers.delete(event.pointerId);
 
     if (pointers.size === 1) {
@@ -500,6 +491,13 @@ register('welcome3', (root) => {
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
 
+    /*
+      ВАЖНО:
+      SVG path с прозрачной заливкой на некоторых браузерах может плохо ловить клик.
+      Поэтому принудительно включаем обработку событий всей формы.
+    */
+    path.style.pointerEvents = 'all';
+
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
       selectedRegion = regionInfo;
     }
@@ -515,21 +513,41 @@ register('welcome3', (root) => {
       path.addEventListener('focus', () => previewRegion(regionInfo));
       path.addEventListener('blur', resetPreview);
 
-      path.addEventListener('click', (event) => {
+      path.addEventListener('pointerdown', (event) => {
+        /*
+          ПК:
+          левая кнопка по области — это выбор, не движение карты.
+          правая кнопка должна всплывать выше и двигать карту.
+        */
+        if (event.pointerType === 'mouse' && event.button === 0) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
+
+      path.addEventListener('pointerup', (event) => {
+        const isMouseLeft = event.pointerType === 'mouse' && event.button === 0;
+        const isTouchTap = event.pointerType !== 'mouse' && !gesture.moved;
+
+        if (!isMouseLeft && !isTouchTap) return;
+
         event.preventDefault();
         event.stopPropagation();
-
-        if (suppressNextClick) return;
 
         choosePendingRegion(regionInfo);
       });
 
-      path.addEventListener('pointerup', (event) => {
-        if (event.pointerType !== 'mouse' && !gesture.moved && !suppressNextClick) {
-          event.preventDefault();
-          event.stopPropagation();
-          choosePendingRegion(regionInfo);
-        }
+      path.addEventListener('click', (event) => {
+        /*
+          Дубль для браузеров, которые стабильно отдают click,
+          но без конфликтов с drag.
+        */
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (event.detail === 0) return;
+
+        choosePendingRegion(regionInfo);
       });
 
       path.addEventListener('keydown', (event) => {
