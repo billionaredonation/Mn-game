@@ -117,10 +117,10 @@
 */
 .compact-map-shell,
 .full-map-inner {
-  --ua-svg-x: -1.2%;
-  --ua-svg-y: 1.7%;
-  --ua-svg-scale-x: 0.972;
-  --ua-svg-scale-y: 0.972;
+  --ua-svg-x: -3.0%;
+  --ua-svg-y: 1.2%;
+  --ua-svg-scale-x: 0.955;
+  --ua-svg-scale-y: 0.955;
 }
 
 .compact-map-shell {
