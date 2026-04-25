@@ -2,7 +2,7 @@ import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 
 const MAP_IMG = './UkraineMap.png?v=8';
-const REGIONS_SVG = './ua.svg?v=2';
+const REGIONS_SVG = './ua.svg?v=3';
 
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
@@ -37,6 +37,15 @@ register('welcome3', (root) => {
   root.className = 'page welcome3';
 
   root.innerHTML = `
+    <div class="welcome3-loader" id="welcome3Loader">
+      <div class="loader-logo">MN</div>
+      <div class="loader-title">Загрузка карты</div>
+      <div class="loader-subtitle">Подготавливаем области Украины...</div>
+      <div class="loader-bar">
+        <span></span>
+      </div>
+    </div>
+
     <h2>Выбери стартовый город</h2>
 
     <p class="welcome3-subtitle">
@@ -68,7 +77,7 @@ register('welcome3', (root) => {
       <div class="map-modal-header">
         <div>
           <h3>Выбор стартового города</h3>
-          <p id="modalHint">Передвигай карту и выбери область</p>
+          <p id="modalHint">Двигай карту, приближай двумя пальцами и выбери область</p>
         </div>
 
         <button class="map-modal-close" id="closeMapBtn" type="button">×</button>
@@ -83,14 +92,6 @@ register('welcome3', (root) => {
         </div>
       </div>
 
-      <div class="map-controls">
-        <button type="button" id="zoomOutBtn">−</button>
-        <button type="button" id="zoomInBtn">+</button>
-        <button type="button" id="rotateLeftBtn">⟲</button>
-        <button type="button" id="rotateRightBtn">⟳</button>
-        <button type="button" id="resetViewBtn">Сброс</button>
-      </div>
-
       <div class="modal-selection-box">
         <p id="modalSelectionText">Выбери область на карте</p>
       </div>
@@ -100,6 +101,8 @@ register('welcome3', (root) => {
       </button>
     </div>
   `;
+
+  const loader = root.querySelector('#welcome3Loader');
 
   const compactRegionsLayer = root.querySelector('#compactRegionsLayer');
   const fullRegionsLayer = root.querySelector('#fullRegionsLayer');
@@ -117,12 +120,7 @@ register('welcome3', (root) => {
   const fullMapViewport = root.querySelector('#fullMapViewport');
   const fullMapContent = root.querySelector('#fullMapContent');
 
-  const zoomOutBtn = root.querySelector('#zoomOutBtn');
-  const zoomInBtn = root.querySelector('#zoomInBtn');
-  const rotateLeftBtn = root.querySelector('#rotateLeftBtn');
-  const rotateRightBtn = root.querySelector('#rotateRightBtn');
-  const resetViewBtn = root.querySelector('#resetViewBtn');
-
+  let svgTextCache = '';
   let selectedRegion = null;
   let pendingRegion = null;
 
@@ -136,18 +134,23 @@ register('welcome3', (root) => {
     rotate: 0
   };
 
-  const drag = {
-    active: false,
+  const pointers = new Map();
+
+  const gesture = {
+    mode: 'none',
     moved: false,
     startX: 0,
     startY: 0,
     baseX: 0,
-    baseY: 0
+    baseY: 0,
+    startDistance: 0,
+    startAngle: 0,
+    baseScale: 1,
+    baseRotate: 0
   };
 
   function makeRegionInfo(regionId) {
     const regionData = REGION_DATA[regionId];
-
     if (!regionData) return null;
 
     return {
@@ -155,6 +158,28 @@ register('welcome3', (root) => {
       cityId: regionData.cityId,
       cityName: regionData.cityName
     };
+  }
+
+  function preloadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  async function preloadAssets() {
+    const [svgResponse] = await Promise.all([
+      fetch(REGIONS_SVG),
+      preloadImage(MAP_IMG)
+    ]);
+
+    if (!svgResponse.ok) {
+      throw new Error(`SVG load error: ${svgResponse.status}`);
+    }
+
+    svgTextCache = await svgResponse.text();
   }
 
   function setMainText(text) {
@@ -263,48 +288,120 @@ register('welcome3', (root) => {
     applyTransform();
   }
 
-  function zoomMap(delta) {
-    const nextScale = Math.max(1, Math.min(3.2, view.scale + delta));
-    view.scale = nextScale;
-    applyTransform();
+  function distance(a, b) {
+    return Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
   }
 
-  function rotateMap(delta) {
-    view.rotate = Math.max(-10, Math.min(10, view.rotate + delta));
-    applyTransform();
+  function angle(a, b) {
+    return Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
+  }
+
+  function clampView() {
+    view.scale = Math.max(1, Math.min(3.4, view.scale));
+    view.rotate = Math.max(-18, Math.min(18, view.rotate));
+  }
+
+  function startOneFinger(pointer) {
+    gesture.mode = 'pan';
+    gesture.moved = false;
+    gesture.startX = pointer.clientX;
+    gesture.startY = pointer.clientY;
+    gesture.baseX = view.x;
+    gesture.baseY = view.y;
+  }
+
+  function startTwoFinger() {
+    const pts = [...pointers.values()];
+    if (pts.length < 2) return;
+
+    gesture.mode = 'pinch';
+    gesture.moved = false;
+    gesture.startDistance = distance(pts[0], pts[1]);
+    gesture.startAngle = angle(pts[0], pts[1]);
+    gesture.baseScale = view.scale;
+    gesture.baseRotate = view.rotate;
+    gesture.baseX = view.x;
+    gesture.baseY = view.y;
+    gesture.startX = (pts[0].clientX + pts[1].clientX) / 2;
+    gesture.startY = (pts[0].clientY + pts[1].clientY) / 2;
   }
 
   function onPointerDown(event) {
-    if (event.target.closest('.ukraine-region')) return;
-
-    drag.active = true;
-    drag.moved = false;
-    drag.startX = event.clientX;
-    drag.startY = event.clientY;
-    drag.baseX = view.x;
-    drag.baseY = view.y;
+    pointers.set(event.pointerId, {
+      clientX: event.clientX,
+      clientY: event.clientY
+    });
 
     fullMapViewport.setPointerCapture?.(event.pointerId);
+
+    if (pointers.size === 1) {
+      startOneFinger(event);
+    }
+
+    if (pointers.size === 2) {
+      startTwoFinger();
+    }
   }
 
   function onPointerMove(event) {
-    if (!drag.active) return;
+    if (!pointers.has(event.pointerId)) return;
 
-    const dx = event.clientX - drag.startX;
-    const dy = event.clientY - drag.startY;
+    pointers.set(event.pointerId, {
+      clientX: event.clientX,
+      clientY: event.clientY
+    });
 
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-      drag.moved = true;
+    if (gesture.mode === 'pan' && pointers.size === 1) {
+      const dx = event.clientX - gesture.startX;
+      const dy = event.clientY - gesture.startY;
+
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+        gesture.moved = true;
+      }
+
+      view.x = gesture.baseX + dx;
+      view.y = gesture.baseY + dy;
+
+      applyTransform();
+      return;
     }
 
-    view.x = drag.baseX + dx;
-    view.y = drag.baseY + dy;
+    if (gesture.mode === 'pinch' && pointers.size >= 2) {
+      const pts = [...pointers.values()];
+      const currentDistance = distance(pts[0], pts[1]);
+      const currentAngle = angle(pts[0], pts[1]);
 
-    applyTransform();
+      const scaleRatio = currentDistance / gesture.startDistance;
+      const angleDelta = currentAngle - gesture.startAngle;
+
+      const midX = (pts[0].clientX + pts[1].clientX) / 2;
+      const midY = (pts[0].clientY + pts[1].clientY) / 2;
+
+      view.scale = gesture.baseScale * scaleRatio;
+      view.rotate = gesture.baseRotate + angleDelta;
+
+      view.x = gesture.baseX + (midX - gesture.startX);
+      view.y = gesture.baseY + (midY - gesture.startY);
+
+      clampView();
+      gesture.moved = true;
+      applyTransform();
+    }
   }
 
   function onPointerUp(event) {
-    drag.active = false;
+    pointers.delete(event.pointerId);
+
+    if (pointers.size === 1) {
+      const remainingPointer = [...pointers.values()][0];
+      startOneFinger(remainingPointer);
+      return;
+    }
+
+    if (pointers.size === 0) {
+      gesture.mode = 'none';
+    }
+
     fullMapViewport.releasePointerCapture?.(event.pointerId);
   }
 
@@ -312,14 +409,18 @@ register('welcome3', (root) => {
     event.preventDefault();
 
     if (event.deltaY > 0) {
-      zoomMap(-0.12);
+      view.scale -= 0.12;
     } else {
-      zoomMap(0.12);
+      view.scale += 0.12;
     }
+
+    clampView();
+    applyTransform();
   }
 
-  function prepareSvg(svg) {
+  function prepareSvg(svg, mode) {
     svg.classList.add('ukraine-regions-svg');
+    svg.classList.add(mode);
     svg.removeAttribute('width');
     svg.removeAttribute('height');
 
@@ -331,7 +432,7 @@ register('welcome3', (root) => {
     return Array.from(svg.querySelectorAll('path[id], polygon[id]'));
   }
 
-  function setupRegion(path, storage) {
+  function setupRegion(path, storage, mode) {
     const regionInfo = makeRegionInfo(path.id);
 
     path.classList.add('ukraine-region');
@@ -345,45 +446,43 @@ register('welcome3', (root) => {
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
 
-    path.setAttribute('tabindex', '0');
-    path.setAttribute('role', 'button');
-    path.setAttribute('aria-label', regionInfo.cityName);
-
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
       selectedRegion = regionInfo;
       pendingRegion = regionInfo;
     }
 
-    path.addEventListener('mouseenter', () => previewRegion(regionInfo));
-    path.addEventListener('mouseleave', resetPreview);
+    if (mode === 'full') {
+      path.setAttribute('tabindex', '0');
+      path.setAttribute('role', 'button');
+      path.setAttribute('aria-label', regionInfo.cityName);
 
-    path.addEventListener('focus', () => previewRegion(regionInfo));
-    path.addEventListener('blur', resetPreview);
+      path.addEventListener('mouseenter', () => previewRegion(regionInfo));
+      path.addEventListener('mouseleave', resetPreview);
 
-    path.addEventListener('click', (event) => {
-      event.stopPropagation();
-      choosePendingRegion(regionInfo);
-    });
+      path.addEventListener('focus', () => previewRegion(regionInfo));
+      path.addEventListener('blur', resetPreview);
 
-    path.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
+      path.addEventListener('click', (event) => {
+        event.stopPropagation();
+
+        if (gesture.moved) return;
+
         choosePendingRegion(regionInfo);
-      }
-    });
+      });
+
+      path.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          choosePendingRegion(regionInfo);
+        }
+      });
+    }
 
     storage.push(path);
   }
 
-  async function loadSvgInto(layer, storage) {
-    const response = await fetch(REGIONS_SVG);
-
-    if (!response.ok) {
-      throw new Error(`SVG load error: ${response.status}`);
-    }
-
-    const svgText = await response.text();
-    layer.innerHTML = svgText;
+  function loadSvgInto(layer, storage, mode) {
+    layer.innerHTML = svgTextCache;
 
     const svg = layer.querySelector('svg');
 
@@ -391,20 +490,31 @@ register('welcome3', (root) => {
       throw new Error('SVG tag not found');
     }
 
-    const regions = prepareSvg(svg);
+    const regions = prepareSvg(svg, mode);
 
     regions.forEach((path) => {
-      setupRegion(path, storage);
+      setupRegion(path, storage, mode);
     });
   }
 
   async function initRegions() {
     try {
-      await loadSvgInto(compactRegionsLayer, compactRegionElements);
-      await loadSvgInto(fullRegionsLayer, fullRegionElements);
+      await preloadAssets();
+
+      loadSvgInto(compactRegionsLayer, compactRegionElements, 'compact');
+      loadSvgInto(fullRegionsLayer, fullRegionElements, 'full');
+
       updateVisualState();
+
+      loader.classList.add('is-hidden');
+
+      setTimeout(() => {
+        loader.remove();
+      }, 280);
     } catch (error) {
       console.error(error);
+
+      loader.classList.add('is-hidden');
 
       compactRegionsLayer.innerHTML = `<div class="regions-error">Ошибка загрузки SVG</div>`;
       fullRegionsLayer.innerHTML = `<div class="regions-error">Ошибка загрузки SVG</div>`;
@@ -439,12 +549,6 @@ register('welcome3', (root) => {
 
     show('home');
   });
-
-  zoomOutBtn.addEventListener('click', () => zoomMap(-0.18));
-  zoomInBtn.addEventListener('click', () => zoomMap(0.18));
-  rotateLeftBtn.addEventListener('click', () => rotateMap(-2));
-  rotateRightBtn.addEventListener('click', () => rotateMap(2));
-  resetViewBtn.addEventListener('click', resetTransform);
 
   fullMapViewport.addEventListener('pointerdown', onPointerDown);
   fullMapViewport.addEventListener('pointermove', onPointerMove);
