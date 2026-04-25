@@ -1,80 +1,48 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 
-const MAP_IMG = './UkraineMap.png?v=5';
+const MAP_IMG = './UkraineMap.png?v=6';
 
-const CITY_ZONES = [
+const REGIONS = [
   {
     id: 'lviv',
     name: 'Львов',
-    x: 20.5,
-    y: 37.5,
-    w: 15,
-    h: 13,
-    rotate: -10
+    points: '11,31 17,24 26,26 30,35 25,45 14,43'
   },
   {
     id: 'kyiv',
     name: 'Киев',
-    x: 50.5,
-    y: 31.5,
-    w: 15,
-    h: 13,
-    rotate: 4
+    points: '44,22 53,21 58,28 55,38 46,39 40,31'
   },
   {
     id: 'kharkiv',
     name: 'Харьков',
-    x: 73.5,
-    y: 35.5,
-    w: 15,
-    h: 13,
-    rotate: -8
+    points: '69,26 80,25 86,34 81,44 70,42 65,34'
   },
   {
     id: 'vinnytsia',
     name: 'Винница',
-    x: 42.5,
-    y: 47,
-    w: 15,
-    h: 13,
-    rotate: -5
+    points: '36,41 47,39 51,49 45,59 34,56 30,47'
   },
   {
     id: 'dnipro',
     name: 'Днепр',
-    x: 62.5,
-    y: 52,
-    w: 14,
-    h: 12,
-    rotate: 8
-  },
-  {
-    id: 'mykolaiv',
-    name: 'Николаев',
-    x: 52,
-    y: 64,
-    w: 14,
-    h: 12,
-    rotate: 5
+    points: '56,45 67,43 73,52 69,62 58,61 53,52'
   },
   {
     id: 'zaporizhzhia',
     name: 'Запорожье',
-    x: 63.5,
-    y: 61,
-    w: 14,
-    h: 12,
-    rotate: 12
+    points: '60,58 71,57 76,67 70,77 59,74 54,65'
+  },
+  {
+    id: 'mykolaiv',
+    name: 'Николаев',
+    points: '45,60 57,59 61,68 55,76 44,74 39,66'
   },
   {
     id: 'odesa',
     name: 'Одесса',
-    x: 45,
-    y: 68,
-    w: 17,
-    h: 15,
-    rotate: -18
+    points: '33,62 45,60 48,73 42,86 31,82 27,70'
   }
 ];
 
@@ -91,7 +59,7 @@ register('welcome3', (root) => {
     <div class="ukraine-map-shell">
       <img class="ukraine-map-image" src="${MAP_IMG}" alt="Карта Украины" />
 
-      <div class="city-zones-layer" id="cityZonesLayer"></div>
+      <svg class="regions-svg" viewBox="0 0 100 100" preserveAspectRatio="none" id="regionsSvg"></svg>
     </div>
 
     <div class="city-selection-box">
@@ -105,27 +73,27 @@ register('welcome3', (root) => {
     </button>
   `;
 
-  const zonesLayer = root.querySelector('#cityZonesLayer');
+  const svg = root.querySelector('#regionsSvg');
   const citySelectionText = root.querySelector('#citySelectionText');
   const nextBtn = root.querySelector('#nextBtn');
 
-  let selectedCity = CITY_ZONES.find((city) => city.id === state.city) || null;
-  const zoneElements = [];
+  let selectedRegion = REGIONS.find((region) => region.id === state.city) || null;
+  const regionElements = [];
 
   function setText(text) {
     citySelectionText.textContent = text;
   }
 
   function updateSelection() {
-    zoneElements.forEach((zone) => {
-      const isSelected = selectedCity && zone.dataset.cityId === selectedCity.id;
-      zone.classList.toggle('is-selected', Boolean(isSelected));
+    regionElements.forEach((regionEl) => {
+      const isSelected = selectedRegion && regionEl.dataset.regionId === selectedRegion.id;
+      regionEl.classList.toggle('is-selected', Boolean(isSelected));
     });
 
-    if (selectedCity) {
+    if (selectedRegion) {
       nextBtn.disabled = false;
       nextBtn.classList.add('active');
-      setText(`Выбран город: ${selectedCity.name}`);
+      setText(`Выбран город: ${selectedRegion.name}`);
     } else {
       nextBtn.disabled = true;
       nextBtn.classList.remove('active');
@@ -133,68 +101,68 @@ register('welcome3', (root) => {
     }
   }
 
-  function previewCity(city) {
-    if (selectedCity && selectedCity.id === city.id) {
-      setText(`Выбран город: ${city.name}`);
+  function previewRegion(region) {
+    if (selectedRegion && selectedRegion.id === region.id) {
+      setText(`Выбран город: ${region.name}`);
       return;
     }
 
-    setText(`Вы хотите выбрать ${city.name}?`);
+    setText(`Вы хотите выбрать ${region.name}?`);
   }
 
   function resetPreview() {
-    if (selectedCity) {
-      setText(`Выбран город: ${selectedCity.name}`);
+    if (selectedRegion) {
+      setText(`Выбран город: ${selectedRegion.name}`);
     } else {
       setText('Наведи или нажми на область города');
     }
   }
 
-  function selectCity(city) {
-    selectedCity = city;
+  function selectRegion(region) {
+    selectedRegion = region;
 
-    state.city = city.id;
-    state.cityName = city.name;
+    state.city = region.id;
+    state.cityName = region.name;
     save();
 
     updateSelection();
   }
 
-  CITY_ZONES.forEach((city) => {
-    const zone = document.createElement('button');
+  REGIONS.forEach((region) => {
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
 
-    zone.type = 'button';
-    zone.className = `city-zone city-zone-${city.id}`;
-    zone.dataset.cityId = city.id;
-    zone.setAttribute('aria-label', city.name);
+    polygon.setAttribute('points', region.points);
+    polygon.setAttribute('tabindex', '0');
+    polygon.setAttribute('role', 'button');
+    polygon.setAttribute('aria-label', region.name);
 
-    zone.style.left = `${city.x}%`;
-    zone.style.top = `${city.y}%`;
-    zone.style.width = `${city.w}%`;
-    zone.style.height = `${city.h}%`;
-    zone.style.rotate = `${city.rotate}deg`;
+    polygon.classList.add('region-polygon');
+    polygon.dataset.regionId = region.id;
 
-    zone.innerHTML = `
-      <span class="city-map-glow"></span>
-    `;
+    polygon.addEventListener('mouseenter', () => previewRegion(region));
+    polygon.addEventListener('mouseleave', resetPreview);
 
-    zone.addEventListener('mouseenter', () => previewCity(city));
-    zone.addEventListener('mouseleave', resetPreview);
+    polygon.addEventListener('focus', () => previewRegion(region));
+    polygon.addEventListener('blur', resetPreview);
 
-    zone.addEventListener('focus', () => previewCity(city));
-    zone.addEventListener('blur', resetPreview);
+    polygon.addEventListener('click', () => selectRegion(region));
 
-    zone.addEventListener('click', () => selectCity(city));
+    polygon.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectRegion(region);
+      }
+    });
 
-    zonesLayer.appendChild(zone);
-    zoneElements.push(zone);
+    svg.appendChild(polygon);
+    regionElements.push(polygon);
   });
 
   updateSelection();
 
   nextBtn.addEventListener('click', () => {
-    if (!selectedCity) {
-      alert('Сначала выбери город на карте');
+    if (!selectedRegion) {
+      alert('Сначала выбери область на карте');
       return;
     }
 
