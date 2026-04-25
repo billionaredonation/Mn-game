@@ -36,12 +36,6 @@ const REGION_DATA = {
 register('welcome3', (root) => {
   root.className = 'page welcome3';
 
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
-
-  document.documentElement.classList.toggle('is-mobile', isMobile);
-  document.documentElement.classList.toggle('low-performance', Boolean(lowMemory));
-
   root.innerHTML = `
     <div class="welcome3-loader" id="welcome3Loader">
       <div class="loader-logo">MN</div>
@@ -84,7 +78,7 @@ register('welcome3', (root) => {
         <div>
           <h3>Выбор стартового города</h3>
           <p id="modalHint">
-            ПК: двигай карту правой кнопкой мыши. Телефон: двигай пальцем, приближай двумя пальцами.
+            ПК: левая кнопка выбирает область, правая кнопка двигает карту. Телефон: двигай пальцем, приближай двумя пальцами.
           </p>
         </div>
 
@@ -161,6 +155,7 @@ register('welcome3', (root) => {
 
   function makeRegionInfo(regionId) {
     const regionData = REGION_DATA[regionId];
+
     if (!regionData) return null;
 
     return {
@@ -317,7 +312,7 @@ register('welcome3', (root) => {
     view.rotate = Math.max(-18, Math.min(18, view.rotate));
   }
 
-  function startOneFinger(pointer) {
+  function startPan(pointer) {
     gesture.mode = 'pan';
     gesture.moved = false;
     gesture.startX = pointer.clientX;
@@ -326,7 +321,7 @@ register('welcome3', (root) => {
     gesture.baseY = view.y;
   }
 
-  function startTwoFinger() {
+  function startPinch() {
     const pts = [...pointers.values()];
     if (pts.length < 2) return;
 
@@ -345,15 +340,6 @@ register('welcome3', (root) => {
   function onPointerDown(event) {
     const isMouse = event.pointerType === 'mouse';
 
-    /*
-      ПК:
-      - левая кнопка выбирает область
-      - правая кнопка двигает карту
-
-      Телефон:
-      - один палец двигает карту
-      - два пальца приближают/отдаляют и чуть крутят
-    */
     if (isMouse && event.button !== 2) {
       return;
     }
@@ -370,11 +356,11 @@ register('welcome3', (root) => {
     fullMapViewport.setPointerCapture?.(event.pointerId);
 
     if (pointers.size === 1) {
-      startOneFinger(event);
+      startPan(event);
     }
 
     if (pointers.size === 2) {
-      startTwoFinger();
+      startPinch();
     }
   }
 
@@ -429,7 +415,7 @@ register('welcome3', (root) => {
 
     if (pointers.size === 1) {
       const remainingPointer = [...pointers.values()][0];
-      startOneFinger(remainingPointer);
+      startPan(remainingPointer);
       return;
     }
 
@@ -498,11 +484,18 @@ register('welcome3', (root) => {
       path.addEventListener('blur', resetPreview);
 
       path.addEventListener('click', (event) => {
+        event.preventDefault();
         event.stopPropagation();
 
-        if (gesture.moved) return;
-
         choosePendingRegion(regionInfo);
+      });
+
+      path.addEventListener('pointerup', (event) => {
+        if (event.pointerType !== 'mouse' && !gesture.moved) {
+          event.preventDefault();
+          event.stopPropagation();
+          choosePendingRegion(regionInfo);
+        }
       });
 
       path.addEventListener('keydown', (event) => {
