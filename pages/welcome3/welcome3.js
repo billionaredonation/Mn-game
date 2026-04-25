@@ -2,7 +2,7 @@ import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 
 const MAP_IMG = './UkraineMap.png?v=8';
-const REGIONS_SVG = './ua.svg?v=3';
+const REGIONS_SVG = './ua.svg?v=4';
 
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
@@ -41,9 +41,7 @@ register('welcome3', (root) => {
       <div class="loader-logo">MN</div>
       <div class="loader-title">Загрузка карты</div>
       <div class="loader-subtitle">Подготавливаем области Украины...</div>
-      <div class="loader-bar">
-        <span></span>
-      </div>
+      <div class="loader-bar"><span></span></div>
     </div>
 
     <h2>Выбери стартовый город</h2>
@@ -129,6 +127,9 @@ register('welcome3', (root) => {
   let compactRegionElements = [];
   let fullRegionElements = [];
 
+  let visualFrame = null;
+  let transformFrame = null;
+
   const view = {
     x: 0,
     y: 0,
@@ -150,8 +151,6 @@ register('welcome3', (root) => {
     baseScale: 1,
     baseRotate: 0
   };
-
-  let transformFrame = null;
 
   function makeRegionInfo(regionId) {
     const regionData = REGION_DATA[regionId];
@@ -200,33 +199,59 @@ register('welcome3', (root) => {
   }
 
   function updateVisualState() {
-    getAllRegions().forEach((regionEl) => {
-      const isSelected = selectedRegion && regionEl.id === selectedRegion.regionId;
-      const isPending = pendingRegion && regionEl.id === pendingRegion.regionId;
+    if (visualFrame) {
+      cancelAnimationFrame(visualFrame);
+    }
 
-      regionEl.classList.toggle('is-selected', Boolean(isSelected));
-      regionEl.classList.toggle('is-pending', Boolean(isPending));
+    visualFrame = requestAnimationFrame(() => {
+      const allRegions = getAllRegions();
+
+      allRegions.forEach((regionEl) => {
+        regionEl.classList.remove('is-selected', 'is-pending');
+      });
+
+      /*
+        Важно:
+        Если выбран старый город, а пользователь в модалке выбрал новый pending,
+        старый город НЕ подсвечиваем. Иначе на слабых телефонах остается ощущение
+        наложенных спрайтов/двух активных зон.
+      */
+      const activeRegion = pendingRegion || selectedRegion;
+
+      allRegions.forEach((regionEl) => {
+        const isActive = activeRegion && regionEl.id === activeRegion.regionId;
+
+        if (!isActive) return;
+
+        if (pendingRegion) {
+          regionEl.classList.add('is-pending');
+        } else {
+          regionEl.classList.add('is-selected');
+        }
+      });
+
+      if (selectedRegion) {
+        nextBtn.disabled = false;
+        nextBtn.classList.add('active');
+        setMainText(`Выбран город: ${selectedRegion.cityName}`);
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.classList.remove('active');
+        setMainText('Город пока не выбран');
+      }
+
+      if (pendingRegion) {
+        confirmCityBtn.disabled = false;
+        confirmCityBtn.classList.add('active');
+        setModalText(`Вы хотите выбрать ${pendingRegion.cityName}?`);
+      } else {
+        confirmCityBtn.disabled = true;
+        confirmCityBtn.classList.remove('active');
+        setModalText('Выбери область на карте');
+      }
+
+      visualFrame = null;
     });
-
-    if (selectedRegion) {
-      nextBtn.disabled = false;
-      nextBtn.classList.add('active');
-      setMainText(`Выбран город: ${selectedRegion.cityName}`);
-    } else {
-      nextBtn.disabled = true;
-      nextBtn.classList.remove('active');
-      setMainText('Город пока не выбран');
-    }
-
-    if (pendingRegion) {
-      confirmCityBtn.disabled = false;
-      confirmCityBtn.classList.add('active');
-      setModalText(`Вы хотите выбрать ${pendingRegion.cityName}?`);
-    } else {
-      confirmCityBtn.disabled = true;
-      confirmCityBtn.classList.remove('active');
-      setModalText('Выбери область на карте');
-    }
   }
 
   function previewRegion(regionInfo) {
@@ -267,6 +292,7 @@ register('welcome3', (root) => {
     if (!pendingRegion) return;
 
     selectedRegion = pendingRegion;
+    pendingRegion = null;
 
     state.city = selectedRegion.cityId;
     state.cityName = selectedRegion.cityName;
@@ -469,7 +495,6 @@ register('welcome3', (root) => {
 
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
       selectedRegion = regionInfo;
-      pendingRegion = regionInfo;
     }
 
     if (mode === 'full') {
@@ -486,7 +511,6 @@ register('welcome3', (root) => {
       path.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
-
         choosePendingRegion(regionInfo);
       });
 
@@ -553,9 +577,7 @@ register('welcome3', (root) => {
   openMapBtn.addEventListener('click', () => {
     mapModal.classList.remove('hidden');
 
-    if (selectedRegion) {
-      pendingRegion = selectedRegion;
-    }
+    pendingRegion = null;
 
     resetTransform();
     updateVisualState();
@@ -563,7 +585,7 @@ register('welcome3', (root) => {
 
   closeMapBtn.addEventListener('click', () => {
     mapModal.classList.add('hidden');
-    pendingRegion = selectedRegion;
+    pendingRegion = null;
     updateVisualState();
   });
 
