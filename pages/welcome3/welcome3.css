@@ -153,9 +153,12 @@
   inset: 0;
   z-index: 3;
   transform-origin: center center;
-  transform:
-    translate(var(--ua-svg-x), var(--ua-svg-y))
-    scale(var(--ua-svg-scale-x), var(--ua-svg-scale-y));
+
+  /*
+    ЖЁСТКАЯ ПОДГОНКА SVG ПОД PNG
+    Сейчас двигаем слой напрямую, без переменных.
+  */
+  transform: translate(-5.5%, -3.5%) scale(0.955, 0.955);
 }
 
 .compact-regions-layer {
