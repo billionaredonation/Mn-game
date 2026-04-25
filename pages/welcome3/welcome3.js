@@ -1,8 +1,8 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 
-const MAP_IMG = './UkraineMap.png?v=8';
-const REGIONS_SVG = './ua.svg?v=4';
+const MAP_IMG = './UkraineMap.png?v=9';
+const REGIONS_SVG = './ua.svg?v=5';
 
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
@@ -51,9 +51,11 @@ register('welcome3', (root) => {
     </p>
 
     <div class="compact-map-shell">
-      <img class="compact-map-image" src="${MAP_IMG}" alt="Карта Украины" />
-      <div class="compact-regions-layer" id="compactRegionsLayer">
-        <div class="regions-loading">Загрузка...</div>
+      <div class="compact-map-inner">
+        <img class="compact-map-image" src="${MAP_IMG}" alt="Карта Украины" />
+        <div class="compact-regions-layer" id="compactRegionsLayer">
+          <div class="regions-loading">Загрузка...</div>
+        </div>
       </div>
     </div>
 
@@ -85,9 +87,11 @@ register('welcome3', (root) => {
 
       <div class="full-map-viewport" id="fullMapViewport">
         <div class="full-map-content" id="fullMapContent">
-          <img class="full-map-image" src="${MAP_IMG}" alt="Карта Украины" />
-          <div class="full-regions-layer" id="fullRegionsLayer">
-            <div class="regions-loading">Загрузка областей...</div>
+          <div class="full-map-inner">
+            <img class="full-map-image" src="${MAP_IMG}" alt="Карта Украины" />
+            <div class="full-regions-layer" id="fullRegionsLayer">
+              <div class="regions-loading">Загрузка областей...</div>
+            </div>
           </div>
         </div>
       </div>
@@ -129,6 +133,7 @@ register('welcome3', (root) => {
 
   let visualFrame = null;
   let transformFrame = null;
+  let suppressNextClick = false;
 
   const view = {
     x: 0,
@@ -210,12 +215,6 @@ register('welcome3', (root) => {
         regionEl.classList.remove('is-selected', 'is-pending');
       });
 
-      /*
-        Важно:
-        Если выбран старый город, а пользователь в модалке выбрал новый pending,
-        старый город НЕ подсвечиваем. Иначе на слабых телефонах остается ощущение
-        наложенных спрайтов/двух активных зон.
-      */
       const activeRegion = pendingRegion || selectedRegion;
 
       allRegions.forEach((regionEl) => {
@@ -437,6 +436,14 @@ register('welcome3', (root) => {
   }
 
   function onPointerUp(event) {
+    if (gesture.moved) {
+      suppressNextClick = true;
+
+      setTimeout(() => {
+        suppressNextClick = false;
+      }, 250);
+    }
+
     pointers.delete(event.pointerId);
 
     if (pointers.size === 1) {
@@ -511,11 +518,14 @@ register('welcome3', (root) => {
       path.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
+
+        if (suppressNextClick) return;
+
         choosePendingRegion(regionInfo);
       });
 
       path.addEventListener('pointerup', (event) => {
-        if (event.pointerType !== 'mouse' && !gesture.moved) {
+        if (event.pointerType !== 'mouse' && !gesture.moved && !suppressNextClick) {
           event.preventDefault();
           event.stopPropagation();
           choosePendingRegion(regionInfo);
