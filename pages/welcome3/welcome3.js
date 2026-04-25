@@ -1,80 +1,80 @@
 import { register, show } from '../../src/router.js';
 import { state, save } from '../../src/state.js';
 
-const MAP_IMG = './UkraineMap.png?v=4';
+const MAP_IMG = './UkraineMap.png?v=5';
 
 const CITY_ZONES = [
   {
     id: 'lviv',
     name: 'Львов',
-    x: 18,
-    y: 37,
-    w: 17,
-    h: 15,
-    rotate: -12
+    x: 20.5,
+    y: 37.5,
+    w: 15,
+    h: 13,
+    rotate: -10
   },
   {
     id: 'kyiv',
     name: 'Киев',
-    x: 49,
-    y: 31,
-    w: 16,
-    h: 14,
+    x: 50.5,
+    y: 31.5,
+    w: 15,
+    h: 13,
     rotate: 4
   },
   {
     id: 'kharkiv',
     name: 'Харьков',
-    x: 74,
-    y: 35,
-    w: 17,
-    h: 14,
+    x: 73.5,
+    y: 35.5,
+    w: 15,
+    h: 13,
     rotate: -8
+  },
+  {
+    id: 'vinnytsia',
+    name: 'Винница',
+    x: 42.5,
+    y: 47,
+    w: 15,
+    h: 13,
+    rotate: -5
   },
   {
     id: 'dnipro',
     name: 'Днепр',
-    x: 62,
+    x: 62.5,
     y: 52,
-    w: 15,
-    h: 13,
+    w: 14,
+    h: 12,
     rotate: 8
-  },
-  {
-    id: 'zaporizhzhia',
-    name: 'Запорожье',
-    x: 64,
-    y: 61,
-    w: 15,
-    h: 13,
-    rotate: 12
-  },
-  {
-    id: 'odesa',
-    name: 'Одесса',
-    x: 44,
-    y: 69,
-    w: 18,
-    h: 17,
-    rotate: -18
   },
   {
     id: 'mykolaiv',
     name: 'Николаев',
     x: 52,
     y: 64,
-    w: 15,
+    w: 14,
     h: 12,
     rotate: 5
   },
   {
-    id: 'vinnytsia',
-    name: 'Винница',
-    x: 40,
-    y: 47,
-    w: 16,
-    h: 13,
-    rotate: -4
+    id: 'zaporizhzhia',
+    name: 'Запорожье',
+    x: 63.5,
+    y: 61,
+    w: 14,
+    h: 12,
+    rotate: 12
+  },
+  {
+    id: 'odesa',
+    name: 'Одесса',
+    x: 45,
+    y: 68,
+    w: 17,
+    h: 15,
+    rotate: -18
   }
 ];
 
@@ -83,6 +83,7 @@ register('welcome3', (root) => {
 
   root.innerHTML = `
     <h2>Выбери стартовый город</h2>
+
     <p class="welcome3-subtitle">
       Нажми на область города на карте Украины
     </p>
@@ -163,19 +164,19 @@ register('welcome3', (root) => {
     const zone = document.createElement('button');
 
     zone.type = 'button';
-    zone.className = 'city-zone';
+    zone.className = `city-zone city-zone-${city.id}`;
     zone.dataset.cityId = city.id;
-    zone.dataset.name = city.name;
     zone.setAttribute('aria-label', city.name);
-    zone.title = city.name;
 
     zone.style.left = `${city.x}%`;
     zone.style.top = `${city.y}%`;
     zone.style.width = `${city.w}%`;
     zone.style.height = `${city.h}%`;
-    zone.style.transform = `translate(-50%, -50%) rotate(${city.rotate}deg)`;
+    zone.style.rotate = `${city.rotate}deg`;
 
-    zone.innerHTML = `<span>${city.name}</span>`;
+    zone.innerHTML = `
+      <span class="city-map-glow"></span>
+    `;
 
     zone.addEventListener('mouseenter', () => previewCity(city));
     zone.addEventListener('mouseleave', resetPreview);
