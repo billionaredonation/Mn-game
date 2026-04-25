@@ -373,6 +373,33 @@
   background: #16a34a;
 }
 
+/* Оптимизация для слабых телефонов */
+.is-mobile .full-map-content,
+.low-performance .full-map-content {
+  transition: none;
+}
+
+.is-mobile .ukraine-region,
+.low-performance .ukraine-region {
+  transition: none !important;
+  filter: none !important;
+}
+
+.is-mobile .full-map-content::after,
+.low-performance .full-map-content::after {
+  display: none;
+}
+
+.is-mobile .full-map-viewport,
+.low-performance .full-map-viewport {
+  box-shadow: none;
+}
+
+.is-mobile .compact-map-shell,
+.low-performance .compact-map-shell {
+  box-shadow: none;
+}
+
 @media (max-width: 640px) {
   .welcome3 h2 {
     font-size: 22px;
@@ -405,5 +432,16 @@
   .full-map-viewport {
     min-height: 360px;
     border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome3-loader,
+  .loader-logo,
+  .loader-bar span,
+  .full-map-content,
+  .ukraine-region {
+    animation: none !important;
+    transition: none !important;
   }
 }
