@@ -1,16 +1,17 @@
 import { show } from './router.js';
+import { state } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=5';
-import '../pages/welcome2/welcome2.js?v=5';
-import '../pages/welcome3/welcome3.js?v=5';
-import '../pages/home/home.js?v=5';
+import '../pages/welcome1/welcome1.js?v=8';
+import '../pages/welcome2/welcome2.js?v=8';
+import '../pages/welcome3/welcome3.js?v=8';
+import '../pages/home/home.js?v=8';
 
 window.Telegram?.WebApp?.expand();
 
-/*
-  ВРЕМЕННО ДЛЯ ТЕСТА:
-  Каждый запуск очищает прогресс и открывает welcome1.
-*/
-localStorage.removeItem('player');
-
-show('welcome1');
+if (!state.nickname) {
+  show('welcome1');
+} else if (!state.city) {
+  show('welcome3');
+} else {
+  show('home');
+}
