@@ -153,10 +153,7 @@
   inset: 0;
   z-index: 3;
   transform-origin: center center;
-  transform: translate(-2.2%, -0.8%) scale(0.975, 0.975);
-}
-.compact-regions-layer {
-  pointer-events: none;
+  transform: translate(-0.6%, 0.7%) scale(0.992, 0.992);
 }
 
 .ukraine-regions-svg {
