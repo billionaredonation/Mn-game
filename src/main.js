@@ -1,12 +1,18 @@
 import { show } from './router.js';
 import { state } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=8';
-import '../pages/welcome2/welcome2.js?v=8';
-import '../pages/welcome3/welcome3.js?v=15';
-import '../pages/home/home.js?v=9';
+import '../pages/welcome1/welcome1.js?v=20';
+import '../pages/welcome2/welcome2.js?v=20';
+import '../pages/welcome3/welcome3.js?v=20';
+import '../pages/home/home.js?v=20';
 
 window.Telegram?.WebApp?.expand();
+
+const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
+
+document.documentElement.classList.toggle('is-mobile', isMobile);
+document.documentElement.classList.toggle('low-performance', Boolean(lowMemory));
 
 if (!state.nickname) {
   show('welcome1');
