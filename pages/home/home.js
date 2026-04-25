@@ -4,7 +4,7 @@ import { state } from '../../src/state.js';
 const CITY_MAPS = {
   zaporizhzhia: {
     name: 'Запорожье',
-    map: './Zaporizya.png'
+    map: './Zaporizya.png?v=2'
   }
 };
 
@@ -50,23 +50,23 @@ register('home', (root) => {
       <img class="city-map-image" src="${cityData.map}" alt="Карта города ${cityData.name}" />
 
       <button class="map-icon profile-icon" id="profileBtn" type="button">
-        👤
-        <span>Профиль</span>
+        <span class="map-icon-emoji">👤</span>
+        <span class="map-icon-label">Профиль</span>
       </button>
 
       <button class="map-icon jobs-icon" id="jobsBtn" type="button">
-        💼
-        <span>Работы</span>
-      </button>
-
-      <button class="map-icon settings-icon" id="settingsBtn" type="button">
-        ⚙️
-        <span>Настройки</span>
+        <span class="map-icon-emoji">💼</span>
+        <span class="map-icon-label">Работы</span>
       </button>
 
       <button class="map-icon house-icon" id="houseBtn" type="button">
-        🏠
-        <span>Дома</span>
+        <span class="map-icon-emoji">🏠</span>
+        <span class="map-icon-label">Дома</span>
+      </button>
+
+      <button class="map-icon settings-icon" id="settingsBtn" type="button">
+        <span class="map-icon-emoji">⚙️</span>
+        <span class="map-icon-label">Настройки</span>
       </button>
     </div>
 
@@ -82,15 +82,15 @@ register('home', (root) => {
   };
 
   root.querySelector('#jobsBtn').onclick = () => {
-    setInfo(root, 'Раздел работ: скоро здесь будут первые задания.');
-  };
-
-  root.querySelector('#settingsBtn').onclick = () => {
-    setInfo(root, 'Настройки: звук, интерфейс и управление добавим позже.');
+    setInfo(root, 'Работы: скоро здесь появятся первые задания.');
   };
 
   root.querySelector('#houseBtn').onclick = () => {
-    setInfo(root, 'Недвижимость: дома и бизнесы появятся в следующих обновлениях.');
+    setInfo(root, 'Дома: покупка и аренда появятся позже.');
+  };
+
+  root.querySelector('#settingsBtn').onclick = () => {
+    setInfo(root, 'Настройки: интерфейс, звук и управление добавим позже.');
   };
 });
 
