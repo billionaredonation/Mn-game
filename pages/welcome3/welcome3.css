@@ -118,7 +118,7 @@
 .compact-map-shell,
 .full-map-inner {
   --ua-svg-x: -3.5%;
-  --ua-svg-y: 0.5%;
+  --ua-svg-y: 0.1%;
   --ua-svg-scale-x: 0.955;
   --ua-svg-scale-y: 0.955;
 }
