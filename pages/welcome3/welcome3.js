@@ -72,11 +72,11 @@ register('welcome3', (root) => {
       </div>
 
       <div class="welcome-actions">
-        <button class="welcome-btn secondary" id="openMapBtn" type="button">
+        <button class="welcome-btn secondary open-map-btn" id="openMapBtn" type="button">
           Открыть карту
         </button>
 
-        <button class="welcome-btn primary" id="nextBtn" type="button" disabled>
+        <button class="welcome-btn primary next-btn" id="nextBtn" type="button" disabled>
           Далее
         </button>
       </div>
@@ -87,7 +87,7 @@ register('welcome3', (root) => {
         <div class="map-modal-header">
           <div>
             <h3>Выбор стартового города</h3>
-            <p>ПК: левая кнопка выбирает область, правая кнопка двигает карту. Телефон: приближай двумя пальцами.</p>
+            <p>Двигай карту одним пальцем, приближай двумя. Тап по области выбирает город.</p>
           </div>
 
           <button class="close-map-btn" id="closeMapBtn" type="button" aria-label="Закрыть карту">
@@ -133,10 +133,16 @@ register('welcome3', (root) => {
   let svgTextCache = '';
   let selectedRegion = null;
   let pendingRegion = null;
+
   let compactRegionElements = [];
   let fullRegionElements = [];
+
   let visualFrame = null;
   let transformFrame = null;
+
+  const isTouchDevice =
+    window.matchMedia('(pointer: coarse)').matches ||
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const view = {
     x: 0,
@@ -156,9 +162,7 @@ register('welcome3', (root) => {
     baseX: 0,
     baseY: 0,
     startDistance: 0,
-    startAngle: 0,
-    baseScale: 1,
-    baseRotate: 0
+    baseScale: 1
   };
 
   function makeRegionInfo(regionId) {
@@ -326,10 +330,11 @@ register('welcome3', (root) => {
     }
 
     transformFrame = requestAnimationFrame(() => {
+      view.rotate = 0;
+
       fullMapContent.style.transform = `
         translate3d(${view.x}px, ${view.y}px, 0)
         scale(${view.scale})
-        rotate(${view.rotate}deg)
       `;
 
       transformFrame = null;
@@ -339,23 +344,24 @@ register('welcome3', (root) => {
   function resetTransform() {
     view.x = 0;
     view.y = 0;
-    view.scale = 1.55;
+    view.scale = isTouchDevice ? 1.42 : 1.55;
     view.rotate = 0;
 
     applyTransform();
   }
 
-  function distance(a, b) {
-    return Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-  }
-
-  function angle(a, b) {
-    return Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
-  }
-
   function clampView() {
     view.scale = Math.max(1, Math.min(3.4, view.scale));
-    view.rotate = Math.max(-18, Math.min(18, view.rotate));
+    view.rotate = 0;
+
+    const maxOffset = 460 * view.scale;
+
+    view.x = Math.max(-maxOffset, Math.min(maxOffset, view.x));
+    view.y = Math.max(-maxOffset, Math.min(maxOffset, view.y));
+  }
+
+  function distance(a, b) {
+    return Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
   }
 
   function startPan(pointer) {
@@ -378,10 +384,9 @@ register('welcome3', (root) => {
     gesture.mode = 'pinch';
     gesture.moved = false;
     gesture.isTouch = pts.some((point) => point.pointerType === 'touch' || point.pointerType === 'pen');
+
     gesture.startDistance = distance(pts[0], pts[1]);
-    gesture.startAngle = angle(pts[0], pts[1]);
     gesture.baseScale = view.scale;
-    gesture.baseRotate = view.rotate;
     gesture.baseX = view.x;
     gesture.baseY = view.y;
     gesture.startX = (pts[0].clientX + pts[1].clientX) / 2;
@@ -390,6 +395,7 @@ register('welcome3', (root) => {
 
   function onPointerDown(event) {
     const isMouse = event.pointerType === 'mouse';
+    const isTouch = event.pointerType === 'touch' || event.pointerType === 'pen';
 
     if (isMouse && event.button !== 2) {
       return;
@@ -407,12 +413,18 @@ register('welcome3', (root) => {
 
     fullMapViewport.setPointerCapture?.(event.pointerId);
 
-    if (pointers.size === 1) {
+    if (isTouch && pointers.size === 1) {
       startPan(event);
+      return;
     }
 
-    if (pointers.size === 2) {
+    if (isTouch && pointers.size === 2) {
       startPinch();
+      return;
+    }
+
+    if (isMouse) {
+      startPan(event);
     }
   }
 
@@ -431,13 +443,15 @@ register('welcome3', (root) => {
       const dx = event.clientX - gesture.startX;
       const dy = event.clientY - gesture.startY;
 
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
         gesture.moved = true;
       }
 
       view.x = gesture.baseX + dx;
       view.y = gesture.baseY + dy;
+      view.rotate = 0;
 
+      clampView();
       applyTransform();
       return;
     }
@@ -446,22 +460,15 @@ register('welcome3', (root) => {
       const pts = [...pointers.values()];
 
       const currentDistance = distance(pts[0], pts[1]);
-      const currentAngle = angle(pts[0], pts[1]);
       const scaleRatio = currentDistance / gesture.startDistance;
-      const angleDelta = currentAngle - gesture.startAngle;
+
       const midX = (pts[0].clientX + pts[1].clientX) / 2;
       const midY = (pts[0].clientY + pts[1].clientY) / 2;
 
       view.scale = gesture.baseScale * scaleRatio;
-
-      if (gesture.isTouch) {
-        view.rotate = 0;
-      } else {
-        view.rotate = gesture.baseRotate + angleDelta;
-      }
-
       view.x = gesture.baseX + (midX - gesture.startX);
       view.y = gesture.baseY + (midY - gesture.startY);
+      view.rotate = 0;
 
       clampView();
 
@@ -502,6 +509,8 @@ register('welcome3', (root) => {
     } else {
       view.scale += 0.12;
     }
+
+    view.rotate = 0;
 
     clampView();
     applyTransform();
@@ -548,13 +557,17 @@ register('welcome3', (root) => {
       path.setAttribute('role', 'button');
       path.setAttribute('aria-label', regionInfo.cityName);
 
-      path.addEventListener('mouseenter', () => previewRegion(regionInfo));
-      path.addEventListener('mouseleave', resetPreview);
-      path.addEventListener('focus', () => previewRegion(regionInfo));
-      path.addEventListener('blur', resetPreview);
+      if (!isTouchDevice) {
+        path.addEventListener('mouseenter', () => previewRegion(regionInfo));
+        path.addEventListener('mouseleave', resetPreview);
+        path.addEventListener('focus', () => previewRegion(regionInfo));
+        path.addEventListener('blur', resetPreview);
+      }
 
       path.addEventListener('pointerdown', (event) => {
-        if (event.pointerType === 'mouse' && event.button === 0) {
+        const isMouseLeft = event.pointerType === 'mouse' && event.button === 0;
+
+        if (isMouseLeft) {
           event.preventDefault();
           event.stopPropagation();
         }
@@ -578,7 +591,7 @@ register('welcome3', (root) => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (event.detail === 0) {
+        if (gesture.moved) {
           return;
         }
 
@@ -647,6 +660,11 @@ register('welcome3', (root) => {
     mapModal.classList.remove('hidden');
 
     pendingRegion = null;
+    pointers.clear();
+
+    gesture.mode = 'none';
+    gesture.moved = false;
+    gesture.isTouch = false;
 
     resetTransform();
     updateVisualState();
@@ -656,6 +674,11 @@ register('welcome3', (root) => {
     mapModal.classList.add('hidden');
 
     pendingRegion = null;
+    pointers.clear();
+
+    gesture.mode = 'none';
+    gesture.moved = false;
+    gesture.isTouch = false;
 
     updateVisualState();
   });
@@ -683,4 +706,3 @@ register('welcome3', (root) => {
 
   initRegions();
 });
-
