@@ -1,106 +1,112 @@
 import { register, show } from '../../src/router.js';
 import { state } from '../../src/state.js';
 
+const ASSET_VERSION = '31';
+
+function mapUrl(fileName) {
+  return `${new URL(`../../${fileName}`, import.meta.url).href}?v=${ASSET_VERSION}`;
+}
+
 const CITY_MAPS = {
   vinnytsia: {
     name: 'Винница',
-    map: './VinitsaMap.png?v=29'
+    file: 'VinitsaMap.png'
   },
   lutsk: {
     name: 'Луцк',
-    map: './LutskMap.png?v=29'
+    file: 'LutskMap.png'
   },
   luhansk: {
     name: 'Луганск',
-    map: './LuganskMap.png?v=29'
+    file: 'LuganskMap.png'
   },
   dnipro: {
     name: 'Днепр',
-    map: './DneprMap.png?v=29'
+    file: 'DneprMap.png'
   },
   donetsk: {
     name: 'Донецк',
-    map: './DonetskMap.png?v=29'
+    file: 'DonetskMap.png'
   },
   zhytomyr: {
     name: 'Житомир',
-    map: './ZutomyrMap.png?v=29'
+    file: 'ZutomyrMap.png'
   },
   uzhhorod: {
     name: 'Ужгород',
-    map: './UzgorodMap.png?v=29'
+    file: 'UzgorodMap.png'
   },
   zaporizhzhia: {
     name: 'Запорожье',
-    map: './ZaporizyaMap.png?v=29'
+    file: 'ZaporizyaMap.png'
   },
   'ivano-frankivsk': {
     name: 'Ивано-Франковск',
-    map: './IvanoFrankovskMap.png?v=29'
+    file: 'IvanoFrankovskMap.png'
   },
   kyiv: {
     name: 'Киев',
-    map: './KiyvMap.png?v=29'
+    file: 'KiyvMap.png'
   },
   kropyvnytskyi: {
     name: 'Кропивницкий',
-    map: './KropivnitskyiMap.png?v=29'
+    file: 'KropivnitskyiMap.png'
   },
   crimea: {
     name: 'Крым',
-    map: './KrymMap.png?v=29'
+    file: 'KrymMap.png'
   },
   lviv: {
     name: 'Львов',
-    map: './LvivMap.png?v=29'
+    file: 'LvivMap.png'
   },
   mykolaiv: {
     name: 'Николаев',
-    map: './NikolaevMap.png?v=29'
+    file: 'NikolaevMap.png'
   },
   odesa: {
     name: 'Одесса',
-    map: './OdessaMap.png?v=29'
+    file: 'OdessaMap.png'
   },
   poltava: {
     name: 'Полтава',
-    map: './PoltavaMap.png?v=29'
+    file: 'PoltavaMap.png'
   },
   rivne: {
     name: 'Ровно',
-    map: './RovnoMap.png?v=29'
+    file: 'RovnoMap.png'
   },
   sumy: {
     name: 'Сумы',
-    map: './SumyMap.png?v=29'
+    file: 'SumyMap.png'
   },
   ternopil: {
     name: 'Тернополь',
-    map: './TernopilMap.png?v=29'
+    file: 'TernopilMap.png'
   },
   kharkiv: {
     name: 'Харьков',
-    map: './KharkivMap.png?v=29'
+    file: 'KharkivMap.png'
   },
   kherson: {
     name: 'Херсон',
-    map: './KhersonMap.png?v=29'
+    file: 'KhersonMap.png'
   },
   khmelnytskyi: {
     name: 'Хмельницкий',
-    map: './KhmelnitskiyMap.png?v=29'
+    file: 'KhmelnitskiyMap.png'
   },
   cherkasy: {
     name: 'Черкассы',
-    map: './CherkasyMap.png?v=29'
+    file: 'CherkasyMap.png'
   },
   chernihiv: {
     name: 'Чернигов',
-    map: './ChernigovMap.png?v=29'
+    file: 'ChernigovMap.png'
   },
   chernivtsi: {
     name: 'Черновцы',
-    map: './ChernivtsiMap.png?v=29'
+    file: 'ChernivtsiMap.png'
   }
 };
 
@@ -111,7 +117,7 @@ register('home', (root) => {
   const cityData = CITY_MAPS[cityId] || CITY_MAPS.zaporizhzhia;
 
   const cityName = cityData.name;
-  const cityMap = cityData.map;
+  const cityMap = mapUrl(cityData.file);
 
   root.innerHTML = `
     <div class="home-top">
