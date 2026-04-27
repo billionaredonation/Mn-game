@@ -22,7 +22,7 @@ register('welcome2', (root) => {
 
       <p class="welcome2-error" id="nicknameError"></p>
 
-      <button class="btn" id="nextBtn" disabled>
+      <button class="btn" id="nextBtn" type="button" disabled>
         Далі
       </button>
     </div>
@@ -70,9 +70,6 @@ register('welcome2', (root) => {
 
     show('welcome3');
   });
-
-  validateNickname();
-});
 
   validateNickname();
 });
