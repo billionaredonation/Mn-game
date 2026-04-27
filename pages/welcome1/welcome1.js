@@ -18,7 +18,7 @@ register('welcome1', (root) => {
 
       <h2>Ласкаво просимо!</h2>
 
-      <button class="btn" id="nextBtn">
+      <button class="btn" id="nextBtn" type="button">
         Далі
       </button>
     </div>
