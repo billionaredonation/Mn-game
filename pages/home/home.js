@@ -1,155 +1,98 @@
 import { register, show } from '../../src/router.js';
 import { state } from '../../src/state.js';
 
-const ASSET_VERSION = '31';
-
-function mapUrl(fileName) {
-  return `${new URL(`../../${fileName}`, import.meta.url).href}?v=${ASSET_VERSION}`;
-}
+const V = '32';
 
 const CITY_MAPS = {
-  vinnytsia: {
-    name: 'Винница',
-    file: 'VinitsaMap.png'
-  },
-  lutsk: {
-    name: 'Луцк',
-    file: 'LutskMap.png'
-  },
-  luhansk: {
-    name: 'Луганск',
-    file: 'LuganskMap.png'
-  },
-  dnipro: {
-    name: 'Днепр',
-    file: 'DneprMap.png'
-  },
-  donetsk: {
-    name: 'Донецк',
-    file: 'DonetskMap.png'
-  },
-  zhytomyr: {
-    name: 'Житомир',
-    file: 'ZutomyrMap.png'
-  },
-  uzhhorod: {
-    name: 'Ужгород',
-    file: 'UzgorodMap.png'
-  },
-  zaporizhzhia: {
-    name: 'Запорожье',
-    file: 'ZaporizyaMap.png'
-  },
+  vinnytsia: { name: 'Винница', map: './VinitsaMap.png?v=' + V },
+  lutsk: { name: 'Луцк', map: './LutskMap.png?v=' + V },
+  luhansk: { name: 'Луганск', map: './LuganskMap.png?v=' + V },
+  dnipro: { name: 'Днепр', map: './DneprMap.png?v=' + V },
+  donetsk: { name: 'Донецк', map: './DonetskMap.png?v=' + V },
+
+  zhytomyr: { name: 'Житомир', map: './ZutomyrMap.png?v=' + V },
+  uzhhorod: { name: 'Ужгород', map: './UzgorodMap.png?v=' + V },
+
+  zaporizhzhia: { name: 'Запорожье', map: './Zaporozya.png?v=' + V },
+
   'ivano-frankivsk': {
     name: 'Ивано-Франковск',
-    file: 'IvanoFrankovskMap.png'
+    map: './IvanoFrankovsk.png?v=' + V
   },
-  kyiv: {
-    name: 'Киев',
-    file: 'KiyvMap.png'
-  },
+
+  kyiv: { name: 'Киев', map: './KiyvMap.png?v=' + V },
+
   kropyvnytskyi: {
     name: 'Кропивницкий',
-    file: 'KropivnitskyiMap.png'
+    map: './Kropivnitskyi.png?v=' + V
   },
-  crimea: {
-    name: 'Крым',
-    file: 'KrymMap.png'
-  },
-  lviv: {
-    name: 'Львов',
-    file: 'LvivMap.png'
-  },
-  mykolaiv: {
-    name: 'Николаев',
-    file: 'NikolaevMap.png'
-  },
-  odesa: {
-    name: 'Одесса',
-    file: 'OdessaMap.png'
-  },
-  poltava: {
-    name: 'Полтава',
-    file: 'PoltavaMap.png'
-  },
-  rivne: {
-    name: 'Ровно',
-    file: 'RovnoMap.png'
-  },
-  sumy: {
-    name: 'Сумы',
-    file: 'SumyMap.png'
-  },
-  ternopil: {
-    name: 'Тернополь',
-    file: 'TernopilMap.png'
-  },
-  kharkiv: {
-    name: 'Харьков',
-    file: 'KharkivMap.png'
-  },
-  kherson: {
-    name: 'Херсон',
-    file: 'KhersonMap.png'
-  },
+
+  crimea: { name: 'Крым', map: './KrymMap.png?v=' + V },
+
+  lviv: { name: 'Львов', map: './Lviv.png?v=' + V },
+
+  mykolaiv: { name: 'Николаев', map: './Nikolaev.png?v=' + V },
+
+  odesa: { name: 'Одесса', map: './Odessa.png?v=' + V },
+
+  poltava: { name: 'Полтава', map: './Poltava.png?v=' + V },
+
+  rivne: { name: 'Ровно', map: './Rovno.png?v=' + V },
+
+  sumy: { name: 'Сумы', map: './Sumy.png?v=' + V },
+
+  ternopil: { name: 'Тернополь', map: './Ternopil.png?v=' + V },
+
+  kharkiv: { name: 'Харьков', map: './Kharkiv.png?v=' + V },
+
+  kherson: { name: 'Херсон', map: './Kherson.png?v=' + V },
+
   khmelnytskyi: {
     name: 'Хмельницкий',
-    file: 'KhmelnitskiyMap.png'
+    map: './Khmelnitskiy.png?v=' + V
   },
-  cherkasy: {
-    name: 'Черкассы',
-    file: 'CherkasyMap.png'
-  },
-  chernihiv: {
-    name: 'Чернигов',
-    file: 'ChernigovMap.png'
-  },
-  chernivtsi: {
-    name: 'Черновцы',
-    file: 'ChernivtsiMap.png'
-  }
+
+  cherkasy: { name: 'Черкассы', map: './CherkasyMap.png?v=' + V },
+
+  chernihiv: { name: 'Чернигов', map: './ChernigovMap.png?v=' + V },
+
+  chernivtsi: { name: 'Черновцы', map: './ChernivtsiMap.png?v=' + V }
 };
 
 register('home', (root) => {
   root.className = 'page home';
 
-  const cityId = state.city;
-  const cityData = CITY_MAPS[cityId] || CITY_MAPS.zaporizhzhia;
-
-  const cityName = cityData.name;
-  const cityMap = mapUrl(cityData.file);
+  const city = CITY_MAPS[state.city] || CITY_MAPS.zaporizhzhia;
 
   root.innerHTML = `
     <div class="home-top">
       <div>
-        <h2>${cityName}</h2>
+        <h2>${city.name}</h2>
         <p>Добро пожаловать, ${state.nickname || 'игрок'}.</p>
       </div>
 
-      <button class="home-reset-btn" id="resetBtn" type="button">
-        Сбросить
-      </button>
+      <button class="home-reset-btn" id="resetBtn">Сбросить</button>
     </div>
 
     <div class="city-map-shell">
-      <img class="city-map-image" src="${cityMap}" alt="Карта города ${cityName}" />
+      <img class="city-map-image" src="${city.map}" alt="${city.name}" />
 
-      <button class="map-icon profile-icon" id="profileBtn" type="button">
+      <button class="map-icon profile-icon" id="profileBtn">
         <span class="map-icon-emoji">👤</span>
         <span class="map-icon-label">Профиль</span>
       </button>
 
-      <button class="map-icon jobs-icon" id="jobsBtn" type="button">
+      <button class="map-icon jobs-icon" id="jobsBtn">
         <span class="map-icon-emoji">💼</span>
         <span class="map-icon-label">Работы</span>
       </button>
 
-      <button class="map-icon house-icon" id="houseBtn" type="button">
+      <button class="map-icon house-icon" id="houseBtn">
         <span class="map-icon-emoji">🏠</span>
         <span class="map-icon-label">Дома</span>
       </button>
 
-      <button class="map-icon settings-icon" id="settingsBtn" type="button">
+      <button class="map-icon settings-icon" id="settingsBtn">
         <span class="map-icon-emoji">⚙️</span>
         <span class="map-icon-label">Настройки</span>
       </button>
@@ -160,36 +103,29 @@ register('home', (root) => {
     </div>
   `;
 
-  root.querySelector('#resetBtn').addEventListener('click', resetProgress);
+  root.querySelector('#resetBtn').onclick = resetProgress;
+  root.querySelector('#profileBtn').onclick = () =>
+    info(root, `Профиль игрока: ${state.nickname || 'Без ника'}`);
 
-  root.querySelector('#profileBtn').addEventListener('click', () => {
-    setInfo(root, `Профиль игрока: ${state.nickname || 'Без ника'}`);
-  });
+  root.querySelector('#jobsBtn').onclick = () =>
+    info(root, 'Работы скоро появятся.');
 
-  root.querySelector('#jobsBtn').addEventListener('click', () => {
-    setInfo(root, 'Работы: скоро здесь появятся первые задания.');
-  });
+  root.querySelector('#houseBtn').onclick = () =>
+    info(root, 'Дома появятся позже.');
 
-  root.querySelector('#houseBtn').addEventListener('click', () => {
-    setInfo(root, 'Дома: покупка и аренда появятся позже.');
-  });
-
-  root.querySelector('#settingsBtn').addEventListener('click', () => {
-    setInfo(root, 'Настройки: интерфейс, звук и управление добавим позже.');
-  });
+  root.querySelector('#settingsBtn').onclick = () =>
+    info(root, 'Настройки скоро будут доступны.');
 });
 
-function setInfo(root, text) {
+function info(root, text) {
   root.querySelector('#homeInfo').textContent = text;
 }
 
 function resetProgress() {
   localStorage.removeItem('player');
-
   state.nickname = null;
   state.city = null;
   state.cityName = null;
   state.regionId = null;
-
   show('welcome1');
 }
