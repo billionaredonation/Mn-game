@@ -9,13 +9,13 @@ register('welcome2', (root) => {
       <h2>Придумайте ник</h2>
 
       <p class="welcome2-subtitle">
-        От 3 до 6 букв. Например: Yana або Богдан
+        От 3 до 8 букв. Например: Yana або Богдан
       </p>
 
       <input
         id="nicknameInput"
         type="text"
-        maxlength="6"
+        maxlength="8"
         placeholder="Ваш ник"
         autocomplete="off"
       />
@@ -32,20 +32,27 @@ register('welcome2', (root) => {
   const error = root.querySelector('#nicknameError');
   const nextBtn = root.querySelector('#nextBtn');
 
-function isValidNickname(nick) {
-  if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,6}$/.test(nick)) return false;
+  function isValidNickname(nick) {
+    if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,8}$/.test(nick)) return false;
 
-  // aaa, yyy, БББ
-  if (/^(.)\1+$/i.test(nick)) return false;
+    const lower = nick.toLowerCase();
 
-  // aaa внутри ника
-  if (/(.)\1\1/i.test(nick)) return false;
+    // yyy, aaa, ыыы
+    if (/^(.)\1+$/.test(lower)) return false;
 
-  // dsd, выв, aba
-  if (/^(.).\1$/i.test(nick)) return false;
+    // dsd, выв, фыф
+    if (lower.length === 3 && /^(.).\1$/.test(lower)) return false;
 
-  return true;
-}
+    // мусор с клавиатуры
+    const badPatterns = [
+      'фыв', 'йцу', 'ячс', 'ыва', 'рол', 'олд',
+      'qwe', 'asd', 'zxc', 'wer', 'sdf', 'xcv'
+    ];
+
+    if (badPatterns.includes(lower)) return false;
+
+    return true;
+  }
 
   function validateNickname() {
     const value = input.value.trim();
@@ -58,7 +65,7 @@ function isValidNickname(nick) {
     }
 
     if (!isValidNickname(value)) {
-      error.textContent = 'Ник должен быть 3-6 букв и похож на имя. Например: Yana або Богдан';
+      error.textContent = 'Ник должен быть 3-8 букв и похож на имя. Например: Yana або Богдан';
       nextBtn.disabled = true;
       nextBtn.classList.remove('active');
       return false;
