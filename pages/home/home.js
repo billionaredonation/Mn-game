@@ -4,128 +4,103 @@ import { state } from '../../src/state.js';
 const CITY_MAPS = {
   vinnytsia: {
     name: 'Винница',
-    map: './VinitsaMap.png?v=28'
+    map: './VinitsaMap.png?v=29'
   },
   lutsk: {
     name: 'Луцк',
-    map: './LutskMap.png?v=28'
+    map: './LutskMap.png?v=29'
   },
   luhansk: {
     name: 'Луганск',
-    map: './LuganskMap.png?v=28'
+    map: './LuganskMap.png?v=29'
   },
   dnipro: {
     name: 'Днепр',
-    map: './DneprMap.png?v=28'
+    map: './DneprMap.png?v=29'
   },
   donetsk: {
     name: 'Донецк',
-    map: './DonetskMap.png?v=28'
+    map: './DonetskMap.png?v=29'
   },
   zhytomyr: {
     name: 'Житомир',
-    map: './ZutomyrMap.png?v=28'
+    map: './ZutomyrMap.png?v=29'
   },
   uzhhorod: {
     name: 'Ужгород',
-    map: './UzgorodMap.png?v=28'
+    map: './UzgorodMap.png?v=29'
   },
   zaporizhzhia: {
     name: 'Запорожье',
-    map: './ZaporizyaMap.png?v=28'
+    map: './ZaporizyaMap.png?v=29'
   },
   'ivano-frankivsk': {
     name: 'Ивано-Франковск',
-    map: './IvanoFrankovskMap.png?v=28'
+    map: './IvanoFrankovskMap.png?v=29'
   },
   kyiv: {
     name: 'Киев',
-    map: './KiyvMap.png?v=28'
+    map: './KiyvMap.png?v=29'
   },
   kropyvnytskyi: {
     name: 'Кропивницкий',
-    map: './KropivnitskyiMap.png?v=28'
+    map: './KropivnitskyiMap.png?v=29'
   },
   crimea: {
     name: 'Крым',
-    map: './KrymMap.png?v=28'
+    map: './KrymMap.png?v=29'
   },
   lviv: {
     name: 'Львов',
-    map: './LvivMap.png?v=28'
+    map: './LvivMap.png?v=29'
   },
   mykolaiv: {
     name: 'Николаев',
-    map: './NikolaevMap.png?v=28'
+    map: './NikolaevMap.png?v=29'
   },
   odesa: {
     name: 'Одесса',
-    map: './OdessaMap.png?v=28'
+    map: './OdessaMap.png?v=29'
   },
   poltava: {
     name: 'Полтава',
-    map: './PoltavaMap.png?v=28'
+    map: './PoltavaMap.png?v=29'
   },
   rivne: {
     name: 'Ровно',
-    map: './RovnoMap.png?v=28'
+    map: './RovnoMap.png?v=29'
   },
   sumy: {
     name: 'Сумы',
-    map: './SumyMap.png?v=28'
+    map: './SumyMap.png?v=29'
   },
   ternopil: {
     name: 'Тернополь',
-    map: './TernopilMap.png?v=28'
+    map: './TernopilMap.png?v=29'
   },
   kharkiv: {
     name: 'Харьков',
-    map: './KharkivMap.png?v=28'
+    map: './KharkivMap.png?v=29'
   },
   kherson: {
     name: 'Херсон',
-    map: './KhersonMap.png?v=28'
+    map: './KhersonMap.png?v=29'
   },
   khmelnytskyi: {
     name: 'Хмельницкий',
-    map: './KhmelnitskiyMap.png?v=28'
+    map: './KhmelnitskiyMap.png?v=29'
   },
   cherkasy: {
     name: 'Черкассы',
-    map: './CherkasyMap.png?v=28'
+    map: './CherkasyMap.png?v=29'
   },
   chernihiv: {
     name: 'Чернигов',
-    map: './ChernigovMap.png?v=28'
+    map: './ChernigovMap.png?v=29'
   },
   chernivtsi: {
     name: 'Черновцы',
-    map: './ChernivtsiMap.png?v=28'
-  },
-
-  /*
-    Отдельные дубли/варианты на случай, если state.city вдруг сохранён
-    старым или другим названием. Это не лишние города, а страховка.
-  */
-  zaporizya: {
-    name: 'Запорожье',
-    map: './ZaporizyaMap.png?v=28'
-  },
-  zaporozie: {
-    name: 'Запорожье',
-    map: './ZaporizyaMap.png?v=28'
-  },
-  nikolaev: {
-    name: 'Николаев',
-    map: './NikolaevMap.png?v=28'
-  },
-  odessa: {
-    name: 'Одесса',
-    map: './OdessaMap.png?v=28'
-  },
-  kiyv: {
-    name: 'Киев',
-    map: './KiyvMap.png?v=28'
+    map: './ChernivtsiMap.png?v=29'
   }
 };
 
