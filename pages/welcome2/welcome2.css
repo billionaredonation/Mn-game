@@ -1,6 +1,18 @@
 .welcome2 {
   background: #1d1f21;
   color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.welcome2-card {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
 }
 
 .welcome2 h2 {
@@ -9,9 +21,15 @@
   font-weight: 800;
 }
 
+.welcome2-subtitle {
+  margin: 0 0 18px;
+  font-size: 16px;
+  color: #d7d7d7;
+  line-height: 1.4;
+}
+
 .welcome2 input {
   width: 100%;
-  max-width: 320px;
   padding: 14px 16px;
   font-size: 16px;
   color: #ffffff;
@@ -20,8 +38,45 @@
   border-radius: 10px;
   outline: none;
   box-sizing: border-box;
+  transition: 0.2s;
 }
 
 .welcome2 input:focus {
   border-color: #0088cc;
+  box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.2);
+}
+
+.welcome2-error {
+  min-height: 22px;
+  margin: 12px 0 18px;
+  font-size: 14px;
+  color: #ff6b6b;
+}
+
+.btn {
+  min-width: 140px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  background: #0088cc;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
