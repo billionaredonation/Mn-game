@@ -4,7 +4,7 @@ import { state } from './state.js';
 import '../pages/welcome1/welcome1.js?v=50';
 import '../pages/welcome2/welcome2.js?v=50';
 import '../pages/welcome3/welcome3.js?v=50';
-import '../pages/home/home.js?v=47';
+import '../pages/home/home.js?v=50';
 
 window.Telegram?.WebApp?.expand();
 
