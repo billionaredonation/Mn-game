@@ -60,7 +60,6 @@ register('welcome2', (root) => {
   }
 
   input.addEventListener('input', () => {
-    input.value = input.value.replace(/[^A-Za-zА-Яа-яЁёІіЇїЄєҐґ]/g, '');
     validateNickname();
   });
 
