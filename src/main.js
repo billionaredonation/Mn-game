@@ -1,10 +1,10 @@
-import { show } from './router.js?v=43';
-import { state } from './state.js?v=43';
+import { show } from './router.js';
+import { state } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=43';
-import '../pages/welcome2/welcome2.js?v=43';
-import '../pages/welcome3/welcome3.js?v=44';
-import '../pages/home/home.js?v=43';
+import '../pages/welcome1/welcome1.js?v=46';
+import '../pages/welcome2/welcome2.js?v=46';
+import '../pages/welcome3/welcome3.js?v=46';
+import '../pages/home/home.js?v=46';
 
 window.Telegram?.WebApp?.expand();
 
