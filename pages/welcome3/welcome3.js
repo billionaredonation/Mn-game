@@ -40,97 +40,85 @@ register('welcome3', (root) => {
     <div class="welcome3-loader" id="welcome3Loader">
       <div class="loader-logo">MN</div>
       <div class="loader-title">Загрузка карты</div>
-      <div class="loader-subtitle">Подготавливаем области Украины...</div>
-      <div class="loader-bar"><span></span></div>
+      <div class="loader-text">Подготавливаем области Украины...</div>
     </div>
 
-    <h2>Выбери стартовый город</h2>
-
-    <p class="welcome3-subtitle">
-      Открой карту, найди область и подтверди выбор
-    </p>
-
-    <div class="compact-map-shell">
-      <div class="compact-map-inner">
-        <img class="compact-map-image" src="${MAP_IMG}" alt="Карта Украины" />
-        <div class="compact-regions-layer" id="compactRegionsLayer">
-          <div class="regions-loading">Загрузка...</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="city-selection-box">
-      <p id="citySelectionText" class="city-selection-text">
-        Город пока не выбран
-      </p>
-    </div>
-
-    <button class="btn open-map-btn" id="openMapBtn">
-      Открыть карту
-    </button>
-
-    <button class="btn welcome3-next-btn" id="nextBtn" disabled>
-      Далее
-    </button>
-
-    <div class="map-modal hidden" id="mapModal">
-      <div class="map-modal-header">
-        <div>
-          <h3>Выбор стартового города</h3>
-          <p id="modalHint">
-            ПК: левая кнопка выбирает область, правая кнопка двигает карту. Телефон: двигай пальцем, приближай двумя пальцами.
-          </p>
-        </div>
-
-        <button class="map-modal-close" id="closeMapBtn" type="button">×</button>
+    <section class="welcome3-screen">
+      <div class="welcome3-header">
+        <h2>Выбери стартовый город</h2>
+        <p>Открой карту, найди область и подтверди выбор</p>
       </div>
 
-      <div class="full-map-viewport" id="fullMapViewport">
-        <div class="full-map-content" id="fullMapContent">
-          <div class="full-map-inner">
-            <img class="full-map-image" src="${MAP_IMG}" alt="Карта Украины" />
-            <div class="full-regions-layer" id="fullRegionsLayer">
-              <div class="regions-loading">Загрузка областей...</div>
-            </div>
+      <div class="compact-map-card">
+        <div class="compact-map">
+          <img class="compact-map-image" src="${MAP_IMG}" alt="Карта Украины" />
+          <div class="compact-regions-layer" id="compactRegionsLayer">
+            <div class="map-loading">Загрузка...</div>
           </div>
         </div>
       </div>
 
-      <div class="modal-selection-box">
-        <p id="modalSelectionText">Выбери область на карте</p>
+      <div class="city-selection-box">
+        <span id="citySelectionText">Город пока не выбран</span>
       </div>
 
-      <button class="btn confirm-city-btn" id="confirmCityBtn" disabled>
-        Подтвердить выбор
-      </button>
+      <div class="welcome3-actions">
+        <button class="open-map-btn" id="openMapBtn" type="button">Открыть карту</button>
+        <button class="next-btn" id="nextBtn" type="button" disabled>Далее</button>
+      </div>
+    </section>
+
+    <div class="map-modal hidden" id="mapModal">
+      <div class="map-modal-panel">
+        <div class="map-modal-header">
+          <div>
+            <h3>Выбор стартового города</h3>
+            <p>ПК: левая кнопка выбирает область, правая кнопка двигает карту. Телефон: приближай двумя пальцами.</p>
+          </div>
+
+          <button class="close-map-btn" id="closeMapBtn" type="button">×</button>
+        </div>
+
+        <div class="full-map-viewport" id="fullMapViewport">
+          <div class="full-map-content" id="fullMapContent">
+            <img class="full-map-image" src="${MAP_IMG}" alt="Карта Украины" />
+            <div class="full-regions-layer" id="fullRegionsLayer">
+              <div class="map-loading">Загрузка областей...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-selection-box">
+          <span id="modalSelectionText">Выбери область на карте</span>
+          <small id="modalHint"></small>
+        </div>
+
+        <button class="confirm-city-btn" id="confirmCityBtn" type="button" disabled>
+          Подтвердить выбор
+        </button>
+      </div>
     </div>
   `;
 
   const loader = root.querySelector('#welcome3Loader');
-
   const compactRegionsLayer = root.querySelector('#compactRegionsLayer');
   const fullRegionsLayer = root.querySelector('#fullRegionsLayer');
-
   const citySelectionText = root.querySelector('#citySelectionText');
   const modalSelectionText = root.querySelector('#modalSelectionText');
   const modalHint = root.querySelector('#modalHint');
-
   const nextBtn = root.querySelector('#nextBtn');
   const openMapBtn = root.querySelector('#openMapBtn');
   const mapModal = root.querySelector('#mapModal');
   const closeMapBtn = root.querySelector('#closeMapBtn');
   const confirmCityBtn = root.querySelector('#confirmCityBtn');
-
   const fullMapViewport = root.querySelector('#fullMapViewport');
   const fullMapContent = root.querySelector('#fullMapContent');
 
   let svgTextCache = '';
   let selectedRegion = null;
   let pendingRegion = null;
-
   let compactRegionElements = [];
   let fullRegionElements = [];
-
   let visualFrame = null;
   let transformFrame = null;
 
@@ -146,6 +134,7 @@ register('welcome3', (root) => {
   const gesture = {
     mode: 'none',
     moved: false,
+    isTouch: false,
     startX: 0,
     startY: 0,
     baseX: 0,
@@ -159,7 +148,9 @@ register('welcome3', (root) => {
   function makeRegionInfo(regionId) {
     const regionData = REGION_DATA[regionId];
 
-    if (!regionData) return null;
+    if (!regionData) {
+      return null;
+    }
 
     return {
       regionId,
@@ -171,6 +162,7 @@ register('welcome3', (root) => {
   function preloadImage(src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
+
       img.onload = resolve;
       img.onerror = reject;
       img.src = src;
@@ -219,7 +211,9 @@ register('welcome3', (root) => {
       allRegions.forEach((regionEl) => {
         const isActive = activeRegion && regionEl.id === activeRegion.regionId;
 
-        if (!isActive) return;
+        if (!isActive) {
+          return;
+        }
 
         if (pendingRegion) {
           regionEl.classList.add('is-pending');
@@ -253,7 +247,9 @@ register('welcome3', (root) => {
   }
 
   function previewRegion(regionInfo) {
-    if (!regionInfo) return;
+    if (!regionInfo) {
+      return;
+    }
 
     if (pendingRegion && pendingRegion.regionId === regionInfo.regionId) {
       setModalText(`Вы хотите выбрать ${regionInfo.cityName}?`);
@@ -279,15 +275,20 @@ register('welcome3', (root) => {
   }
 
   function choosePendingRegion(regionInfo) {
-    if (!regionInfo) return;
+    if (!regionInfo) {
+      return;
+    }
 
     pendingRegion = regionInfo;
     modalHint.textContent = `Выбрана область: ${regionInfo.cityName}`;
+
     updateVisualState();
   }
 
   function confirmRegion() {
-    if (!pendingRegion) return;
+    if (!pendingRegion) {
+      return;
+    }
 
     selectedRegion = pendingRegion;
     pendingRegion = null;
@@ -295,14 +296,18 @@ register('welcome3', (root) => {
     state.city = selectedRegion.cityId;
     state.cityName = selectedRegion.cityName;
     state.regionId = selectedRegion.regionId;
+
     save();
 
     mapModal.classList.add('hidden');
+
     updateVisualState();
   }
 
   function applyTransform() {
-    if (transformFrame) return;
+    if (transformFrame) {
+      return;
+    }
 
     transformFrame = requestAnimationFrame(() => {
       fullMapContent.style.transform = `
@@ -320,6 +325,7 @@ register('welcome3', (root) => {
     view.y = 0;
     view.scale = 1.55;
     view.rotate = 0;
+
     applyTransform();
   }
 
@@ -333,12 +339,16 @@ register('welcome3', (root) => {
 
   function clampView() {
     view.scale = Math.max(1, Math.min(3.4, view.scale));
+
+    // На телефонах rotate не нужен. Оставляем clamp для старого функционала,
+    // но сам мобильный pinch ниже больше не меняет rotate.
     view.rotate = Math.max(-18, Math.min(18, view.rotate));
   }
 
   function startPan(pointer) {
     gesture.mode = 'pan';
     gesture.moved = false;
+    gesture.isTouch = pointer.pointerType === 'touch' || pointer.pointerType === 'pen';
     gesture.startX = pointer.clientX;
     gesture.startY = pointer.clientY;
     gesture.baseX = view.x;
@@ -347,10 +357,19 @@ register('welcome3', (root) => {
 
   function startPinch() {
     const pts = [...pointers.values()];
-    if (pts.length < 2) return;
+
+    if (pts.length < 2) {
+      return;
+    }
 
     gesture.mode = 'pinch';
     gesture.moved = false;
+
+    // Главное исправление:
+    // если жест начался с touch/pen, rotation блокируем.
+    // Scale и move остаются.
+    gesture.isTouch = pts.some((point) => point.pointerType === 'touch' || point.pointerType === 'pen');
+
     gesture.startDistance = distance(pts[0], pts[1]);
     gesture.startAngle = angle(pts[0], pts[1]);
     gesture.baseScale = view.scale;
@@ -374,7 +393,8 @@ register('welcome3', (root) => {
 
     pointers.set(event.pointerId, {
       clientX: event.clientX,
-      clientY: event.clientY
+      clientY: event.clientY,
+      pointerType: event.pointerType
     });
 
     fullMapViewport.setPointerCapture?.(event.pointerId);
@@ -389,11 +409,14 @@ register('welcome3', (root) => {
   }
 
   function onPointerMove(event) {
-    if (!pointers.has(event.pointerId)) return;
+    if (!pointers.has(event.pointerId)) {
+      return;
+    }
 
     pointers.set(event.pointerId, {
       clientX: event.clientX,
-      clientY: event.clientY
+      clientY: event.clientY,
+      pointerType: event.pointerType
     });
 
     if (gesture.mode === 'pan' && pointers.size === 1) {
@@ -413,23 +436,32 @@ register('welcome3', (root) => {
 
     if (gesture.mode === 'pinch' && pointers.size >= 2) {
       const pts = [...pointers.values()];
+
       const currentDistance = distance(pts[0], pts[1]);
       const currentAngle = angle(pts[0], pts[1]);
-
       const scaleRatio = currentDistance / gesture.startDistance;
       const angleDelta = currentAngle - gesture.startAngle;
-
       const midX = (pts[0].clientX + pts[1].clientX) / 2;
       const midY = (pts[0].clientY + pts[1].clientY) / 2;
 
       view.scale = gesture.baseScale * scaleRatio;
-      view.rotate = gesture.baseRotate + angleDelta;
+
+      // ФИКС:
+      // На мобилке карта больше НЕ вращается от двух пальцев.
+      // На ПК старый rotate-функционал сохранён.
+      if (gesture.isTouch) {
+        view.rotate = 0;
+      } else {
+        view.rotate = gesture.baseRotate + angleDelta;
+      }
 
       view.x = gesture.baseX + (midX - gesture.startX);
       view.y = gesture.baseY + (midY - gesture.startY);
 
       clampView();
+
       gesture.moved = true;
+
       applyTransform();
     }
   }
@@ -439,12 +471,19 @@ register('welcome3', (root) => {
 
     if (pointers.size === 1) {
       const remainingPointer = [...pointers.values()][0];
-      startPan(remainingPointer);
+
+      startPan({
+        clientX: remainingPointer.clientX,
+        clientY: remainingPointer.clientY,
+        pointerType: remainingPointer.pointerType
+      });
+
       return;
     }
 
     if (pointers.size === 0) {
       gesture.mode = 'none';
+      gesture.isTouch = false;
     }
 
     fullMapViewport.releasePointerCapture?.(event.pointerId);
@@ -466,10 +505,12 @@ register('welcome3', (root) => {
   function prepareSvg(svg, mode) {
     svg.classList.add('ukraine-regions-svg');
     svg.classList.add(mode);
+
     svg.removeAttribute('width');
     svg.removeAttribute('height');
 
     const pointGroups = svg.querySelectorAll('#points, #label_points');
+
     pointGroups.forEach((group) => {
       group.style.display = 'none';
     });
@@ -488,14 +529,12 @@ register('welcome3', (root) => {
     }
 
     path.classList.add('is-selectable');
+
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
 
-    /*
-      ВАЖНО:
-      SVG path с прозрачной заливкой на некоторых браузерах может плохо ловить клик.
-      Поэтому принудительно включаем обработку событий всей формы.
-    */
+    // Важно: SVG path с прозрачной заливкой на некоторых браузерах
+    // может плохо ловить клик. Поэтому включаем события всей формы.
     path.style.pointerEvents = 'all';
 
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
@@ -509,16 +548,12 @@ register('welcome3', (root) => {
 
       path.addEventListener('mouseenter', () => previewRegion(regionInfo));
       path.addEventListener('mouseleave', resetPreview);
-
       path.addEventListener('focus', () => previewRegion(regionInfo));
       path.addEventListener('blur', resetPreview);
 
       path.addEventListener('pointerdown', (event) => {
-        /*
-          ПК:
-          левая кнопка по области — это выбор, не движение карты.
-          правая кнопка должна всплывать выше и двигать карту.
-        */
+        // ПК: левая кнопка по области — выбор, не движение карты.
+        // Правая кнопка всплывает выше и двигает карту.
         if (event.pointerType === 'mouse' && event.button === 0) {
           event.preventDefault();
           event.stopPropagation();
@@ -529,7 +564,9 @@ register('welcome3', (root) => {
         const isMouseLeft = event.pointerType === 'mouse' && event.button === 0;
         const isTouchTap = event.pointerType !== 'mouse' && !gesture.moved;
 
-        if (!isMouseLeft && !isTouchTap) return;
+        if (!isMouseLeft && !isTouchTap) {
+          return;
+        }
 
         event.preventDefault();
         event.stopPropagation();
@@ -538,14 +575,14 @@ register('welcome3', (root) => {
       });
 
       path.addEventListener('click', (event) => {
-        /*
-          Дубль для браузеров, которые стабильно отдают click,
-          но без конфликтов с drag.
-        */
+        // Дубль для браузеров, которые стабильно отдают click,
+        // но без конфликтов с drag.
         event.preventDefault();
         event.stopPropagation();
 
-        if (event.detail === 0) return;
+        if (event.detail === 0) {
+          return;
+        }
 
         choosePendingRegion(regionInfo);
       });
@@ -596,8 +633,14 @@ register('welcome3', (root) => {
 
       loader.classList.add('is-hidden');
 
-      compactRegionsLayer.innerHTML = `<div class="regions-error">Ошибка загрузки SVG</div>`;
-      fullRegionsLayer.innerHTML = `<div class="regions-error">Ошибка загрузки SVG</div>`;
+      compactRegionsLayer.innerHTML = `
+        <div class="map-error">Ошибка загрузки SVG</div>
+      `;
+
+      fullRegionsLayer.innerHTML = `
+        <div class="map-error">Ошибка загрузки SVG</div>
+      `;
+
       setMainText('Ошибка загрузки карты областей');
     }
   }
@@ -613,7 +656,9 @@ register('welcome3', (root) => {
 
   closeMapBtn.addEventListener('click', () => {
     mapModal.classList.add('hidden');
+
     pendingRegion = null;
+
     updateVisualState();
   });
 
