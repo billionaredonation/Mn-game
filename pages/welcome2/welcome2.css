@@ -38,12 +38,10 @@
   border-radius: 10px;
   outline: none;
   box-sizing: border-box;
-  transition: 0.2s;
 }
 
 .welcome2 input:focus {
   border-color: #0088cc;
-  box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.2);
 }
 
 .welcome2-error {
@@ -53,7 +51,7 @@
   color: #ff6b6b;
 }
 
-.btn {
+.welcome2 .btn {
   min-width: 140px;
   padding: 14px 24px;
   border: none;
@@ -63,20 +61,13 @@
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
-  transition: 0.2s;
 }
 
-.btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
-}
-
-.btn:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn:disabled {
-  opacity: 0.45;
+.welcome2 .btn:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
-  pointer-events: none;
+}
+
+.welcome2 .btn.active {
+  opacity: 1;
 }
