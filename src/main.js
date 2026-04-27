@@ -1,8 +1,8 @@
 import { show } from './router.js';
 import { state } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=37';
-import '../pages/welcome2/welcome2.js?v=41';
+import '../pages/welcome1/welcome1.js?v=38';
+import '../pages/welcome2/welcome2.js?v=42';
 import '../pages/welcome3/welcome3.js?v=30';
 import '../pages/home/home.js?v=32';
 
