@@ -32,18 +32,20 @@ register('welcome2', (root) => {
   const error = root.querySelector('#nicknameError');
   const nextBtn = root.querySelector('#nextBtn');
 
-  function isValidNickname(nick) {
-    // 3-6 букв: латиница, кириллица, украинские буквы
-    if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,6}$/.test(nick)) return false;
+function isValidNickname(nick) {
+  if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,6}$/.test(nick)) return false;
 
-    // запрещает aaa, yyy, БББ
-    if (/^(.)\1+$/i.test(nick)) return false;
+  // aaa, yyy, БББ
+  if (/^(.)\1+$/i.test(nick)) return false;
 
-    // запрещает 3 одинаковые буквы подряд
-    if (/(.)\1\1/i.test(nick)) return false;
+  // aaa внутри ника
+  if (/(.)\1\1/i.test(nick)) return false;
 
-    return true;
-  }
+  // dsd, выв, aba
+  if (/^(.).\1$/i.test(nick)) return false;
+
+  return true;
+}
 
   function validateNickname() {
     const value = input.value.trim();
