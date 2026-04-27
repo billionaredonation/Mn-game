@@ -24,7 +24,9 @@ register('welcome1', (root) => {
     </div>
   `;
 
-  root.querySelector('#nextBtn').addEventListener('click', () => {
+  const nextBtn = root.querySelector('#nextBtn');
+
+  nextBtn.addEventListener('click', () => {
     show('welcome2');
   });
 });
