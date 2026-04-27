@@ -42,11 +42,11 @@ register('welcome2', (root) => {
       return false;
     }
 
-    if (value.length < 3) {
-      error.textContent = 'Ник должен быть минимум 3 буквы';
-      nextBtn.disabled = true;
-      nextBtn.classList.remove('active');
-      return false;
+  if (value.length > 0 && value.length < 3) {
+    error.textContent = 'Ник должен быть минимум 3 буквы';
+    nextBtn.disabled = true;
+    nextBtn.classList.remove('active');
+    return false;
     }
 
     if (value.length > 8) {
