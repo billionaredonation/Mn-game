@@ -1,74 +1,30 @@
 import { register, show } from '../../src/router.js';
-import { state, save } from '../../src/state.js';
 
-register('welcome2', (root) => {
-  root.className = 'page welcome2';
+register('welcome1', (root) => {
+  root.className = 'page welcome1';
 
   root.innerHTML = `
-    <div class="welcome2-card">
-      <h2>Придумайте ник</h2>
+    <div class="welcome1-card">
+      <h1>MN</h1>
 
-      <p class="welcome2-subtitle">
-        От 3 до 8 букв. Например: Yana або Богдан
+      <p>
+        MN — RPG-світ з елементами roleplay на основі реальних мап України
+        та українських міст.
       </p>
 
-      <input
-        id="nicknameInput"
-        type="text"
-        maxlength="8"
-        placeholder="Ваш ник"
-        autocomplete="off"
-      />
+      <p>
+        У майбутньому буде додано онлайн.
+      </p>
 
-      <p class="welcome2-error" id="nicknameError"></p>
+      <h2>Ласкаво просимо!</h2>
 
-      <button class="btn" id="nextBtn" disabled>
+      <button class="btn" id="nextBtn">
         Далі
       </button>
     </div>
   `;
 
-  const input = root.querySelector('#nicknameInput');
-  const error = root.querySelector('#nicknameError');
-  const nextBtn = root.querySelector('#nextBtn');
-
-  function isValidNickname(nick) {
-    return /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,8}$/.test(nick);
-  }
-
-  function validateNickname() {
-    const value = input.value.trim();
-
-    if (!value) {
-      error.textContent = '';
-      nextBtn.disabled = true;
-      nextBtn.classList.remove('active');
-      return false;
-    }
-
-    if (!isValidNickname(value)) {
-      error.textContent = 'Ник должен быть от 3 до 8 букв без цифр и символов';
-      nextBtn.disabled = true;
-      nextBtn.classList.remove('active');
-      return false;
-    }
-
-    error.textContent = '';
-    nextBtn.disabled = false;
-    nextBtn.classList.add('active');
-    return true;
-  }
-
-  input.addEventListener('input', () => {
-    validateNickname();
-  });
-
-  nextBtn.addEventListener('click', () => {
-    if (!validateNickname()) return;
-
-    state.nickname = input.value.trim();
-    save();
-
-    show('welcome3');
+  root.querySelector('#nextBtn').addEventListener('click', () => {
+    show('welcome2');
   });
 });
