@@ -9,7 +9,7 @@ register('welcome2', (root) => {
       <h2>Придумайте ник</h2>
 
       <p class="welcome2-subtitle">
-        От 3 до 6 символов. Например: Yana або Богдан
+        От 3 до 6 букв. Например: Yana або Богдан
       </p>
 
       <input
@@ -32,7 +32,18 @@ register('welcome2', (root) => {
   const error = root.querySelector('#nicknameError');
   const nextBtn = root.querySelector('#nextBtn');
 
-  const nicknameRegex = /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,6}$/;
+  function isValidNickname(nick) {
+    // 3-6 букв: латиница, кириллица, украинские буквы
+    if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,6}$/.test(nick)) return false;
+
+    // запрещает aaa, yyy, БББ
+    if (/^(.)\1+$/i.test(nick)) return false;
+
+    // запрещает 3 одинаковые буквы подряд
+    if (/(.)\1\1/i.test(nick)) return false;
+
+    return true;
+  }
 
   function validateNickname() {
     const value = input.value.trim();
@@ -44,8 +55,8 @@ register('welcome2', (root) => {
       return false;
     }
 
-    if (!nicknameRegex.test(value)) {
-      error.textContent = 'Ник должен быть от 3 до 6 букв без символов и цифр';
+    if (!isValidNickname(value)) {
+      error.textContent = 'Ник должен быть 3-6 букв и похож на имя. Например: Yana або Богдан';
       nextBtn.disabled = true;
       nextBtn.classList.remove('active');
       return false;
