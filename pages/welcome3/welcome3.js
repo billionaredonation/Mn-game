@@ -34,19 +34,28 @@ const REGION_DATA = {
 };
 
 register('welcome3', (root) => {
-  root.className = 'page welcome3';
+  root.className = 'page welcome-page welcome3';
 
   root.innerHTML = `
+    <div class="welcome-bg">
+      <div class="welcome-orb welcome-orb-1"></div>
+      <div class="welcome-orb welcome-orb-2"></div>
+    </div>
+
     <div class="welcome3-loader" id="welcome3Loader">
       <div class="loader-logo">MN</div>
       <div class="loader-title">Загрузка карты</div>
       <div class="loader-text">Подготавливаем области Украины...</div>
+      <div class="loader-bar"><span></span></div>
     </div>
 
-    <section class="welcome3-screen">
-      <div class="welcome3-header">
+    <section class="welcome-card welcome3-card">
+      <div class="welcome-logo">MN</div>
+
+      <div class="welcome-header">
+        <p class="welcome-step">Шаг 3 / 3</p>
         <h2>Выбери стартовый город</h2>
-        <p>Открой карту, найди область и подтверди выбор</p>
+        <p>Открой карту, найди область и подтверди выбор.</p>
       </div>
 
       <div class="compact-map-card">
@@ -62,9 +71,14 @@ register('welcome3', (root) => {
         <span id="citySelectionText">Город пока не выбран</span>
       </div>
 
-      <div class="welcome3-actions">
-        <button class="open-map-btn" id="openMapBtn" type="button">Открыть карту</button>
-        <button class="next-btn" id="nextBtn" type="button" disabled>Далее</button>
+      <div class="welcome-actions">
+        <button class="welcome-btn secondary" id="openMapBtn" type="button">
+          Открыть карту
+        </button>
+
+        <button class="welcome-btn primary" id="nextBtn" type="button" disabled>
+          Далее
+        </button>
       </div>
     </section>
 
@@ -76,7 +90,9 @@ register('welcome3', (root) => {
             <p>ПК: левая кнопка выбирает область, правая кнопка двигает карту. Телефон: приближай двумя пальцами.</p>
           </div>
 
-          <button class="close-map-btn" id="closeMapBtn" type="button">×</button>
+          <button class="close-map-btn" id="closeMapBtn" type="button" aria-label="Закрыть карту">
+            ×
+          </button>
         </div>
 
         <div class="full-map-viewport" id="fullMapViewport">
@@ -93,7 +109,7 @@ register('welcome3', (root) => {
           <small id="modalHint"></small>
         </div>
 
-        <button class="confirm-city-btn" id="confirmCityBtn" type="button" disabled>
+        <button class="welcome-btn primary confirm-city-btn" id="confirmCityBtn" type="button" disabled>
           Подтвердить выбор
         </button>
       </div>
@@ -339,9 +355,6 @@ register('welcome3', (root) => {
 
   function clampView() {
     view.scale = Math.max(1, Math.min(3.4, view.scale));
-
-    // На телефонах rotate не нужен. Оставляем clamp для старого функционала,
-    // но сам мобильный pinch ниже больше не меняет rotate.
     view.rotate = Math.max(-18, Math.min(18, view.rotate));
   }
 
@@ -364,12 +377,7 @@ register('welcome3', (root) => {
 
     gesture.mode = 'pinch';
     gesture.moved = false;
-
-    // Главное исправление:
-    // если жест начался с touch/pen, rotation блокируем.
-    // Scale и move остаются.
     gesture.isTouch = pts.some((point) => point.pointerType === 'touch' || point.pointerType === 'pen');
-
     gesture.startDistance = distance(pts[0], pts[1]);
     gesture.startAngle = angle(pts[0], pts[1]);
     gesture.baseScale = view.scale;
@@ -446,9 +454,6 @@ register('welcome3', (root) => {
 
       view.scale = gesture.baseScale * scaleRatio;
 
-      // ФИКС:
-      // На мобилке карта больше НЕ вращается от двух пальцев.
-      // На ПК старый rotate-функционал сохранён.
       if (gesture.isTouch) {
         view.rotate = 0;
       } else {
@@ -532,9 +537,6 @@ register('welcome3', (root) => {
 
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
-
-    // Важно: SVG path с прозрачной заливкой на некоторых браузерах
-    // может плохо ловить клик. Поэтому включаем события всей формы.
     path.style.pointerEvents = 'all';
 
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
@@ -552,8 +554,6 @@ register('welcome3', (root) => {
       path.addEventListener('blur', resetPreview);
 
       path.addEventListener('pointerdown', (event) => {
-        // ПК: левая кнопка по области — выбор, не движение карты.
-        // Правая кнопка всплывает выше и двигает карту.
         if (event.pointerType === 'mouse' && event.button === 0) {
           event.preventDefault();
           event.stopPropagation();
@@ -575,8 +575,6 @@ register('welcome3', (root) => {
       });
 
       path.addEventListener('click', (event) => {
-        // Дубль для браузеров, которые стабильно отдают click,
-        // но без конфликтов с drag.
         event.preventDefault();
         event.stopPropagation();
 
@@ -685,3 +683,4 @@ register('welcome3', (root) => {
 
   initRegions();
 });
+
