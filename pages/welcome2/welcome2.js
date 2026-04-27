@@ -52,6 +52,7 @@ register('welcome2', (root) => {
     if (!value) return setInvalid('');
     if (value.length < 3) return setInvalid('Ник должен быть минимум 3 буквы');
     if (value.length > 8) return setInvalid('Ник должен быть максимум 8 букв');
+
     if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]+$/.test(value)) {
       return setInvalid('Ник должен содержать только буквы');
     }
@@ -62,7 +63,6 @@ register('welcome2', (root) => {
   input.addEventListener('input', validateNickname);
 
   nextBtn.addEventListener('click', () => {
-    if (nextBtn.disabled) return;
     if (!validateNickname()) return;
 
     state.nickname = input.value.trim();
@@ -70,6 +70,9 @@ register('welcome2', (root) => {
 
     show('welcome3');
   });
+
+  validateNickname();
+});
 
   validateNickname();
 });
