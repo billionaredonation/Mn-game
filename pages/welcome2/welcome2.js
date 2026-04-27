@@ -33,21 +33,8 @@ register('welcome2', (root) => {
   const nextBtn = root.querySelector('#nextBtn');
 
   function isValidNickname(nick) {
-    if (!/^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,8}$/.test(nick)) return false;
-
-    const lower = nick.toLowerCase();
-
-    // yyy, aaa, ыыы
-    if (/^(.)\1+$/.test(lower)) return false;
-
-    // dsd, выв, фыф
-    if (lower.length === 3 && /^(.).\1$/.test(lower)) return false;
-
-    // мусор с клавиатуры
-    const badPatterns = [
-      'фыв', 'йцу', 'ячс', 'ыва', 'рол', 'олд',
-      'qwe', 'asd', 'zxc', 'wer', 'sdf', 'xcv'
-    ];
+  return /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,8}$/.test(nick);
+}
 
     if (badPatterns.includes(lower)) return false;
 
