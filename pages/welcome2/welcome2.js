@@ -33,12 +33,7 @@ register('welcome2', (root) => {
   const nextBtn = root.querySelector('#nextBtn');
 
   function isValidNickname(nick) {
-  return /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,8}$/.test(nick);
-}
-
-    if (badPatterns.includes(lower)) return false;
-
-    return true;
+    return /^[A-Za-zА-Яа-яЁёІіЇїЄєҐґ]{3,8}$/.test(nick);
   }
 
   function validateNickname() {
@@ -52,7 +47,7 @@ register('welcome2', (root) => {
     }
 
     if (!isValidNickname(value)) {
-      error.textContent = 'Ник должен быть 3-8 букв и похож на имя. Например: Yana або Богдан';
+      error.textContent = 'Ник должен быть от 3 до 8 букв без цифр и символов';
       nextBtn.disabled = true;
       nextBtn.classList.remove('active');
       return false;
