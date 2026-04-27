@@ -1,19 +1,493 @@
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #0b0d10;
+  color: #ffffff;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.welcome-page,
+.welcome1,
+.welcome2,
 .welcome3 {
-  background: #1d1f21;
+  min-height: 100vh;
+  padding: 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(59, 130, 246, 0.22), transparent 32%),
+    radial-gradient(circle at 82% 82%, rgba(34, 197, 94, 0.14), transparent 34%),
+    linear-gradient(180deg, #15171b 0%, #0b0d10 100%);
   color: #ffffff;
 }
 
-.welcome3 h2 {
-  margin: 0 0 10px;
-  font-size: 26px;
+.welcome-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.welcome-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(12px);
+  opacity: 0.45;
+}
+
+.welcome-orb-1 {
+  width: 180px;
+  height: 180px;
+  top: -70px;
+  left: -60px;
+  background: rgba(37, 99, 235, 0.45);
+}
+
+.welcome-orb-2 {
+  width: 210px;
+  height: 210px;
+  right: -80px;
+  bottom: -90px;
+  background: rgba(34, 197, 94, 0.28);
+}
+
+.welcome-card,
+.welcome1 > *:not(.welcome-bg),
+.welcome2 > *:not(.welcome-bg) {
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-card {
+  width: min(430px, 100%);
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+    rgba(17, 19, 24, 0.92);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(18px);
+}
+
+.welcome1,
+.welcome2 {
+  flex-direction: column;
+  text-align: center;
+  gap: 14px;
+}
+
+.welcome1::before,
+.welcome2::before {
+  content: "MN";
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, #2563eb, #16a34a);
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 950;
+  letter-spacing: -1px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+}
+
+.welcome1 h1,
+.welcome2 h1,
+.welcome1 h2,
+.welcome2 h2,
+.welcome-header h2 {
+  margin: 0;
+  font-size: clamp(26px, 7vw, 36px);
+  line-height: 1.02;
+  font-weight: 950;
+  letter-spacing: -1px;
+}
+
+.welcome1 p,
+.welcome2 p,
+.welcome-header p {
+  max-width: 380px;
+  margin: 0;
+  color: #c9d0dc;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.welcome-step {
+  margin-bottom: 8px !important;
+  color: #80a7ff !important;
+  font-size: 12px !important;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome-logo {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #2563eb, #16a34a);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 950;
+  letter-spacing: -1px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+}
+
+.welcome-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.welcome-header h2 {
+  margin-bottom: 10px;
+}
+
+.welcome-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.welcome-btn,
+.welcome1 button,
+.welcome2 button,
+.next-btn,
+.open-map-btn,
+.confirm-city-btn {
+  width: min(360px, 100%);
+  min-height: 52px;
+  padding: 0 18px;
+  border-radius: 18px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-weight: 850;
+  font-size: 16px;
+  line-height: 1;
+  transition:
+    transform 0.16s ease,
+    opacity 0.16s ease,
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.welcome1 button,
+.welcome2 button,
+.welcome-btn.primary,
+.next-btn,
+.confirm-city-btn {
+  background: linear-gradient(135deg, #2563eb, #16a34a);
+  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.28);
+}
+
+.welcome-btn.secondary,
+.open-map-btn {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.welcome-btn:active,
+.welcome1 button:active,
+.welcome2 button:active,
+.next-btn:active,
+.open-map-btn:active,
+.confirm-city-btn:active {
+  transform: scale(0.98);
+}
+
+.welcome-btn:disabled,
+.welcome1 button:disabled,
+.welcome2 button:disabled,
+.next-btn:disabled,
+.confirm-city-btn:disabled {
+  opacity: 0.42;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.welcome2 input,
+#nicknameInput {
+  width: min(360px, 100%);
+  height: 54px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 17px;
+  text-align: center;
+  transition: border 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.welcome2 input:focus,
+#nicknameInput:focus {
+  border-color: rgba(96, 165, 250, 0.78);
+  background: rgba(255, 255, 255, 0.11);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
+}
+
+.welcome2 input::placeholder,
+#nicknameInput::placeholder {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.error,
+.nickname-error,
+#nicknameError {
+  min-height: 18px;
+  margin-top: -2px;
+  color: #fb7185;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* welcome3 */
+
+.welcome3-card {
+  width: min(460px, 100%);
+}
+
+.compact-map-card {
+  width: 100%;
+  padding: 12px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.065);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+}
+
+.compact-map {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 0.76;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #11151b;
+}
+
+.compact-map-image,
+.full-map-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.compact-regions-layer,
+.full-regions-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
+.map-loading,
+.map-error {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #c9d0dc;
+  font-size: 14px;
+}
+
+.map-error {
+  color: #fb7185;
   font-weight: 800;
 }
 
-.welcome3-subtitle {
-  margin: 0 0 18px;
-  font-size: 15px;
-  color: #c9c9c9;
+.city-selection-box,
+.modal-selection-box {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  display: grid;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  font-weight: 800;
   text-align: center;
+}
+
+.modal-selection-box small {
+  min-height: 14px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.map-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 5, 8, 0.78);
+  backdrop-filter: blur(16px);
+}
+
+.map-modal.hidden {
+  display: none;
+}
+
+.map-modal-panel {
+  width: min(960px, 100%);
+  height: min(760px, 94vh);
+  padding: 16px;
+  border-radius: 28px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+    #111318;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.58);
+}
+
+.map-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.map-modal-header h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.map-modal-header p {
+  margin: 0;
+  color: #aeb7c5;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.close-map-btn {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.full-map-viewport {
+  position: relative;
+  min-height: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: #0b0f15;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  touch-action: none;
+}
+
+.full-map-content {
+  position: absolute;
+  inset: 0;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.ukraine-regions-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ukraine-region {
+  fill: rgba(96, 165, 250, 0.02);
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 1.2;
+  transition: fill 0.15s ease, stroke 0.15s ease, filter 0.15s ease;
+}
+
+.ukraine-region.is-selectable {
+  cursor: pointer;
+}
+
+.ukraine-region.is-selectable:hover,
+.ukraine-region.is-pending {
+  fill: rgba(37, 99, 235, 0.38);
+  stroke: rgba(147, 197, 253, 0.95);
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.55));
+}
+
+.ukraine-region.is-selected {
+  fill: rgba(34, 197, 94, 0.42);
+  stroke: rgba(134, 239, 172, 0.95);
+  filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.55));
+}
+
+.ukraine-region.is-disabled {
+  fill: transparent;
+  stroke: transparent;
+  pointer-events: none;
 }
 
 .welcome3-loader {
@@ -46,18 +520,18 @@
   background: linear-gradient(135deg, #2563eb, #16a34a);
   color: #ffffff;
   font-size: 26px;
-  font-weight: 900;
+  font-weight: 950;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
   animation: loaderPulse 1.25s ease-in-out infinite;
 }
 
 .loader-title {
   font-size: 22px;
-  font-weight: 900;
+  font-weight: 950;
   margin-bottom: 6px;
 }
 
-.loader-subtitle {
+.loader-text {
   font-size: 14px;
   color: #c9c9c9;
   margin-bottom: 18px;
@@ -81,7 +555,8 @@
 }
 
 @keyframes loaderPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
 
@@ -100,376 +575,90 @@
   }
 }
 
-/*
-  ПОДГОНКА SVG-ПОДСВЕТКИ ПОД PNG-КАРТУ
+@media (min-width: 520px) {
+  .welcome-actions {
+    grid-template-columns: 1fr 1fr;
+  }
 
-  Если подсветка правее нужного места:
-  --ua-svg-x делай меньше.
-
-  Если подсветка левее:
-  --ua-svg-x делай больше.
-
-  Если подсветка ниже:
-  --ua-svg-y делай меньше.
-
-  Если подсветка выше:
-  --ua-svg-y делай больше.
-*/
-.compact-map-shell,
-.full-map-inner {
-  --ua-svg-x: -3.5%;
-  --ua-svg-y: 0.1%;
-  --ua-svg-scale-x: 0.955;
-  --ua-svg-scale-y: 0.955;
-}
-
-.compact-map-shell {
-  position: relative;
-  width: min(94vw, 760px);
-  margin: 0 auto;
-  border: 2px solid #3a3d42;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #111;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-}
-
-.compact-map-inner {
-  position: relative;
-  width: 100%;
-}
-
-.compact-map-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  user-select: none;
-  pointer-events: none;
-}
-
-.compact-regions-layer,
-.full-regions-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  transform-origin: center center;
-  transform: translate(-0.6%, 0.7%) scale(0.992, 0.992);
-}
-
-.ukraine-regions-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.ukraine-region {
-  fill: transparent !important;
-  stroke: rgba(255, 255, 255, 0.22) !important;
-  stroke-width: 0.75 !important;
-  cursor: default;
-  transition:
-    fill 0.12s ease,
-    stroke 0.12s ease,
-    filter 0.12s ease;
-}
-
-.ukraine-region.is-selectable {
-  cursor: pointer;
-}
-
-.ukraine-regions-svg.compact .ukraine-region {
-  cursor: default !important;
-  pointer-events: none !important;
-}
-
-.ukraine-regions-svg.full .ukraine-region.is-selectable:hover,
-.ukraine-regions-svg.full .ukraine-region.is-selectable:focus {
-  fill: rgba(155, 155, 155, 0.36) !important;
-  stroke: rgba(255, 255, 255, 0.8) !important;
-  outline: none;
-}
-
-.ukraine-region.is-pending {
-  fill: rgba(175, 175, 175, 0.42) !important;
-  stroke: rgba(255, 255, 255, 0.9) !important;
-}
-
-.ukraine-region.is-selected {
-  fill: rgba(34, 197, 94, 0.48) !important;
-  stroke: rgba(120, 255, 170, 0.95) !important;
-}
-
-.ukraine-region.is-disabled {
-  pointer-events: none;
-}
-
-.regions-loading,
-.regions-error {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: max-content;
-  max-width: 80%;
-  transform: translate(-50%, -50%);
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.9);
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.regions-error {
-  background: rgba(153, 27, 27, 0.92);
-}
-
-.city-selection-box {
-  width: min(94vw, 760px);
-  margin: 16px auto 0;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: #24272b;
-  border: 1px solid #353941;
-}
-
-.city-selection-text {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.45;
-  color: #e5e7eb;
-  text-align: center;
-}
-
-.open-map-btn {
-  margin-top: 18px;
-  background: #2563eb;
-}
-
-.welcome3-next-btn {
-  margin-top: 12px;
-}
-
-.welcome3-next-btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.welcome3-next-btn.active {
-  background: #16a34a;
-}
-
-.map-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  padding: 14px;
-  background:
-    radial-gradient(circle at top, rgba(30, 41, 59, 0.98), rgba(10, 10, 10, 0.98));
-  box-sizing: border-box;
-}
-
-.map-modal.hidden {
-  display: none;
-}
-
-.map-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  width: min(100%, 980px);
-  margin: 0 auto 10px;
-}
-
-.map-modal-header h3 {
-  margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 900;
-}
-
-.map-modal-header p {
-  margin: 0;
-  color: #c9c9c9;
-  font-size: 14px;
-}
-
-.map-modal-close {
-  width: 42px;
-  height: 42px;
-  border: none;
-  border-radius: 12px;
-  background: rgba(239, 68, 68, 0.95);
-  color: #ffffff;
-  font-size: 28px;
-  line-height: 1;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.full-map-viewport {
-  position: relative;
-  flex: 1;
-  width: min(100%, 980px);
-  min-height: 260px;
-  margin: 0 auto;
-  border: 2px solid #3a3d42;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #050505;
-  cursor: grab;
-  touch-action: none;
-  perspective: 1000px;
-  box-shadow:
-    0 18px 50px rgba(0, 0, 0, 0.55),
-    inset 0 0 60px rgba(255, 255, 255, 0.04);
-}
-
-.full-map-viewport:active {
-  cursor: grabbing;
-}
-
-.full-map-content {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  transform-origin: center center;
-  transition: transform 0.04s linear;
-  will-change: transform;
-}
-
-.full-map-inner {
-  position: absolute;
-  inset: 0;
-}
-
-.full-map-inner::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08), transparent 36%),
-    linear-gradient(135deg, rgba(255,255,255,0.06), transparent 35%, rgba(0,0,0,0.18));
-  z-index: 4;
-  mix-blend-mode: screen;
-}
-
-.full-map-image {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  user-select: none;
-  pointer-events: none;
-}
-
-.modal-selection-box {
-  width: min(100%, 980px);
-  margin: 10px auto 0;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: #24272b;
-  border: 1px solid #353941;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-.modal-selection-box p {
-  margin: 0;
-  color: #e5e7eb;
-  font-size: 15px;
-}
-
-.confirm-city-btn {
-  width: min(100%, 360px);
-  margin: 10px auto 0;
-}
-
-.confirm-city-btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.confirm-city-btn.active {
-  background: #16a34a;
-}
-
-/* Оптимизация для слабых телефонов */
-.is-mobile .full-map-content,
-.low-performance .full-map-content {
-  transition: none;
-}
-
-.is-mobile .ukraine-region,
-.low-performance .ukraine-region {
-  transition: none !important;
-  filter: none !important;
-}
-
-.is-mobile .full-map-inner::after,
-.low-performance .full-map-inner::after {
-  display: none;
-}
-
-.is-mobile .full-map-viewport,
-.low-performance .full-map-viewport {
-  box-shadow: none;
-}
-
-.is-mobile .compact-map-shell,
-.low-performance .compact-map-shell {
-  box-shadow: none;
+  .confirm-city-btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
-  .welcome3 h2 {
-    font-size: 22px;
+  .welcome-page,
+  .welcome1,
+  .welcome2,
+  .welcome3 {
+    padding: 18px 12px;
+    align-items: stretch;
   }
 
-  .welcome3-subtitle {
-    font-size: 14px;
+  .welcome-card {
+    margin: auto 0;
+    padding: 18px;
+    border-radius: 24px;
   }
 
-  .city-selection-text {
-    font-size: 14px;
-  }
-
-  .ukraine-region {
-    stroke-width: 1 !important;
+  .welcome1,
+  .welcome2 {
+    justify-content: center;
   }
 
   .map-modal {
-    padding: 10px;
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .map-modal-panel {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    padding: 14px;
+    grid-template-rows: auto 1fr auto auto;
   }
 
   .map-modal-header h3 {
-    font-size: 19px;
+    font-size: 18px;
   }
 
   .map-modal-header p {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .full-map-viewport {
-    min-height: 360px;
-    border-radius: 16px;
+    border-radius: 20px;
+  }
+
+  .welcome-btn,
+  .welcome1 button,
+  .welcome2 button,
+  .next-btn,
+  .open-map-btn,
+  .confirm-city-btn {
+    min-height: 52px;
+    border-radius: 17px;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .welcome3-loader,
-  .loader-logo,
-  .loader-bar span,
-  .full-map-content,
-  .ukraine-region {
-    animation: none !important;
-    transition: none !important;
+@media (max-height: 700px) {
+  .welcome-card {
+    padding: 16px;
+  }
+
+  .welcome-logo {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 12px;
+    border-radius: 18px;
+  }
+
+  .welcome-header {
+    margin-bottom: 12px;
+  }
+
+  .compact-map {
+    aspect-ratio: 1 / 0.64;
   }
 }
