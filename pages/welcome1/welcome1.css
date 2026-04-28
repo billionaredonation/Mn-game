@@ -20,13 +20,29 @@
   margin: 0;
   padding: 13px 14px;
   border-radius: 18px;
-  background: var(--bg-card-soft);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #e7ecf5;
-  font-size: 14px;
-  line-height: 1.45;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.4;
 }
 
 .welcome1 .welcome-btn {
   width: 100%;
+}
+
+@media (max-width: 520px) {
+  .welcome1 {
+    padding: 18px;
+  }
+
+  .welcome1-info {
+    margin-top: 16px;
+  }
+
+  .welcome1-info p {
+    padding: 12px 13px;
+    font-size: 14px;
+  }
 }
