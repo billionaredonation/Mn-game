@@ -516,21 +516,23 @@ register('welcome3', (root) => {
     applyTransform();
   }
 
-  function prepareSvg(svg, mode) {
-    svg.classList.add('ukraine-regions-svg');
-    svg.classList.add(mode);
+function prepareSvg(svg, mode) {
+  svg.classList.add('ukraine-regions-svg');
+  svg.classList.add(mode);
 
-    svg.removeAttribute('width');
-    svg.removeAttribute('height');
+  svg.removeAttribute('width');
+  svg.removeAttribute('height');
 
-    const pointGroups = svg.querySelectorAll('#points, #label_points');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-    pointGroups.forEach((group) => {
-      group.style.display = 'none';
-    });
+  const pointGroups = svg.querySelectorAll('#points, #label_points');
 
-    return Array.from(svg.querySelectorAll('path[id], polygon[id]'));
-  }
+  pointGroups.forEach((group) => {
+    group.style.display = 'none';
+  });
+
+  return Array.from(svg.querySelectorAll('path[id], polygon[id]'));
+}
 
   function setupRegion(path, storage, mode) {
     const regionInfo = makeRegionInfo(path.id);
