@@ -415,3 +415,24 @@
     font-size: 13px;
   }
 }
+
+
+.ukraine-regions-svg rect,
+.ukraine-regions-svg line,
+.ukraine-regions-svg polyline,
+.ukraine-regions-svg ellipse,
+.ukraine-regions-svg circle,
+.ukraine-regions-svg text {
+  display: none !important;
+}
+
+.ukraine-region.is-disabled {
+  display: none !important;
+  fill: transparent !important;
+  stroke: transparent !important;
+  pointer-events: none !important;
+}
+
+.ukraine-regions-svg.full .ukraine-region.is-selectable {
+  pointer-events: all;
+}
