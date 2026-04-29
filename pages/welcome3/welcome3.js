@@ -522,16 +522,36 @@ function prepareSvg(svg, mode) {
 
   svg.removeAttribute('width');
   svg.removeAttribute('height');
-
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-  const pointGroups = svg.querySelectorAll('#points, #label_points');
-
-  pointGroups.forEach((group) => {
-    group.style.display = 'none';
+  // Сначала скрываем вообще всё внутри SVG
+  svg.querySelectorAll('*').forEach((el) => {
+    el.style.pointerEvents = 'none';
   });
 
-  return Array.from(svg.querySelectorAll('path[id], polygon[id]'));
+  // Скрываем служебные группы, точки, подписи и мусорные элементы
+  svg.querySelectorAll(
+    '#points, #label_points, text, circle, rect, line, polyline, ellipse'
+  ).forEach((el) => {
+    el.style.display = 'none';
+  });
+
+  // Берём только реальные path/polygon области
+  const regions = Array.from(svg.querySelectorAll('path[id], polygon[id]'));
+
+  regions.forEach((region) => {
+    const hasRegionData = Boolean(REGION_DATA[region.id]);
+
+    if (!hasRegionData) {
+      region.style.display = 'none';
+      return;
+    }
+
+    region.style.display = '';
+    region.style.pointerEvents = mode === 'full' ? 'all' : 'none';
+  });
+
+  return regions.filter((region) => REGION_DATA[region.id]);
 }
 
   function setupRegion(path, storage, mode) {
