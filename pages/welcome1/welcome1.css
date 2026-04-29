@@ -7,6 +7,7 @@
 }
 
 .welcome1-card {
+  width: min(430px, 100%);
   text-align: center;
 }
 
@@ -20,9 +21,9 @@
   margin: 0;
   padding: 13px 14px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.065);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 15px;
   font-weight: 750;
   line-height: 1.4;
@@ -30,6 +31,7 @@
 
 .welcome1 .welcome-btn {
   width: 100%;
+  margin-top: 2px;
 }
 
 @media (max-width: 520px) {
