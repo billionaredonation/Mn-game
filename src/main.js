@@ -1,6 +1,10 @@
 import { show } from './router.js';
 import { state } from './state.js';
 
+import { initRuntime } from './initRuntime.js';
+initRuntime();
+
+
 import '../pages/welcome1/welcome1.js?v=65';
 import '../pages/welcome2/welcome2.js?v=65';
 import '../pages/welcome3/welcome3.js?v=70';
