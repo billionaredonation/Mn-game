@@ -4,8 +4,12 @@ import { citiesBase } from '../../src/data/citiesBase.js';
 import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
 
 const MAP_IMG = './UkraineMap.png?v=9';
+
 const REGIONS_SVG = './ua.svg?v=5';
 
+
+const CITY_META = {
+  
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
   UA07: { cityId: 'lutsk', cityName: 'Луцк' },
@@ -62,6 +66,53 @@ const CITY_META = {
   chernihiv: { image: './Chernihiv.png', title: 'Чернігів', subtitle: 'Пиво, сільське господарство та ІТ-ініціативи.', property: 0, cars: 0, houses: 0, jobs: ['Пивзавод', 'Агро', 'ІТ-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
   chernivtsi: { image: './Chernivtsi.png', title: 'Чернівці', subtitle: 'Туризм, крафтові кавʼярні та креативні індустрії.', property: 0, cars: 0, houses: 0, jobs: ['Кавʼярня', 'Готель', 'Сувеніри'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
 
+const CITY_MAPS = {
+  vinnytsia: './VinitsaMap.png',
+  lutsk: './LutskMap.png',
+  luhansk: './LuganskMap.png',
+  dnipro: './DneprMap.png',
+  donetsk: './DonetskMap.png',
+  zhytomyr: './ZutomyrMap.png',
+  uzhhorod: './UzgorodMap.png',
+  zaporizhzhia: './Zaporozya.png',
+  'ivano-frankivsk': './IvanoFrankovsk.png',
+  kyiv: './KiyvMap.png',
+  kropyvnytskyi: './Kropivnitskyi.png',
+  crimea: './KrymMap.png',
+  lviv: './Lviv.png',
+  mykolaiv: './Nikolaev.png',
+  odesa: './Odessa.png',
+  poltava: './Poltava.png',
+  rivne: './Rovno.png',
+  sumy: './Sumy.png',
+  ternopil: './Ternopil.png',
+  kharkiv: './Kharkiv.png',
+  kherson: './Kherson.png',
+  khmelnytskyi: './Khmelnitskiy.png',
+  cherkasy: './CherkasyMap.png',
+  chernihiv: './ChernigovMap.png',
+  chernivtsi: './ChernivtsiMap.png'
+};
+
+const CITY_ID_ALIASES = {
+  odessa: 'odesa',
+  kiev: 'kyiv',
+  kiyv: 'kyiv',
+  zaporizhia: 'zaporizhzhia',
+  zaporizhzhya: 'zaporizhzhia',
+  zaporozhye: 'zaporizhzhia',
+  ivanoFrankivsk: 'ivano-frankivsk',
+  'ivano-frankovsk': 'ivano-frankivsk',
+  krym: 'crimea',
+  crimeaMap: 'crimea',
+  rovno: 'rivne',
+  nikolaev: 'mykolaiv',
+  chernigov: 'chernihiv',
+  khmelnitskiy: 'khmelnytskyi',
+  zutomyr: 'zhytomyr'
+};
+
+  
   default: {
     image: './UkraineMap.png',
     title: 'Регіон України',
@@ -417,10 +468,7 @@ register('welcome3', (root) => {
     updateVisualState();
   }
 
-  function confirmRegion() {
-    if (!pendingRegion) {
-      return;
-    }
+state.city = normalizeCityId(selectedRegion.cityId);
 
     selectedRegion = pendingRegion;
     pendingRegion = null;
@@ -589,6 +637,15 @@ register('welcome3', (root) => {
       applyTransform();
     }
   }
+
+  function normalizeCityId(cityId) {
+  return CITY_ID_ALIASES[cityId] || cityId;
+}
+  
+function cityMapSrc(cityId) {
+  const normalizedCityId = normalizeCityId(cityId);
+  return `${CITY_MAPS[normalizedCityId] || './UkraineMap.png'}?v=${CITY_MAP_VERSION}`;
+}
 
   function onPointerUp(event) {
     pointers.delete(event.pointerId);
