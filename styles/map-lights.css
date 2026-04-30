@@ -1,4 +1,4 @@
-/* ===== общий эффект для всех областей ===== */
+/* ===== общий эффект всех дорог ===== */
 .region{
   fill:transparent;
   stroke:#fff;
@@ -6,21 +6,19 @@
   stroke-linejoin:round;
   stroke-linecap:round;
 
-  /* «неоновая аура» вокруг линии */
+  /* сияние */
   filter:
     drop-shadow(0 0 2px #3cf)
     drop-shadow(0 0 6px #39f)
     drop-shadow(0 0 12px #3cf);
 
-  /* бегущий пунктир –- свет машин */
+  /* бегущий пунктир */
   stroke-dasharray:1 5;
   animation:flow 2s linear infinite;
-
-  /* лёгкое дыхание яркости */
   transition:filter .25s;
 }
 
-/* ярче при ховере / выборе */
+/* ярче при наведении / выборе */
 .region:hover,
 .region.active{
   filter:
@@ -30,30 +28,13 @@
     brightness(1.4);
 }
 
-/* ключевая анимация «трафика» */
-@keyframes flow{
-  to{ stroke-dashoffset:-12; }
-}
+/* движение «трафика» */
+@keyframes flow{ to{ stroke-dashoffset:-12; } }
 
-/* ===== индивидуальные акценты (пример) ===== */
+/* индивидуальные акценты (пример) */
 #region-zaporizhzhia{
   stroke:#fffeee;
-  animation:flow 1.4s linear infinite, pulseZap 2.4s ease-in-out infinite;
+  animation:flow 1.4s linear infinite,
+           pulseZap 2.4s ease-in-out infinite;
 }
-@keyframes pulseZap{
-  50%{ filter:drop-shadow(0 0 4px #ff8) drop-shadow(0 0 10px #fd0); }
-}
-
-#region-kyiv{
-  stroke:#cfe8ff;
-  stroke-width:2.6;
-  animation-duration:2.6s;     /* движение медленней */
-}
-
-#region-lviv{
-  stroke:#ffd173;
-  filter:
-    drop-shadow(0 0 2px #fc0)
-    drop-shadow(0 0 6px #fd4)
-    drop-shadow(0 0 12px #fa0);
-}
+@keyframes pulseZap{ 50%{ filter:drop-shadow(0 0 4px #ff8) drop-shadow(0 0 10px #fd0);} }
