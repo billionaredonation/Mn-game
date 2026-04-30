@@ -319,3 +319,13 @@ input:focus,
     height: 60px;
   }
 }
+
+
+.app-loading {
+  min-height: 100vh;
+  padding: 20px;
+  background: #050505;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
