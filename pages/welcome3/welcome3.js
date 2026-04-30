@@ -84,19 +84,10 @@ const CITY_META = {
 /* ------------------------------------------------------------------ */
 /* 2.  Д И Н А М И Ч Е С К И Е  Д А Н Н Ы Е   И З   С Т Е Й Т А        */
 /* ------------------------------------------------------------------ */
-import { citiesBase }   from '../../src/data/citiesBase.js';
-import { getState }     from '../../src/state.js';
-import {
-  getInflation,
-  getDevaluation,
-  getStateAssetsShare
-} from '../../src/lib/economy.js';
 
-/**
- * Возвращает объект, готовый для рендера карточки.
- * Статические поля берутся из CITY_META,
- * а економічні показники пересчитываются на лету.
- */
+
+
+
 function getCityMeta(regionInfo) {
   if (!regionInfo) return CITY_META.default;
 
