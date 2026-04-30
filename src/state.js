@@ -1,20 +1,15 @@
-/* ────────── глобальный state (localStorage) ────────── */
+/* ---------- GLOBAL STATE ---------- */
 import { citiesBase } from './data/citiesBase.js';
 
 const LS_KEY = 'mn-game-state';
 const defaultState = { player: {}, citiesRuntime: {} };
 
-/* -- low-level I/O -- */
-const load = () => {
-  try { return JSON.parse(localStorage.getItem(LS_KEY)) ?? structuredClone(defaultState); }
-  catch { return structuredClone(defaultState); }
-};
-const save = (st) => localStorage.setItem(LS_KEY, JSON.stringify(st));
+const load  = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)) ?? structuredClone(defaultState);} catch { return structuredClone(defaultState);} };
+const save  = (st) => localStorage.setItem(LS_KEY, JSON.stringify(st));
 
-/* -- runtime snapshot -- */
 let state = load();
 
-/* ---------- API ---------- */
+/* --- API --- */
 export const getState = () => state;
 
 export const setState = (path, value) => {
@@ -26,10 +21,7 @@ export const setState = (path, value) => {
 };
 
 export const updateRuntime = (cityId, patch) => {
-  state.citiesRuntime[cityId] = {
-    ...(state.citiesRuntime[cityId] || {}),
-    ...patch
-  };
+  state.citiesRuntime[cityId] = { ...(state.citiesRuntime[cityId] || {}), ...patch };
   save(state);
 };
 
