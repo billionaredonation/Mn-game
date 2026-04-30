@@ -1,40 +1,20 @@
-/* ===== общий эффект всех дорог ===== */
+/* базовый вид всех контуров */
 .region{
-  fill:transparent;
-  stroke:#fff;
-  stroke-width:2.2;
-  stroke-linejoin:round;
-  stroke-linecap:round;
-
-  /* сияние */
-  filter:
-    drop-shadow(0 0 2px #3cf)
-    drop-shadow(0 0 6px #39f)
-    drop-shadow(0 0 12px #3cf);
-
-  /* бегущий пунктир */
-  stroke-dasharray:1 5;
-  animation:flow 2s linear infinite;
-  transition:filter .25s;
+  fill:transparent;           /* внутри прозрачна */
+  stroke:#bbb;                /* тонкие серые границы */
+  stroke-width:1.4;
+  transition:fill .25s ease,  /* плавное появление заливки */
+             filter .25s ease;
 }
 
-/* ярче при наведении / выборе */
-.region:hover,
+/* лёгкий «свет» при наведении */
+.region:hover{
+  fill:rgba(255,255,255,.08); /* молочный оттенок */
+  filter:drop-shadow(0 0 4px rgba(255,255,255,.4));
+}
+
+/* оставляем подсветку после клика (класс active ставит JS) */
 .region.active{
-  filter:
-    drop-shadow(0 0 2px #fff)
-    drop-shadow(0 0 6px #7cf)
-    drop-shadow(0 0 14px #8cf)
-    brightness(1.4);
+  fill:rgba(255,255,255,.15);
+  filter:drop-shadow(0 0 6px rgba(255,255,255,.5));
 }
-
-/* движение «трафика» */
-@keyframes flow{ to{ stroke-dashoffset:-12; } }
-
-/* индивидуальные акценты (пример) */
-#region-zaporizhzhia{
-  stroke:#fffeee;
-  animation:flow 1.4s linear infinite,
-           pulseZap 2.4s ease-in-out infinite;
-}
-@keyframes pulseZap{ 50%{ filter:drop-shadow(0 0 4px #ff8) drop-shadow(0 0 10px #fd0);} }
