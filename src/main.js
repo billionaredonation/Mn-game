@@ -1,10 +1,10 @@
-import { show } from './router.js?v=80';
-import { initRuntime, getState } from './state.js?v=80';
+import { show } from './router.js?v=81';
+import { initRuntime, getState } from './state.js?v=81';
 
-import '../pages/welcome1/welcome1.js?v=80';
-import '../pages/welcome2/welcome2.js?v=80';
-import '../pages/welcome3/welcome3.js?v=80';
-import '../pages/home/home.js?v=80';
+import '../pages/welcome1/welcome1.js?v=81';
+import '../pages/welcome2/welcome2.js?v=81';
+import '../pages/welcome3/welcome3.js?v=81';
+import '../pages/home/home.js?v=81';
 
 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.expand) {
   window.Telegram.WebApp.expand();
@@ -23,3 +23,4 @@ if (!nickname) {
 } else {
   show('home');
 }
+
