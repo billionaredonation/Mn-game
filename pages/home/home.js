@@ -129,3 +129,12 @@ function resetProgress() {
   state.regionId = null;
   show('welcome1');
 }
+
+function resetProgress() {
+  localStorage.removeItem('player');
+  state.nickname = null;
+  state.city = null;
+  state.cityName = null;
+  state.regionId = null;
+  show('welcome1');
+}
