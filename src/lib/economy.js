@@ -1,16 +1,11 @@
-/* Простейшие формулы, чтобы получить %-значения
-   из «сырых» чисел. При желании поменяете логику —
-   всё в одном месте. */
-
+// Простейшие формулы – дальше сможете усложнить.
 export const getInflation = ({ moneySupply, gdp }) =>
-  limit(100 * (moneySupply.delta / gdp.value));
+  limit(100 * (moneySupply?.delta / (gdp?.value || 1)));
 
 export const getDevaluation = ({ reserves, tradeBalance }) =>
-  limit(100 * (-tradeBalance / reserves));
+  limit(100 * (-tradeBalance / (reserves || 1)));
 
 export const getStateAssetsShare = ({ stateAssets, totalAssets }) =>
-  limit(100 * stateAssets / totalAssets);
+  limit(100 * (stateAssets / (totalAssets || 1)));
 
-function limit(num) {
-  return +(Math.max(0, Math.min(num || 0, 50)).toFixed(1));
-}
+function limit(v) { return +(Math.max(0, Math.min(v || 0, 50)).toFixed(1)); }
