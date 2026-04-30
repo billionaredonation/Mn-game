@@ -37,79 +37,79 @@ const CITY_META = {
   zaporizhzhia: {
     image: './pages/welcome3/cities/zaporizhzhia.jpg',
     title: 'Запорожье',
-    subtitle: 'Індустріальний регіон з сильним стартом для робочих професій',
+    subtitle: 'Індустріальний регіон з сильним стартом для робочих професій.',
     property: 0,
     cars: 0,
     houses: 0,
     jobs: ['Завод', 'Металургія', 'СТО', 'Доставка'],
     inflation: 'Базова',
     devaluation: 'Базова',
-    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
+    economy: 'Економіка міста буде рахуватись через БД після запуску.'
   },
 
   kyiv: {
     image: './pages/welcome3/cities/kyiv.jpg',
     title: 'Киев',
-    subtitle: 'Столиця, офіси, сервіс, доставка та високий темп життя',
+    subtitle: 'Столиця: офіси, сервіс, таксі, доставка та високий темп.',
     property: 0,
     cars: 0,
     houses: 0,
     jobs: ['Офіс', 'Курʼєр', 'Таксі', 'IT-підробіток'],
     inflation: 'Базова',
     devaluation: 'Базова',
-    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
+    economy: 'Економіка міста буде рахуватись через БД після запуску.'
   },
 
   dnipro: {
     image: './pages/welcome3/cities/dnipro.jpg',
     title: 'Днепр',
-    subtitle: 'Логістика, виробництво, склади та міський бізнес',
+    subtitle: 'Логістика, виробництво, склади та міський бізнес.',
     property: 0,
     cars: 0,
     houses: 0,
     jobs: ['Логістика', 'Склад', 'СТО', 'Майстерня'],
     inflation: 'Базова',
     devaluation: 'Базова',
-    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
+    economy: 'Економіка міста буде рахуватись через БД після запуску.'
   },
 
   odesa: {
     image: './pages/welcome3/cities/odesa.jpg',
     title: 'Одесса',
-    subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей',
+    subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей.',
     property: 0,
     cars: 0,
     houses: 0,
     jobs: ['Порт', 'Таксі', 'Торгівля', 'Кафе'],
     inflation: 'Базова',
     devaluation: 'Базова',
-    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
+    economy: 'Економіка міста буде рахуватись через БД після запуску.'
   },
 
   lviv: {
     image: './pages/welcome3/cities/lviv.jpg',
     title: 'Львов',
-    subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток',
+    subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток.',
     property: 0,
     cars: 0,
     houses: 0,
     jobs: ['Кавʼярня', 'Готель', 'Курʼєр', 'Сервіс'],
     inflation: 'Базова',
     devaluation: 'Базова',
-    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
+    economy: 'Економіка міста буде рахуватись через БД після запуску.'
   },
 
   default: {
     image: './pages/welcome3/cities/default.jpg',
     title: 'Регион Украины',
-    subtitle: 'Стартова зона для розвитку персонажа',
+    subtitle: 'Стартова зона для розвитку персонажа.',
     property: 0,
     cars: 0,
     houses: 0,
     jobs: ['Підробіток', 'Доставка', 'Склад'],
     inflation: 'Базова',
     devaluation: 'Базова',
-    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
+    economy: 'Економіка міста буде рахуватись через БД після запуску.'
   }
 };
 
@@ -278,11 +278,16 @@ register('welcome3', (root) => {
     }
 
     const meta = getCityMeta(regionInfo);
+    const imageSrc = meta.image || CITY_META.default.image;
 
     cityPreviewCard.innerHTML = `
       <div class="city-preview-top">
         <div class="city-preview-image">
-          <img src="${meta.image}" alt="${meta.title}" />
+          <img
+            src="${imageSrc}"
+            alt="${meta.title}"
+            onerror="this.onerror=null; this.src='./pages/welcome3/cities/default.jpg';"
+          />
         </div>
 
         <div class="city-preview-main">
@@ -313,16 +318,16 @@ register('welcome3', (root) => {
         </div>
       </div>
 
-      <div class="city-preview-economy">
-        <span>Экономика</span>
-        <p>${meta.economy}</p>
-      </div>
-
       <div class="city-preview-jobs">
         <span>Работы региона</span>
         <div>
           ${meta.jobs.map((job) => `<b>${job}</b>`).join('')}
         </div>
+      </div>
+
+      <div class="city-preview-economy">
+        <span>Экономика</span>
+        <p>${meta.economy}</p>
       </div>
 
       <div class="city-preview-warning">
