@@ -18,8 +18,8 @@ function clone(obj) {
 function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(LS_KEY));
-    return saved ? { ...clone(defaultState), ...saved } : clone(defaultState);
-  } catch {
+    return saved ? Object.assign(clone(defaultState), saved) : clone(defaultState);
+  } catch (error) {
     return clone(defaultState);
   }
 }
@@ -39,7 +39,10 @@ export function setState(path, value) {
   let obj = state;
 
   keys.slice(0, -1).forEach((key) => {
-    obj[key] ??= {};
+    if (!obj[key]) {
+      obj[key] = {};
+    }
+
     obj = obj[key];
   });
 
@@ -48,10 +51,7 @@ export function setState(path, value) {
 }
 
 export function updateRuntime(cityId, patch) {
-  state.citiesRuntime[cityId] = {
-    ...(state.citiesRuntime[cityId] || {}),
-    ...patch
-  };
+  state.citiesRuntime[cityId] = Object.assign({}, state.citiesRuntime[cityId] || {}, patch);
 
   save();
 }
@@ -68,3 +68,4 @@ export function initRuntime() {
   state.citiesRuntime = blank;
   save();
 }
+
