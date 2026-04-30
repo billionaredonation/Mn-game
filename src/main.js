@@ -1,5 +1,5 @@
-import { show, screens } from './router.js?v=82';
-import { initRuntime, getState } from './state.js?v=82';
+import { show, screens } from './router.js?v=83';
+import { initRuntime, getState } from './state.js?v=83';
 
 function renderBootError(error) {
   const root = document.getElementById('app');
@@ -48,10 +48,10 @@ function startApp() {
 expandTelegramWebApp();
 
 Promise.all([
-  import('../pages/welcome1/welcome1.js?v=82'),
-  import('../pages/welcome2/welcome2.js?v=82'),
-  import('../pages/welcome3/welcome3.js?v=82'),
-  import('../pages/home/home.js?v=82')
+  import('../pages/welcome1/welcome1.js?v=83'),
+  import('../pages/welcome2/welcome2.js?v=83'),
+  import('../pages/welcome3/welcome3.js?v=83'),
+  import('../pages/home/home.js?v=83')
 ])
   .then(startApp)
   .catch(renderBootError);
