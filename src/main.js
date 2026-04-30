@@ -1,24 +1,20 @@
 import { show } from './router.js';
 import { initRuntime, getState } from './state.js';
 
-initRuntime();                     // загружаем / инициализируем localStorage
+import '../pages/welcome1/welcome1.js?v=75';
+import '../pages/welcome2/welcome2.js?v=75';
+import '../pages/welcome3/welcome3.js?v=75';
+import '../pages/home/home.js?v=75';
 
-/* страницы ---------------------------------------------------------------- */
-import '../pages/welcome1/welcome1.js';
-import '../pages/welcome2/welcome2.js';
-import '../pages/welcome3/welcome3.js';
-import '../pages/home/home.js';    // ←  убрали ?v=74 ▸ иначе файл 404
-/* ------------------------------------------------------------------------- */
+window.Telegram?.WebApp?.expand();
 
-/* расширяем Web-App, если Telegram есть */
-window.Telegram?.WebApp?.expand?.();
+initRuntime();
 
-/* маршрутизация ----------------------------------------------------------- */
-const st = getState();             // { player: { nickname?, city? } }
+const st = getState();
 
-if (!st.player?.nickname) {
+if (!st.nickname) {
   show('welcome1');
-} else if (!st.player?.city) {
+} else if (!st.city) {
   show('welcome3');
 } else {
   show('home');
