@@ -1,44 +1,55 @@
 import { show } from './router.js';
-import { state, initRuntime } from './state.js';
+import { initRuntime, getState } from './state.js';
 
-import '../pages/welcome1/welcome1.js?v=91';
-import '../pages/welcome2/welcome2.js?v=91';
-import '../pages/welcome3/welcome3.js?v=91';
-import '../pages/home/home.js?v=91';
+import '../pages/welcome1/welcome1.js';
+import '../pages/welcome2/welcome2.js';
+import '../pages/welcome3/welcome3.js';
+import '../pages/home/home.js';
 
 function renderBootError(error) {
   console.error(error);
 
-  const app = document.getElementById('app');
-  if (!app) return;
+  const root = document.getElementById('app');
+  if (!root) return;
 
-  app.innerHTML = `
-    <div style="min-height:100vh;background:#050505;color:white;padding:20px;font-family:Arial,sans-serif;">
-      <h2>Ошибка загрузки</h2>
-      <pre style="white-space:pre-wrap;color:#ff7777;">${error?.message || error}</pre>
+  root.innerHTML = `
+    <div style="
+      min-height:100vh;
+      background:#050505;
+      color:#fff;
+      padding:20px;
+      font-family:Arial,sans-serif;
+      white-space:pre-wrap;
+    ">
+      Ошибка запуска:
+
+      ${error?.stack || error?.message || error}
     </div>
   `;
 }
 
-function boot() {
+async function boot() {
   try {
-    window.Telegram?.WebApp?.expand();
-
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
-
-    document.documentElement.classList.toggle('is-mobile', isMobile);
-    document.documentElement.classList.toggle('low-performance', Boolean(lowMemory));
+    window.Telegram?.WebApp?.expand?.();
 
     initRuntime();
 
-    if (!state.nickname) {
+    const state = getState();
+
+    const nickname = state.nickname || state.player?.nickname;
+    const city = state.city || state.player?.city;
+
+    if (!nickname) {
       show('welcome1');
-    } else if (!state.city) {
-      show('welcome3');
-    } else {
-      show('home');
+      return;
     }
+
+    if (!city) {
+      show('welcome3');
+      return;
+    }
+
+    show('home');
   } catch (error) {
     renderBootError(error);
   }
