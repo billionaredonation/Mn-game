@@ -445,7 +445,7 @@ register('welcome3', (root) => {
       view.rotate = 0;
 
       fullMapContent.style.transform = `
-        translate3d(${view.x}px, ${view.y}px, 0)
+        translate(calc(-50% + ${view.x}px), calc(-50% + ${view.y}px))
         scale(${view.scale})
       `;
 
