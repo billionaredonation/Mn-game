@@ -35,7 +35,7 @@ const REGION_DATA = {
 
 const CITY_META = {
   zaporizhzhia: {
-    image: './pages/welcome3/cities/zaporizhzhia.jpg',
+    image: './Zaporoziye.png',
     title: 'Запорожье',
     subtitle: 'Індустріальний регіон з сильним стартом для робочих професій.',
     property: 0,
@@ -48,7 +48,7 @@ const CITY_META = {
   },
 
   kyiv: {
-    image: './pages/welcome3/cities/kyiv.jpg',
+    image: './Kyiv.png',
     title: 'Киев',
     subtitle: 'Столиця: офіси, сервіс, таксі, доставка та високий темп.',
     property: 0,
@@ -61,7 +61,7 @@ const CITY_META = {
   },
 
   dnipro: {
-    image: './pages/welcome3/cities/dnipro.jpg',
+    image: './Dnepr.png',
     title: 'Днепр',
     subtitle: 'Логістика, виробництво, склади та міський бізнес.',
     property: 0,
@@ -74,7 +74,7 @@ const CITY_META = {
   },
 
   odesa: {
-    image: './pages/welcome3/cities/odesa.jpg',
+    image: './Odessa.png',
     title: 'Одесса',
     subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей.',
     property: 0,
@@ -87,7 +87,7 @@ const CITY_META = {
   },
 
   lviv: {
-    image: './pages/welcome3/cities/lviv.jpg',
+    image: './Lviv.png',
     title: 'Львов',
     subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток.',
     property: 0,
@@ -100,7 +100,7 @@ const CITY_META = {
   },
 
   default: {
-    image: './pages/welcome3/cities/default.jpg',
+    image: './UkraineMap.png',
     title: 'Регион Украины',
     subtitle: 'Стартова зона для розвитку персонажа.',
     property: 0,
@@ -286,7 +286,7 @@ register('welcome3', (root) => {
           <img
             src="${imageSrc}"
             alt="${meta.title}"
-            onerror="this.onerror=null; this.src='./pages/welcome3/cities/default.jpg';"
+            onerror="this.onerror=null; this.src='./UkraineMap.png';"
           />
         </div>
 
