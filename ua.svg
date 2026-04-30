@@ -120,6 +120,12 @@
   </circle>
   <circle class="Chernihivska" cx="544.3" cy="113" id="UA74">
   </circle>
+  <path id="region-kyiv"
+      class="region"
+      data-region="kyiv"
+      d="M … Z"/>
+
+     
   <circle class="Kyivska" cx="469.9" cy="187.8" id="UA32">
   </circle>
   <circle class="Sevastopilska" cx="619.3" cy="624" id="UA40">
