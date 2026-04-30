@@ -122,19 +122,12 @@ function info(root, text) {
 }
 
 function resetProgress() {
-  localStorage.removeItem('player');
-  state.nickname = null;
-  state.city = null;
-  state.cityName = null;
-  state.regionId = null;
-  show('welcome1');
-}
+  localStorage.removeItem('mn-game-state');
 
-function resetProgress() {
-  localStorage.removeItem('player');
   state.nickname = null;
   state.city = null;
   state.cityName = null;
   state.regionId = null;
+
   show('welcome1');
 }
