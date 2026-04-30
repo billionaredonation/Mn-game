@@ -1,32 +1,70 @@
 import { citiesBase } from './data/citiesBase.js';
 
 const LS_KEY = 'mn-game-state';
-const defaultState = { player:{}, citiesRuntime:{} };
 
-const load  = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)) ?? structuredClone(defaultState);} catch { return structuredClone(defaultState);} };
-const save  = (st) => localStorage.setItem(LS_KEY, JSON.stringify(st));
+const defaultState = {
+  nickname: null,
+  city: null,
+  cityName: null,
+  regionId: null,
+  player: {},
+  citiesRuntime: {}
+};
 
-let state = load();
+function clone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
 
-export const getState = () => state;
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_KEY));
+    return saved ? { ...clone(defaultState), ...saved } : clone(defaultState);
+  } catch {
+    return clone(defaultState);
+  }
+}
 
-export const setState = (path, value) => {
+export let state = load();
+
+export function save() {
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+}
+
+export function getState() {
+  return state;
+}
+
+export function setState(path, value) {
   const keys = path.split('.');
   let obj = state;
-  keys.slice(0,-1).forEach(k => { obj[k] ??= {}; obj = obj[k]; });
-  obj[keys.at(-1)] = value;
-  save(state);
-};
 
-export const updateRuntime = (cityId, patch) => {
-  state.citiesRuntime[cityId] = { ...(state.citiesRuntime[cityId]||{}), ...patch };
-  save(state);
-};
+  keys.slice(0, -1).forEach((key) => {
+    obj[key] ??= {};
+    obj = obj[key];
+  });
 
-export const initRuntime = () => {
-  if (Object.keys(state.citiesRuntime).length) return;
+  obj[keys[keys.length - 1]] = value;
+  save();
+}
+
+export function updateRuntime(cityId, patch) {
+  state.citiesRuntime[cityId] = {
+    ...(state.citiesRuntime[cityId] || {}),
+    ...patch
+  };
+
+  save();
+}
+
+export function initRuntime() {
+  if (Object.keys(state.citiesRuntime || {}).length) return;
+
   const blank = {};
-  for (const id in citiesBase) blank[id] = {};
+
+  for (const id in citiesBase) {
+    blank[id] = {};
+  }
+
   state.citiesRuntime = blank;
-  save(state);
-};
+  save();
+}
