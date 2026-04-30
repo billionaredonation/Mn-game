@@ -1,47 +1,26 @@
-const DEFAULT_STATE = {
-  nickname: null,
-  city: null,
-  cityName: null,
-  regionId: null
+const LS_KEY = 'mn-game-state';
+
+const defaultState = {
+  player:          {},
+  citiesRuntime:   {}          // динамика экономики, меняется игроками
 };
 
-function loadState() {
-  try {
-    const saved = localStorage.getItem('player');
-
-    if (!saved) {
-      return { ...DEFAULT_STATE };
-    }
-
-    const parsed = JSON.parse(saved);
-
-    if (!parsed || typeof parsed !== 'object') {
-      localStorage.removeItem('player');
-      return { ...DEFAULT_STATE };
-    }
-
-    return {
-      ...DEFAULT_STATE,
-      ...parsed
-    };
-  } catch (error) {
-    console.warn('Broken player state, reset:', error);
-    localStorage.removeItem('player');
-    return { ...DEFAULT_STATE };
-  }
+export function getState() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) ?? structuredClone(defaultState); }
+  catch { return structuredClone(defaultState); }
 }
 
-export const state = loadState();
+export function setState(path, value) {
+  const st   = getState();
+  const keys = path.split('.');
+  let obj    = st;
+  keys.slice(0, -1).forEach(k => { obj[k] ??= {}; obj = obj[k]; });
+  obj[keys.at(-1)] = value;
+  localStorage.setItem(LS_KEY, JSON.stringify(st));
+}
 
-export const save = () => {
-  localStorage.setItem('player', JSON.stringify(state));
-};
-
-export const resetState = () => {
-  localStorage.removeItem('player');
-
-  state.nickname = null;
-  state.city = null;
-  state.cityName = null;
-  state.regionId = null;
-};
+export function updateRuntime(cityId, patch) {
+  const st   = getState();
+  st.citiesRuntime[cityId] = { ...(st.citiesRuntime[cityId] || {}), ...patch };
+  localStorage.setItem(LS_KEY, JSON.stringify(st));
+}
