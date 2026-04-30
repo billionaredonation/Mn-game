@@ -54,8 +54,7 @@
   pointer-events: none;
 }
 
-.city-selection-box,
-.modal-selection-box {
+.city-selection-box {
   width: 100%;
   min-height: 54px;
   margin-top: 14px;
@@ -63,18 +62,11 @@
   border-radius: 18px;
   display: grid;
   align-items: center;
-  gap: 4px;
   background: rgba(255, 255, 255, 0.045);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: #ffffff;
   font-weight: 800;
   text-align: center;
-}
-
-.modal-selection-box small {
-  min-height: 14px;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 12px;
 }
 
 .map-modal {
@@ -95,7 +87,7 @@
 
 .map-modal-panel {
   width: min(960px, 100%);
-  height: min(760px, 94vh);
+  height: min(820px, 94vh);
   padding: 16px;
   border-radius: 28px;
   display: grid;
@@ -197,6 +189,15 @@
   height: 100%;
 }
 
+.ukraine-regions-svg rect,
+.ukraine-regions-svg line,
+.ukraine-regions-svg polyline,
+.ukraine-regions-svg ellipse,
+.ukraine-regions-svg circle,
+.ukraine-regions-svg text {
+  display: none !important;
+}
+
 .ukraine-region {
   fill: rgba(37, 99, 235, 0.03);
   stroke: rgba(255, 255, 255, 0.14);
@@ -218,9 +219,9 @@
 
 .ukraine-region.is-selectable:hover,
 .ukraine-region.is-pending {
-  fill: rgba(59, 130, 246, 0.42);
-  stroke: rgba(147, 197, 253, 0.95);
-  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.48));
+  fill: rgba(255, 255, 255, 0.22);
+  stroke: rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 0 9px rgba(255, 255, 255, 0.32));
 }
 
 .ukraine-region.is-selected {
@@ -230,9 +231,10 @@
 }
 
 .ukraine-region.is-disabled {
-  fill: transparent;
-  stroke: transparent;
-  pointer-events: none;
+  display: none !important;
+  fill: transparent !important;
+  stroke: transparent !important;
+  pointer-events: none !important;
 }
 
 .map-loading,
@@ -247,6 +249,157 @@
 .map-error {
   color: #fb7185;
   font-weight: 800;
+}
+
+.city-preview-card {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025)),
+    rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+.city-preview-empty {
+  min-height: 126px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: rgba(255,255,255,0.52);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.city-preview-top {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.city-preview-image {
+  width: 86px;
+  height: 64px;
+  border-radius: 15px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.city-preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.city-preview-main {
+  text-align: left;
+}
+
+.city-preview-main h4 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.3px;
+}
+
+.city-preview-main p {
+  margin: 0;
+  color: rgba(255,255,255,0.62);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.city-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.city-preview-stat {
+  padding: 9px 6px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.055);
+  text-align: center;
+}
+
+.city-preview-stat span {
+  display: block;
+  margin-bottom: 4px;
+  color: rgba(255,255,255,0.48);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.city-preview-stat strong {
+  display: block;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.city-preview-economy {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.05);
+  text-align: left;
+}
+
+.city-preview-economy span,
+.city-preview-jobs span {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(255,255,255,0.45);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.city-preview-economy p {
+  margin: 0;
+  color: rgba(255,255,255,0.76);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.city-preview-jobs {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.city-preview-jobs div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.city-preview-jobs b {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.86);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.city-preview-warning {
+  margin-top: 10px;
+  padding: 9px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-weight: 750;
+  text-align: left;
 }
 
 .confirm-city-btn {
@@ -381,30 +534,40 @@
     height: 100%;
     max-height: none;
     border-radius: 0;
-    padding: 24px;
+    padding: 22px;
     grid-template-rows: auto 1fr auto auto;
   }
 
   .map-modal-header h3 {
-    font-size: 25px;
+    font-size: 23px;
   }
 
   .map-modal-header p {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .full-map-viewport {
     border-radius: 20px;
   }
-}
 
-@media (max-height: 700px) {
-  .compact-map {
-    aspect-ratio: 1 / 0.64;
+  .city-preview-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
+  .city-preview-top {
+    grid-template-columns: 78px 1fr;
+  }
+
+  .city-preview-image {
+    width: 78px;
+    height: 58px;
+  }
+}
+
+@media (max-height: 760px) {
   .map-modal-panel {
     gap: 10px;
+    padding: 16px;
   }
 
   .map-modal-header h3 {
@@ -414,25 +577,13 @@
   .map-modal-header p {
     font-size: 13px;
   }
-}
 
+  .city-preview-card {
+    min-height: auto;
+  }
 
-.ukraine-regions-svg rect,
-.ukraine-regions-svg line,
-.ukraine-regions-svg polyline,
-.ukraine-regions-svg ellipse,
-.ukraine-regions-svg circle,
-.ukraine-regions-svg text {
-  display: none !important;
-}
-
-.ukraine-region.is-disabled {
-  display: none !important;
-  fill: transparent !important;
-  stroke: transparent !important;
-  pointer-events: none !important;
-}
-
-.ukraine-regions-svg.full .ukraine-region.is-selectable {
-  pointer-events: all;
+  .city-preview-economy,
+  .city-preview-warning {
+    display: none;
+  }
 }
