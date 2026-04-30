@@ -80,3 +80,12 @@ function chooseRegion(region) {
   setState(st);
   alert(`Вы выбрали область: ${region}`); // заменить на переход
 }
+
+
+    path.addEventListener('click', () => {
+     chooseRegion(r);
+     svg.querySelectorAll('.region.active')
+       .forEach(el => el.classList.remove('active'));
+    path.classList.add('active');          // «огни» остаются гореть
+     chooseRegion(r);
+    });
