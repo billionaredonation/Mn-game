@@ -1,4 +1,10 @@
-export const screens = {};
+const routerStore = window.__MN_GAME_ROUTER__ || {
+  screens: {}
+};
+
+window.__MN_GAME_ROUTER__ = routerStore;
+
+export const screens = routerStore.screens;
 
 export function register(id, fn) {
   screens[id] = fn;
@@ -15,12 +21,17 @@ export function show(id, props = {}) {
   root.innerHTML = '';
 
   if (!screens[id]) {
-    console.error(`Screen "${id}" is not registered`);
+    const registeredScreens = Object.keys(screens);
+
+    console.error('Screen "' + id + '" is not registered', registeredScreens);
+
     root.innerHTML = `
-      <div style="padding:20px;color:white;font-family:Arial">
-        Ошибка: экран "${id}" не найден
+      <div style="padding:20px;color:white;background:#050505;min-height:100vh;font-family:Arial">
+        Ошибка: экран "${id}" не найден<br>
+        Зарегистрированы: ${registeredScreens.join(', ') || 'ничего'}
       </div>
     `;
+
     return;
   }
 
