@@ -1,9 +1,6 @@
-import { show, screens } from './router.js?v=83';
-import { initRuntime, getState } from './state.js?v=83';
-
 function renderBootError(error) {
   const root = document.getElementById('app');
-  const message = error && error.message ? error.message : String(error);
+  const message = error && error.stack ? error.stack : String(error && error.message ? error.message : error);
 
   console.error(error);
 
@@ -25,34 +22,40 @@ function expandTelegramWebApp() {
   }
 }
 
-function startApp() {
-  initRuntime();
+async function boot() {
+  expandTelegramWebApp();
 
-  const st = getState();
+  const router = await import('./router.js?v=84');
+  const stateModule = await import('./state.js?v=84');
+
+  await Promise.all([
+    import('../pages/welcome1/welcome1.js?v=84'),
+    import('../pages/welcome2/welcome2.js?v=84'),
+    import('../pages/welcome3/welcome3.js?v=84'),
+    import('../pages/home/home.js?v=84')
+  ]);
+
+  stateModule.initRuntime();
+
+  const st = stateModule.getState();
   const nickname = st.nickname || (st.player && st.player.nickname);
   const city = st.city || (st.player && st.player.city);
+  const screens = router.screens;
 
   if (!screens.welcome1 || !screens.welcome2 || !screens.welcome3 || !screens.home) {
     throw new Error('Screens not registered: ' + Object.keys(screens).join(', '));
   }
 
   if (!nickname) {
-    show('welcome1');
+    router.show('welcome1');
   } else if (!city) {
-    show('welcome3');
+    router.show('welcome3');
   } else {
-    show('home');
+    router.show('home');
   }
 }
 
-expandTelegramWebApp();
+boot().catch(renderBootError);
 
-Promise.all([
-  import('../pages/welcome1/welcome1.js?v=83'),
-  import('../pages/welcome2/welcome2.js?v=83'),
-  import('../pages/welcome3/welcome3.js?v=83'),
-  import('../pages/home/home.js?v=83')
-])
-  .then(startApp)
   .catch(renderBootError);
 
