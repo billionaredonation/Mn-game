@@ -103,6 +103,59 @@ register('home', (root) => {
     </div>
   `;
 
+  /* ── 1. DOM-ссылки ──────────────────────────────────────────── */
+const shell   = root.querySelector('.city-map-shell');
+const imgBase = shell.querySelector('.city-map-image');
+
+/* ── 2. грузим SVG-контур (hit-layer) ───────────────────────── */
+fetch('./ua.svg')
+  .then(r => r.text())
+  .then(txt => {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = txt.trim();
+    const svg = tpl.content.firstElementChild;
+    svg.classList.add('hit-layer');
+    shell.appendChild(svg);            // SVG поверх PNG
+
+    initHover(svg);                    // ← см. ниже
+  });
+
+/* ── 3. PNG-подсветки (по одному файлу на область) ─────────── */
+const HL = {};
+['kyiv','zaporizhzhia','lviv','odesa' /* … */].forEach(r => {
+  const hi = document.createElement('img');
+  hi.src  = `./hl/${r}.png?v=32`;      // кладите PNG в /hl/
+  hi.alt  = '';
+  hi.dataset.region = r;
+  hi.className = 'highlight';
+  shell.appendChild(hi);
+  HL[r] = hi;
+});
+
+/* ── 4. hover / click ───────────────────────────────────────── */
+function initHover(svg){
+  const hideAll = () => Object.values(HL)
+                         .forEach(i => i.classList.remove('show'));
+
+  svg.querySelectorAll('path.region').forEach(p => {
+    const r = p.dataset.region;
+
+    p.addEventListener('mouseenter', () => {
+      hideAll();
+      HL[r]?.classList.add('show');
+    });
+
+    p.addEventListener('mouseleave', hideAll);
+
+    p.addEventListener('click', () => {
+      p.classList.add('active');          // «огни» остаются
+      // 👉  ваша логика выбора города:
+      state.city = r;
+      // …
+    });
+  });
+}
+
   root.querySelector('#resetBtn').onclick = resetProgress;
   root.querySelector('#profileBtn').onclick = () =>
     info(root, `Профиль игрока: ${state.nickname || 'Без ника'}`);
