@@ -192,3 +192,42 @@
     font-size: 9px;
   }
 }
+
+/* --- новая укладка карты ---------------------------------------------- */
+.city-map-shell{              /* уже есть – лишь дополняем */
+  position:relative;
+  aspect-ratio: 1000 / 650;   /* точные пропорции SVG */
+}
+
+.city-map-image{              /* базовая PNG */
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  pointer-events:none;        /* пропускаем клики к SVG */
+  z-index:1;
+}
+
+/* невидимый, но кликабельный SVG */
+.hit-layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;                 /* SVG не видно */
+  pointer-events:auto;       /* …но ловит события */
+  z-index:2;
+}
+
+/* PNG-подсветка, которая вспыхивает */
+.highlight{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+  transition:opacity .25s;
+  z-index:3;
+}
+.highlight.show{ opacity:1; }
