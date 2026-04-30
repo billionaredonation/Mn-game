@@ -1,88 +1,41 @@
-import { citiesBase } from './data/citiesBase.js';
-
-const LS_KEY = 'mn-game-state';
-
-const defaultState = {
-  nickname: null,
-  city: null,
-  cityName: null,
-  regionId: null,
-  player: {},
-  citiesRuntime: {}
+const routerStore = window.__MN_GAME_ROUTER__ || {
+  screens: {}
 };
 
-function clone(obj) {
-  return JSON.parse(JSON.stringify(obj));
+window.__MN_GAME_ROUTER__ = routerStore;
+
+export const screens = routerStore.screens;
+
+export function register(id, fn) {
+  screens[id] = fn;
 }
 
-function load() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(LS_KEY));
-    const loaded = saved ? Object.assign(clone(defaultState), saved) : clone(defaultState);
+export function show(id, props = {}) {
+  const root = document.getElementById('app');
 
-    loaded.player = loaded.player || {};
-    loaded.nickname = loaded.nickname || loaded.player.nickname || null;
-    loaded.city = loaded.city || loaded.player.city || null;
-    loaded.cityName = loaded.cityName || loaded.player.cityName || null;
-    loaded.regionId = loaded.regionId || loaded.player.regionId || null;
-    loaded.player.nickname = loaded.player.nickname || loaded.nickname;
-    loaded.player.city = loaded.player.city || loaded.city;
-    loaded.player.cityName = loaded.player.cityName || loaded.cityName;
-    loaded.player.regionId = loaded.player.regionId || loaded.regionId;
-
-    return loaded;
-  } catch (error) {
-    return clone(defaultState);
-  }
-}
-
-export let state = load();
-
-export function save() {
-  state.player = state.player || {};
-  state.player.nickname = state.nickname || state.player.nickname || null;
-  state.player.city = state.city || state.player.city || null;
-  state.player.cityName = state.cityName || state.player.cityName || null;
-  state.player.regionId = state.regionId || state.player.regionId || null;
-
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-}
-
-export function getState() {
-  return state;
-}
-
-export function setState(path, value) {
-  const keys = path.split('.');
-  let obj = state;
-
-  keys.slice(0, -1).forEach((key) => {
-    if (!obj[key]) {
-      obj[key] = {};
-    }
-
-    obj = obj[key];
-  });
-
-  obj[keys[keys.length - 1]] = value;
-  save();
-}
-
-export function updateRuntime(cityId, patch) {
-  state.citiesRuntime[cityId] = Object.assign({}, state.citiesRuntime[cityId] || {}, patch);
-  save();
-}
-
-export function initRuntime() {
-  if (Object.keys(state.citiesRuntime || {}).length) return;
-
-  const blank = {};
-
-  for (const id in citiesBase) {
-    blank[id] = {};
+  if (!root) {
+    console.error('Root element #app not found');
+    return;
   }
 
-  state.citiesRuntime = blank;
-  save();
+  root.innerHTML = '';
+
+  if (!screens[id]) {
+    const registeredScreens = Object.keys(screens);
+
+    console.error('Screen "' + id + '" is not registered', registeredScreens);
+
+    root.innerHTML = `
+      <div style="padding:20px;color:white;font-family:Arial">
+        Ошибка: экран "${id}" не найден<br>
+        Зарегистрированы: ${registeredScreens.join(', ') || 'ничего'}
+      </div>
+    `;
+
+    return;
+  }
+
+  screens[id](root, props);
+  window.currentScreen = id;
 }
 
