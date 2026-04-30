@@ -6,10 +6,10 @@ import { initRuntime, getState } from './state.js';
 initRuntime();
 
 /* lazy-импорт экранов (одна версия v=73 для сброса кэша) */
-import '../pages/welcome1/welcome1.js?v=73';
-import '../pages/welcome2/welcome2.js?v=73';
-import '../pages/welcome3/welcome3.js?v=73';
-import '../pages/home/home.js?v=73';
+import '../pages/welcome1/welcome1.js?v=75';
+import '../pages/welcome2/welcome2.js?v=75';
+import '../pages/welcome3/welcome3.js?v=75';
+import '../pages/home/home.js?v=75';
 
 /* окружение: раскрыть Web-App, флаги устройства */
 window.Telegram?.WebApp?.expand();
