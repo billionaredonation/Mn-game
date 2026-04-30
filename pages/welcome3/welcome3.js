@@ -4,12 +4,9 @@ import { citiesBase } from '../../src/data/citiesBase.js';
 import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js';
 
 const MAP_IMG = './UkraineMap.png?v=9';
-
 const REGIONS_SVG = './ua.svg?v=5';
+const CITY_MAP_VERSION = '33';
 
-
-const CITY_META = {
-  
 const REGION_DATA = {
   UA05: { cityId: 'vinnytsia', cityName: 'Винница' },
   UA07: { cityId: 'lutsk', cityName: 'Луцк' },
@@ -38,33 +35,6 @@ const REGION_DATA = {
   UA74: { cityId: 'chernihiv', cityName: 'Чернигов' },
   UA77: { cityId: 'chernivtsi', cityName: 'Черновцы' }
 };
-
-const CITY_META = {
-  vinnytsia: { image: './Vinnytsia.png', title: 'Вінниця', subtitle: 'Затишне місто з легкою промисловістю та агро-стартапами.', property: 0, cars: 0, houses: 0, jobs: ['Агробізнес', 'Пекарня', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  lutsk: { image: './Lutsk.png', title: 'Луцьк', subtitle: 'Тихий обласний центр з деревообробкою та ІТ-аутсорсом.', property: 0, cars: 0, houses: 0, jobs: ['Лісопилка', 'Склад', 'ІТ-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  luhansk: { image: './Luhansk.png', title: 'Луганськ', subtitle: 'Колишній вуглепром — нові можливості для виробництва.', property: 0, cars: 0, houses: 0, jobs: ['Шахта', 'Ремонт техніки', 'Логістика'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  dnipro: { image: './Dnipro.png', title: 'Дніпро', subtitle: 'Логістика, виробництво, склади та міський бізнес.', property: 0, cars: 0, houses: 0, jobs: ['Логістика', 'Склад', 'СТО', 'Майстерня'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  donetsk: { image: './Donetsk.png', title: 'Донецьк', subtitle: 'Металургія й машинобудування у стадії відновлення.', property: 0, cars: 0, houses: 0, jobs: ['Шахта', 'Метзавод', 'СТО'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  zhytomyr: { image: './Zhytomyr.png', title: 'Житомир', subtitle: 'Видобуток каменю, переробка деревини та логістика.', property: 0, cars: 0, houses: 0, jobs: ['Карʼєр', 'Пилорама', 'Склад'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  uzhhorod: { image: './Uzhhorod.png', title: 'Ужгород', subtitle: 'Прикордоння, виноробство та туристичні сервіси.', property: 0, cars: 0, houses: 0, jobs: ['Виноробня', 'Готель', 'Кавʼярня'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  zaporizhzhia: { image: './Zaporizhzhia.png', title: 'Запоріжжя', subtitle: 'Індустріальний регіон із металургією та машинобудуванням.', property: 0, cars: 0, houses: 0, jobs: ['Завод', 'Металургія', 'СТО', 'Доставка'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  'ivano-frankivsk': { image: './Ivano-Frankivsk.png', title: 'Івано-Франківськ', subtitle: 'Туризм, лісова промисловість та креативні індустрії.', property: 0, cars: 0, houses: 0, jobs: ['Туризм', 'Кавʼярня', 'Коворкінг'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  kyiv: { image: './Kyiv.png', title: 'Київ', subtitle: 'Столиця: офіси, сервіс, таксі, доставка та високий темп.', property: 0, cars: 0, houses: 0, jobs: ['Офіс', 'Курʼєр', 'Таксі', 'IT-підробіток'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  kropyvnytskyi: { image: './Kropyvnytskyi.png', title: 'Кропивницький', subtitle: 'Аграрний хаб, ремонти техніки та зернові склади.', property: 0, cars: 0, houses: 0, jobs: ['Елеватор', 'СТО', 'Сільгосптехніка'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  crimea: { image: './Crimea.png', title: 'Крим', subtitle: 'Курорти, виноробство, порти й логістика.', property: 0, cars: 0, houses: 0, jobs: ['Готель', 'Порт', 'Виноробня'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  lviv: { image: './Lviv.png', title: 'Львів', subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток.', property: 0, cars: 0, houses: 0, jobs: ['Кавʼярня', 'Готель', 'Курʼєр', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  mykolaiv: { image: './Mykolaiv.png', title: 'Миколаїв', subtitle: 'Верфі, порти та агро-логістика.', property: 0, cars: 0, houses: 0, jobs: ['Верф', 'Порт', 'Склад'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  odesa: { image: './Odessa.png', title: 'Одеса', subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей.', property: 0, cars: 0, houses: 0, jobs: ['Порт', 'Таксі', 'Торгівля', 'Кафе'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  poltava: { image: './Poltava.png', title: 'Полтава', subtitle: 'Нафта, агро-переробка, затишний сервіс.', property: 0, cars: 0, houses: 0, jobs: ['Нафтобаза', 'Млин', 'Кафе'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  rivne: { image: './Rivne.png', title: 'Рівне', subtitle: 'Бурштин, текстиль та лісопереробка.', property: 0, cars: 0, houses: 0, jobs: ['Текстиль', 'Лісопилка', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  sumy: { image: './Sumy.png', title: 'Суми', subtitle: 'Хімпром, машинобудування та агро.', property: 0, cars: 0, houses: 0, jobs: ['Завод', 'СТО', 'Агробізнес'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  ternopil: { image: './Ternopil.png', title: 'Тернопіль', subtitle: 'Студентське місто з ІТ-курсом та агро-ринком.', property: 0, cars: 0, houses: 0, jobs: ['ІТ-аутсорс', 'Агро', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  kharkiv: { image: './Kharkiv.png', title: 'Харків', subtitle: 'ІТ, машини, освіта та наукові кластери.', property: 0, cars: 0, houses: 0, jobs: ['Завод', 'Університет', 'IT-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  kherson: { image: './Kherson.png', title: 'Херсон', subtitle: 'Суднобудування, агро-експорт, морські ворота.', property: 0, cars: 0, houses: 0, jobs: ['Верф', 'Порт', 'Агро'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  khmelnytskyi: { image: './Khmelnytskyi.png', title: 'Хмельницький', subtitle: 'Оптові ринки, агро та енергетика малих ГЕС.', property: 0, cars: 0, houses: 0, jobs: ['Ринок', 'Агро', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  cherkasy: { image: './Cherkasy.png', title: 'Черкаси', subtitle: 'Цукор, деревообробка та логістика по Дніпру.', property: 0, cars: 0, houses: 0, jobs: ['Цукроварня', 'Логістика', 'СТО'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  chernihiv: { image: './Chernihiv.png', title: 'Чернігів', subtitle: 'Пиво, сільське господарство та ІТ-ініціативи.', property: 0, cars: 0, houses: 0, jobs: ['Пивзавод', 'Агро', 'ІТ-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
-  chernivtsi: { image: './Chernivtsi.png', title: 'Чернівці', subtitle: 'Туризм, крафтові кавʼярні та креативні індустрії.', property: 0, cars: 0, houses: 0, jobs: ['Кавʼярня', 'Готель', 'Сувеніри'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
 
 const CITY_MAPS = {
   vinnytsia: './VinitsaMap.png',
@@ -112,7 +82,42 @@ const CITY_ID_ALIASES = {
   zutomyr: 'zhytomyr'
 };
 
-  
+function normalizeCityId(cityId) {
+  return CITY_ID_ALIASES[cityId] || cityId;
+}
+
+function cityMapSrc(cityId) {
+  const normalizedCityId = normalizeCityId(cityId);
+  return `${CITY_MAPS[normalizedCityId] || './UkraineMap.png'}?v=${CITY_MAP_VERSION}`;
+}
+
+const CITY_META = {
+  vinnytsia: { image: './Vinnytsia.png', title: 'Вінниця', subtitle: 'Затишне місто з легкою промисловістю та агро-стартапами.', property: 0, cars: 0, houses: 0, jobs: ['Агробізнес', 'Пекарня', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  lutsk: { image: './Lutsk.png', title: 'Луцьк', subtitle: 'Тихий обласний центр з деревообробкою та ІТ-аутсорсом.', property: 0, cars: 0, houses: 0, jobs: ['Лісопилка', 'Склад', 'ІТ-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  luhansk: { image: './Luhansk.png', title: 'Луганськ', subtitle: 'Колишній вуглепром — нові можливості для виробництва.', property: 0, cars: 0, houses: 0, jobs: ['Шахта', 'Ремонт техніки', 'Логістика'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  dnipro: { image: './Dnipro.png', title: 'Дніпро', subtitle: 'Логістика, виробництво, склади та міський бізнес.', property: 0, cars: 0, houses: 0, jobs: ['Логістика', 'Склад', 'СТО', 'Майстерня'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  donetsk: { image: './Donetsk.png', title: 'Донецьк', subtitle: 'Металургія й машинобудування у стадії відновлення.', property: 0, cars: 0, houses: 0, jobs: ['Шахта', 'Метзавод', 'СТО'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  zhytomyr: { image: './Zhytomyr.png', title: 'Житомир', subtitle: 'Видобуток каменю, переробка деревини та логістика.', property: 0, cars: 0, houses: 0, jobs: ['Карʼєр', 'Пилорама', 'Склад'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  uzhhorod: { image: './Uzhhorod.png', title: 'Ужгород', subtitle: 'Прикордоння, виноробство та туристичні сервіси.', property: 0, cars: 0, houses: 0, jobs: ['Виноробня', 'Готель', 'Кавʼярня'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  zaporizhzhia: { image: './Zaporizhzhia.png', title: 'Запоріжжя', subtitle: 'Індустріальний регіон із металургією та машинобудуванням.', property: 0, cars: 0, houses: 0, jobs: ['Завод', 'Металургія', 'СТО', 'Доставка'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  'ivano-frankivsk': { image: './Ivano-Frankivsk.png', title: 'Івано-Франківськ', subtitle: 'Туризм, лісова промисловість та креативні індустрії.', property: 0, cars: 0, houses: 0, jobs: ['Туризм', 'Кавʼярня', 'Коворкінг'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  kyiv: { image: './Kyiv.png', title: 'Київ', subtitle: 'Столиця: офіси, сервіс, таксі, доставка та високий темп.', property: 0, cars: 0, houses: 0, jobs: ['Офіс', 'Курʼєр', 'Таксі', 'IT-підробіток'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  kropyvnytskyi: { image: './Kropyvnytskyi.png', title: 'Кропивницький', subtitle: 'Аграрний хаб, ремонти техніки та зернові склади.', property: 0, cars: 0, houses: 0, jobs: ['Елеватор', 'СТО', 'Сільгосптехніка'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  crimea: { image: './Crimea.png', title: 'Крим', subtitle: 'Курорти, виноробство, порти й логістика.', property: 0, cars: 0, houses: 0, jobs: ['Готель', 'Порт', 'Виноробня'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  lviv: { image: './Lviv.png', title: 'Львів', subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток.', property: 0, cars: 0, houses: 0, jobs: ['Кавʼярня', 'Готель', 'Курʼєр', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  mykolaiv: { image: './Mykolaiv.png', title: 'Миколаїв', subtitle: 'Верфі, порти та агро-логістика.', property: 0, cars: 0, houses: 0, jobs: ['Верф', 'Порт', 'Склад'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  odesa: { image: './Odessa.png', title: 'Одеса', subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей.', property: 0, cars: 0, houses: 0, jobs: ['Порт', 'Таксі', 'Торгівля', 'Кафе'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  poltava: { image: './Poltava.png', title: 'Полтава', subtitle: 'Нафта, агро-переробка, затишний сервіс.', property: 0, cars: 0, houses: 0, jobs: ['Нафтобаза', 'Млин', 'Кафе'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  rivne: { image: './Rivne.png', title: 'Рівне', subtitle: 'Бурштин, текстиль та лісопереробка.', property: 0, cars: 0, houses: 0, jobs: ['Текстиль', 'Лісопилка', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  sumy: { image: './Sumy.png', title: 'Суми', subtitle: 'Хімпром, машинобудування та агро.', property: 0, cars: 0, houses: 0, jobs: ['Завод', 'СТО', 'Агробізнес'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  ternopil: { image: './Ternopil.png', title: 'Тернопіль', subtitle: 'Студентське місто з ІТ-курсом та агро-ринком.', property: 0, cars: 0, houses: 0, jobs: ['ІТ-аутсорс', 'Агро', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  kharkiv: { image: './Kharkiv.png', title: 'Харків', subtitle: 'ІТ, машини, освіта та наукові кластери.', property: 0, cars: 0, houses: 0, jobs: ['Завод', 'Університет', 'IT-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  kherson: { image: './Kherson.png', title: 'Херсон', subtitle: 'Суднобудування, агро-експорт, морські ворота.', property: 0, cars: 0, houses: 0, jobs: ['Верф', 'Порт', 'Агро'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  khmelnytskyi: { image: './Khmelnytskyi.png', title: 'Хмельницький', subtitle: 'Оптові ринки, агро та енергетика малих ГЕС.', property: 0, cars: 0, houses: 0, jobs: ['Ринок', 'Агро', 'Сервіс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  cherkasy: { image: './Cherkasy.png', title: 'Черкаси', subtitle: 'Цукор, деревообробка та логістика по Дніпру.', property: 0, cars: 0, houses: 0, jobs: ['Цукроварня', 'Логістика', 'СТО'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  chernihiv: { image: './Chernihiv.png', title: 'Чернігів', subtitle: 'Пиво, сільське господарство та ІТ-ініціативи.', property: 0, cars: 0, houses: 0, jobs: ['Пивзавод', 'Агро', 'ІТ-аутсорс'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+  chernivtsi: { image: './Chernivtsi.png', title: 'Чернівці', subtitle: 'Туризм, крафтові кавʼярні та креативні індустрії.', property: 0, cars: 0, houses: 0, jobs: ['Кавʼярня', 'Готель', 'Сувеніри'], inflation: 'Базова', devaluation: 'Базова', economy: 'Розраховується у грі.' },
+
   default: {
     image: './UkraineMap.png',
     title: 'Регіон України',
@@ -130,7 +135,7 @@ const CITY_ID_ALIASES = {
 function getCityMeta(regionInfo) {
   if (!regionInfo) return CITY_META.default;
 
-  const cityId = regionInfo.cityId;
+  const cityId = normalizeCityId(regionInfo.cityId);
   const staticMeta = CITY_META[cityId] || CITY_META.default;
   const base = citiesBase[cityId] || {};
   const runtime = (getState().citiesRuntime || {})[cityId] || {};
@@ -139,6 +144,7 @@ function getCityMeta(regionInfo) {
   return {
     ...staticMeta,
     title: base.name || staticMeta.title || regionInfo.cityName,
+    image: cityMapSrc(cityId),
     inflation: `${getInflation(raw)} %`,
     devaluation: `${getDevaluation(raw)} %`,
     stateAssets: `${getStateAssetsShare(raw)} %`,
@@ -291,6 +297,8 @@ register('welcome3', (root) => {
   }
 
   function renderCityPreview(regionInfo) {
+    cityPreviewCard.classList.remove('is-refreshed');
+
     if (!regionInfo) {
       cityPreviewCard.innerHTML = `
         <div class="city-preview-empty">
@@ -309,6 +317,12 @@ register('welcome3', (root) => {
           <img
             src="${imageSrc}"
             alt="${meta.title}"
+            onload="
+              const box = this.parentElement;
+              const ratio = this.naturalWidth / this.naturalHeight;
+              box.style.setProperty('--city-preview-ratio', ratio);
+              box.classList.toggle('is-square-map', ratio < 1.18);
+            "
             onerror="this.onerror=null; this.src='./UkraineMap.png';"
           />
         </div>
@@ -317,6 +331,14 @@ register('welcome3', (root) => {
           <h4>${meta.title}</h4>
           <p>${meta.subtitle}</p>
         </div>
+      </div>
+
+      <div class="city-preview-map">
+        <img
+          src="${imageSrc}"
+          alt="Карта города ${meta.title}"
+          onerror="this.onerror=null; this.src='./UkraineMap.png';"
+        />
       </div>
 
       <div class="city-preview-grid">
@@ -357,6 +379,10 @@ register('welcome3', (root) => {
         Девальвация: ${meta.devaluation}
       </div>
     `;
+
+    requestAnimationFrame(() => {
+      cityPreviewCard.classList.add('is-refreshed');
+    });
   }
 
   function preloadImage(src) {
@@ -388,6 +414,26 @@ register('welcome3', (root) => {
 
   function getAllRegions() {
     return [...compactRegionElements, ...fullRegionElements];
+  }
+
+  function animateRegionChoice(regionInfo) {
+    if (!regionInfo) {
+      return;
+    }
+
+    getAllRegions().forEach((regionEl) => {
+      if (regionEl.id !== regionInfo.regionId) {
+        return;
+      }
+
+      regionEl.classList.remove('is-click-burst');
+      regionEl.getBoundingClientRect();
+      regionEl.classList.add('is-click-burst');
+
+      setTimeout(() => {
+        regionEl.classList.remove('is-click-burst');
+      }, 560);
+    });
   }
 
   function updateVisualState() {
@@ -464,16 +510,20 @@ register('welcome3', (root) => {
 
     pendingRegion = regionInfo;
 
+    animateRegionChoice(regionInfo);
     renderCityPreview(regionInfo);
     updateVisualState();
   }
 
-state.city = normalizeCityId(selectedRegion.cityId);
+  function confirmRegion() {
+    if (!pendingRegion) {
+      return;
+    }
 
     selectedRegion = pendingRegion;
     pendingRegion = null;
 
-    state.city = selectedRegion.cityId;
+    state.city = normalizeCityId(selectedRegion.cityId);
     state.cityName = selectedRegion.cityName;
     state.regionId = selectedRegion.regionId;
 
@@ -482,6 +532,26 @@ state.city = normalizeCityId(selectedRegion.cityId);
     mapModal.classList.add('hidden');
     renderCityPreview(null);
     updateVisualState();
+  }
+
+  function openMap(regionInfo = null) {
+    mapModal.classList.remove('hidden');
+
+    pendingRegion = null;
+    pointers.clear();
+
+    gesture.mode = 'none';
+    gesture.moved = false;
+    gesture.isTouch = false;
+
+    renderCityPreview(null);
+    resetTransform();
+
+    if (regionInfo) {
+      choosePendingRegion(regionInfo);
+    } else {
+      updateVisualState();
+    }
   }
 
   function applyTransform() {
@@ -638,15 +708,6 @@ state.city = normalizeCityId(selectedRegion.cityId);
     }
   }
 
-  function normalizeCityId(cityId) {
-  return CITY_ID_ALIASES[cityId] || cityId;
-}
-  
-function cityMapSrc(cityId) {
-  const normalizedCityId = normalizeCityId(cityId);
-  return `${CITY_MAPS[normalizedCityId] || './UkraineMap.png'}?v=${CITY_MAP_VERSION}`;
-}
-
   function onPointerUp(event) {
     pointers.delete(event.pointerId);
 
@@ -714,7 +775,7 @@ function cityMapSrc(cityId) {
       }
 
       region.style.display = '';
-      region.style.pointerEvents = mode === 'full' ? 'all' : 'none';
+      region.style.pointerEvents = 'all';
     });
 
     return regions.filter((region) => REGION_DATA[region.id]);
@@ -734,17 +795,26 @@ function cityMapSrc(cityId) {
 
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
-    path.style.pointerEvents = mode === 'full' ? 'all' : 'none';
+    path.style.pointerEvents = 'all';
 
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
       selectedRegion = regionInfo;
     }
 
-    if (mode === 'full') {
-      path.setAttribute('tabindex', '0');
-      path.setAttribute('role', 'button');
-      path.setAttribute('aria-label', regionInfo.cityName);
+    path.setAttribute('tabindex', '0');
+    path.setAttribute('role', 'button');
+    path.setAttribute('aria-label', regionInfo.cityName);
 
+    if (mode === 'compact') {
+      path.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        openMap(regionInfo);
+      });
+    }
+
+    if (mode === 'full') {
       if (!isTouchDevice) {
         path.addEventListener('mouseenter', () => previewRegion(regionInfo));
         path.addEventListener('mouseleave', resetPreview);
@@ -844,20 +914,7 @@ function cityMapSrc(cityId) {
     }
   }
 
-  openMapBtn.addEventListener('click', () => {
-    mapModal.classList.remove('hidden');
-
-    pendingRegion = null;
-    pointers.clear();
-
-    gesture.mode = 'none';
-    gesture.moved = false;
-    gesture.isTouch = false;
-
-    renderCityPreview(null);
-    resetTransform();
-    updateVisualState();
-  });
+  openMapBtn.addEventListener('click', () => openMap());
 
   closeMapBtn.addEventListener('click', () => {
     mapModal.classList.add('hidden');
