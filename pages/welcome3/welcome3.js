@@ -82,13 +82,33 @@ const CITY_ID_ALIASES = {
   zutomyr: 'zhytomyr'
 };
 
+const FALLBACK_MAP_SRC = './UkraineMap.png';
+
 function normalizeCityId(cityId) {
   return CITY_ID_ALIASES[cityId] || cityId;
 }
 
 function cityMapSrc(cityId) {
   const normalizedCityId = normalizeCityId(cityId);
-  return `${CITY_MAPS[normalizedCityId] || './UkraineMap.png'}?v=${CITY_MAP_VERSION}`;
+  return `${CITY_MAPS[normalizedCityId] || FALLBACK_MAP_SRC}?v=${CITY_MAP_VERSION}`;
+}
+
+function setFallbackImage(img) {
+  img.onerror = null;
+  img.src = `${FALLBACK_MAP_SRC}?v=${CITY_MAP_VERSION}`;
+}
+
+function fitPreviewThumb(img) {
+  const box = img.closest('.city-preview-image');
+
+  if (!box || !img.naturalWidth || !img.naturalHeight) {
+    return;
+  }
+
+  const ratio = img.naturalWidth / img.naturalHeight;
+
+  box.style.setProperty('--city-preview-ratio', ratio.toFixed(3));
+  box.classList.toggle('is-square-map', ratio < 1.18);
 }
 
 const CITY_META = {
@@ -301,9 +321,14 @@ register('welcome3', (root) => {
 
     if (!regionInfo) {
       cityPreviewCard.innerHTML = `
-        <div class="city-preview-empty">
-          Выбери область на карте, чтобы увидеть экономику города
+        <div class="city-preview-image">
+          <img class="city-preview-thumb-img" src="${imageSrc}" alt="${meta.title}" />
+          </div>
+          <div class="city-preview-map">
+          <img class="city-preview-map-img" src="${imageSrc}" alt="Карта города ${meta.title}" />
         </div>
+
+
       `;
       return;
     }
@@ -311,21 +336,22 @@ register('welcome3', (root) => {
     const meta = getCityMeta(regionInfo);
     const imageSrc = meta.image || CITY_META.default.image;
 
-    cityPreviewCard.innerHTML = `
-      <div class="city-preview-top">
-        <div class="city-preview-image">
-          <img
-            src="${imageSrc}"
-            alt="${meta.title}"
-            onload="
-              const box = this.parentElement;
-              const ratio = this.naturalWidth / this.naturalHeight;
-              box.style.setProperty('--city-preview-ratio', ratio);
-              box.classList.toggle('is-square-map', ratio < 1.18);
-            "
-            onerror="this.onerror=null; this.src='./UkraineMap.png';"
-          />
-        </div>
+    const thumbImg = cityPreviewCard.querySelector('.city-preview-thumb-img');
+    const mapImg = cityPreviewCard.querySelector('.city-preview-map-img');
+
+    if (thumbImg) {
+      thumbImg.addEventListener('load', () => fitPreviewThumb(thumbImg), { once: true });
+      thumbImg.addEventListener('error', () => setFallbackImage(thumbImg), { once: true });
+
+      if (thumbImg.complete && thumbImg.naturalWidth) {
+        fitPreviewThumb(thumbImg);
+      }
+      }
+
+      if (mapImg) {
+      mapImg.addEventListener('error', () => setFallbackImage(mapImg), { once: true });
+      }
+
 
         <div class="city-preview-main">
           <h4>${meta.title}</h4>
