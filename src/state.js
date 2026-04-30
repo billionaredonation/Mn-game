@@ -18,7 +18,19 @@ function clone(obj) {
 function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(LS_KEY));
-    return saved ? Object.assign(clone(defaultState), saved) : clone(defaultState);
+    const loaded = saved ? Object.assign(clone(defaultState), saved) : clone(defaultState);
+
+    loaded.player = loaded.player || {};
+    loaded.nickname = loaded.nickname || loaded.player.nickname || null;
+    loaded.city = loaded.city || loaded.player.city || null;
+    loaded.cityName = loaded.cityName || loaded.player.cityName || null;
+    loaded.regionId = loaded.regionId || loaded.player.regionId || null;
+    loaded.player.nickname = loaded.player.nickname || loaded.nickname;
+    loaded.player.city = loaded.player.city || loaded.city;
+    loaded.player.cityName = loaded.player.cityName || loaded.cityName;
+    loaded.player.regionId = loaded.player.regionId || loaded.regionId;
+
+    return loaded;
   } catch (error) {
     return clone(defaultState);
   }
@@ -27,6 +39,12 @@ function load() {
 export let state = load();
 
 export function save() {
+  state.player = state.player || {};
+  state.player.nickname = state.nickname || state.player.nickname || null;
+  state.player.city = state.city || state.player.city || null;
+  state.player.cityName = state.cityName || state.player.cityName || null;
+  state.player.regionId = state.regionId || state.player.regionId || null;
+
   localStorage.setItem(LS_KEY, JSON.stringify(state));
 }
 
@@ -52,7 +70,6 @@ export function setState(path, value) {
 
 export function updateRuntime(cityId, patch) {
   state.citiesRuntime[cityId] = Object.assign({}, state.citiesRuntime[cityId] || {}, patch);
-
   save();
 }
 
