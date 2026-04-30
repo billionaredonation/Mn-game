@@ -1,47 +1,25 @@
 import { show } from './router.js';
-import { loadState } from './state.js';
-import './styles/base.css';
+import { initRuntime, getState } from './state.js';
 
-/* ---------- file:// защита ---------- */
-if (location.protocol === 'file:') {
-  document.body.innerHTML =
-    '<style>body{font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;text-align:center;padding:20px}</style>' +
-    '<h2>Игра не может работать по <code>file://</code>.<br>' +
-    'Опубликуйте её на GitHub&nbsp;Pages<br>' +
-    'или откройте через любой HTTP-сервер.</h2>';
-  throw new Error('file:// not supported');
-}
-/* ------------------------------------ */
+initRuntime();                     // загружаем / инициализируем localStorage
 
-/* ---------- Telegram fallback ---------- */
-if (
-  typeof window.Telegram === 'undefined' ||
-  !window.Telegram.WebApp ||
-  typeof window.Telegram.WebApp.expand !== 'function'
-) {
-  window.Telegram = {
-    WebApp: {
-      expand() {},
-      ready() {},
-      sendData() {},
-    },
-  };
-}
-/* --------------------------------------- */
+/* страницы ---------------------------------------------------------------- */
+import '../pages/welcome1/welcome1.js';
+import '../pages/welcome2/welcome2.js';
+import '../pages/welcome3/welcome3.js';
+import '../pages/home/home.js';    // ←  убрали ?v=74 ▸ иначе файл 404
+/* ------------------------------------------------------------------------- */
 
-Telegram.WebApp.expand();
+/* расширяем Web-App, если Telegram есть */
+window.Telegram?.WebApp?.expand?.();
 
-const state = loadState();
+/* маршрутизация ----------------------------------------------------------- */
+const st = getState();             // { player: { nickname?, city? } }
 
-if (!state.nickname) {
-  const { default: Welcome1 } = await import('./pages/welcome/step1.js');
-  show(Welcome1);
-} else if (!state.city) {
-  const { default: Welcome2 } = await import('./pages/welcome/step2.js');
-  show(Welcome2);
+if (!st.player?.nickname) {
+  show('welcome1');
+} else if (!st.player?.city) {
+  show('welcome3');
 } else {
-  const { default: Home } = await import('./pages/home/index.js');
-  show(Home);
+  show('home');
 }
-
-Telegram.WebApp.ready();
