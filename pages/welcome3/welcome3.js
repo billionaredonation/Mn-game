@@ -37,79 +37,79 @@ const CITY_META = {
   zaporizhzhia: {
     image: './pages/welcome3/cities/zaporizhzhia.jpg',
     title: 'Запорожье',
-    subtitle: 'Индустриальный стартовый регион',
-    property: 128,
-    cars: 64,
-    houses: 42,
-    jobs: ['Завод', 'Доставка', 'СТО'],
-    inflation: 'Средняя',
-    devaluation: 'Умеренная',
-    economy: 'Стабильная экономика для старта'
+    subtitle: 'Індустріальний регіон з сильним стартом для робочих професій',
+    property: 0,
+    cars: 0,
+    houses: 0,
+    jobs: ['Завод', 'Металургія', 'СТО', 'Доставка'],
+    inflation: 'Базова',
+    devaluation: 'Базова',
+    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
   },
 
   kyiv: {
     image: './pages/welcome3/cities/kyiv.jpg',
     title: 'Киев',
-    subtitle: 'Большие деньги, высокая конкуренция',
-    property: 340,
-    cars: 210,
-    houses: 96,
-    jobs: ['Офис', 'Курьерка', 'IT'],
-    inflation: 'Высокая',
-    devaluation: 'Средняя',
-    economy: 'Дорогой, но прибыльный регион'
+    subtitle: 'Столиця, офіси, сервіс, доставка та високий темп життя',
+    property: 0,
+    cars: 0,
+    houses: 0,
+    jobs: ['Офіс', 'Курʼєр', 'Таксі', 'IT-підробіток'],
+    inflation: 'Базова',
+    devaluation: 'Базова',
+    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
   },
 
   dnipro: {
     image: './pages/welcome3/cities/dnipro.jpg',
     title: 'Днепр',
-    subtitle: 'Баланс бизнеса и рабочих профессий',
-    property: 220,
-    cars: 135,
-    houses: 71,
-    jobs: ['Склад', 'Мастерская', 'Логистика'],
-    inflation: 'Средняя',
-    devaluation: 'Средняя',
-    economy: 'Сбалансированная экономика'
+    subtitle: 'Логістика, виробництво, склади та міський бізнес',
+    property: 0,
+    cars: 0,
+    houses: 0,
+    jobs: ['Логістика', 'Склад', 'СТО', 'Майстерня'],
+    inflation: 'Базова',
+    devaluation: 'Базова',
+    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
   },
 
   odesa: {
     image: './pages/welcome3/cities/odesa.jpg',
     title: 'Одесса',
-    subtitle: 'Торговля, туризм и быстрые деньги',
-    property: 250,
-    cars: 180,
-    houses: 84,
-    jobs: ['Порт', 'Такси', 'Торговля'],
-    inflation: 'Высокая',
-    devaluation: 'Умеренная',
-    economy: 'Регион с быстрым оборотом денег'
+    subtitle: 'Порт, торгівля, туризм, таксі та швидкий обіг грошей',
+    property: 0,
+    cars: 0,
+    houses: 0,
+    jobs: ['Порт', 'Таксі', 'Торгівля', 'Кафе'],
+    inflation: 'Базова',
+    devaluation: 'Базова',
+    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
   },
 
   lviv: {
     image: './pages/welcome3/cities/lviv.jpg',
     title: 'Львов',
-    subtitle: 'Туризм, сервис и стабильный рост',
-    property: 190,
-    cars: 118,
-    houses: 60,
-    jobs: ['Кафе', 'Отель', 'Курьер'],
-    inflation: 'Средняя',
-    devaluation: 'Низкая',
-    economy: 'Спокойный регион для постепенного развития'
+    subtitle: 'Туризм, сервіс, кавʼярні, готелі та стабільний розвиток',
+    property: 0,
+    cars: 0,
+    houses: 0,
+    jobs: ['Кавʼярня', 'Готель', 'Курʼєр', 'Сервіс'],
+    inflation: 'Базова',
+    devaluation: 'Базова',
+    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
   },
 
   default: {
     image: './pages/welcome3/cities/default.jpg',
     title: 'Регион Украины',
-    subtitle: 'Стартовая зона для развития персонажа',
-    property: 90,
-    cars: 45,
-    houses: 30,
-    jobs: ['Подработка', 'Доставка', 'Склад'],
-    inflation: 'Средняя',
-    devaluation: 'Умеренная',
-    economy: 'Базовая экономика региона'
+    subtitle: 'Стартова зона для розвитку персонажа',
+    property: 0,
+    cars: 0,
+    houses: 0,
+    jobs: ['Підробіток', 'Доставка', 'Склад'],
+    inflation: 'Базова',
+    devaluation: 'Базова',
+    economy: 'Дані економіки будуть оновлюватися після запуску бази даних'
   }
 };
 
