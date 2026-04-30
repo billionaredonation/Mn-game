@@ -33,14 +33,91 @@ const REGION_DATA = {
   UA77: { cityId: 'chernivtsi', cityName: 'Черновцы' }
 };
 
+const CITY_META = {
+  zaporizhzhia: {
+    image: './pages/welcome3/cities/zaporizhzhia.jpg',
+    title: 'Запорожье',
+    subtitle: 'Индустриальный стартовый регион',
+    property: 128,
+    cars: 64,
+    houses: 42,
+    jobs: ['Завод', 'Доставка', 'СТО'],
+    inflation: 'Средняя',
+    devaluation: 'Умеренная',
+    economy: 'Стабильная экономика для старта'
+  },
+
+  kyiv: {
+    image: './pages/welcome3/cities/kyiv.jpg',
+    title: 'Киев',
+    subtitle: 'Большие деньги, высокая конкуренция',
+    property: 340,
+    cars: 210,
+    houses: 96,
+    jobs: ['Офис', 'Курьерка', 'IT'],
+    inflation: 'Высокая',
+    devaluation: 'Средняя',
+    economy: 'Дорогой, но прибыльный регион'
+  },
+
+  dnipro: {
+    image: './pages/welcome3/cities/dnipro.jpg',
+    title: 'Днепр',
+    subtitle: 'Баланс бизнеса и рабочих профессий',
+    property: 220,
+    cars: 135,
+    houses: 71,
+    jobs: ['Склад', 'Мастерская', 'Логистика'],
+    inflation: 'Средняя',
+    devaluation: 'Средняя',
+    economy: 'Сбалансированная экономика'
+  },
+
+  odesa: {
+    image: './pages/welcome3/cities/odesa.jpg',
+    title: 'Одесса',
+    subtitle: 'Торговля, туризм и быстрые деньги',
+    property: 250,
+    cars: 180,
+    houses: 84,
+    jobs: ['Порт', 'Такси', 'Торговля'],
+    inflation: 'Высокая',
+    devaluation: 'Умеренная',
+    economy: 'Регион с быстрым оборотом денег'
+  },
+
+  lviv: {
+    image: './pages/welcome3/cities/lviv.jpg',
+    title: 'Львов',
+    subtitle: 'Туризм, сервис и стабильный рост',
+    property: 190,
+    cars: 118,
+    houses: 60,
+    jobs: ['Кафе', 'Отель', 'Курьер'],
+    inflation: 'Средняя',
+    devaluation: 'Низкая',
+    economy: 'Спокойный регион для постепенного развития'
+  },
+
+  default: {
+    image: './pages/welcome3/cities/default.jpg',
+    title: 'Регион Украины',
+    subtitle: 'Стартовая зона для развития персонажа',
+    property: 90,
+    cars: 45,
+    houses: 30,
+    jobs: ['Подработка', 'Доставка', 'Склад'],
+    inflation: 'Средняя',
+    devaluation: 'Умеренная',
+    economy: 'Базовая экономика региона'
+  }
+};
+
 register('welcome3', (root) => {
   root.className = 'page welcome-page welcome3';
 
   root.innerHTML = `
-    <div class="welcome-bg">
-      <div class="welcome-orb welcome-orb-1"></div>
-      <div class="welcome-orb welcome-orb-2"></div>
-    </div>
+    <div class="welcome-bg"></div>
 
     <div class="welcome3-loader" id="welcome3Loader">
       <div class="loader-logo">MN</div>
@@ -54,8 +131,10 @@ register('welcome3', (root) => {
 
       <div class="welcome-header">
         <p class="welcome-step">Шаг 3 / 3</p>
-        <h2>Выбери стартовый город</h2>
-        <p>Открой карту, найди область и подтверди выбор.</p>
+        <h2 class="welcome-title">Выбери город</h2>
+        <p class="welcome-subtitle">
+          Открой карту, найди область и изучи экономику региона.
+        </p>
       </div>
 
       <div class="compact-map-card">
@@ -87,7 +166,7 @@ register('welcome3', (root) => {
         <div class="map-modal-header">
           <div>
             <h3>Выбор стартового города</h3>
-            <p>Двигай карту одним пальцем, приближай двумя. Тап по области выбирает город.</p>
+            <p>Двигай карту одним пальцем, приближай двумя. Тап по области открывает экономику города.</p>
           </div>
 
           <button class="close-map-btn" id="closeMapBtn" type="button" aria-label="Закрыть карту">
@@ -104,9 +183,10 @@ register('welcome3', (root) => {
           </div>
         </div>
 
-        <div class="modal-selection-box">
-          <span id="modalSelectionText">Выбери область на карте</span>
-          <small id="modalHint"></small>
+        <div class="city-preview-card" id="cityPreviewCard">
+          <div class="city-preview-empty">
+            Выбери область на карте, чтобы увидеть экономику города
+          </div>
         </div>
 
         <button class="welcome-btn primary confirm-city-btn" id="confirmCityBtn" type="button" disabled>
@@ -120,8 +200,7 @@ register('welcome3', (root) => {
   const compactRegionsLayer = root.querySelector('#compactRegionsLayer');
   const fullRegionsLayer = root.querySelector('#fullRegionsLayer');
   const citySelectionText = root.querySelector('#citySelectionText');
-  const modalSelectionText = root.querySelector('#modalSelectionText');
-  const modalHint = root.querySelector('#modalHint');
+  const cityPreviewCard = root.querySelector('#cityPreviewCard');
   const nextBtn = root.querySelector('#nextBtn');
   const openMapBtn = root.querySelector('#openMapBtn');
   const mapModal = root.querySelector('#mapModal');
@@ -133,10 +212,8 @@ register('welcome3', (root) => {
   let svgTextCache = '';
   let selectedRegion = null;
   let pendingRegion = null;
-
   let compactRegionElements = [];
   let fullRegionElements = [];
-
   let visualFrame = null;
   let transformFrame = null;
 
@@ -179,6 +256,81 @@ register('welcome3', (root) => {
     };
   }
 
+  function getCityMeta(regionInfo) {
+    if (!regionInfo) {
+      return CITY_META.default;
+    }
+
+    return CITY_META[regionInfo.cityId] || {
+      ...CITY_META.default,
+      title: regionInfo.cityName
+    };
+  }
+
+  function renderCityPreview(regionInfo) {
+    if (!regionInfo) {
+      cityPreviewCard.innerHTML = `
+        <div class="city-preview-empty">
+          Выбери область на карте, чтобы увидеть экономику города
+        </div>
+      `;
+      return;
+    }
+
+    const meta = getCityMeta(regionInfo);
+
+    cityPreviewCard.innerHTML = `
+      <div class="city-preview-top">
+        <div class="city-preview-image">
+          <img src="${meta.image}" alt="${meta.title}" />
+        </div>
+
+        <div class="city-preview-main">
+          <h4>${meta.title}</h4>
+          <p>${meta.subtitle}</p>
+        </div>
+      </div>
+
+      <div class="city-preview-grid">
+        <div class="city-preview-stat">
+          <span>Имущество</span>
+          <strong>${meta.property}</strong>
+        </div>
+
+        <div class="city-preview-stat">
+          <span>Машины</span>
+          <strong>${meta.cars}</strong>
+        </div>
+
+        <div class="city-preview-stat">
+          <span>Дома</span>
+          <strong>${meta.houses}</strong>
+        </div>
+
+        <div class="city-preview-stat">
+          <span>Инфляция</span>
+          <strong>${meta.inflation}</strong>
+        </div>
+      </div>
+
+      <div class="city-preview-economy">
+        <span>Экономика</span>
+        <p>${meta.economy}</p>
+      </div>
+
+      <div class="city-preview-jobs">
+        <span>Работы региона</span>
+        <div>
+          ${meta.jobs.map((job) => `<b>${job}</b>`).join('')}
+        </div>
+      </div>
+
+      <div class="city-preview-warning">
+        Девальвация: ${meta.devaluation}
+      </div>
+    `;
+  }
+
   function preloadImage(src) {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -204,10 +356,6 @@ register('welcome3', (root) => {
 
   function setMainText(text) {
     citySelectionText.textContent = text;
-  }
-
-  function setModalText(text) {
-    modalSelectionText.textContent = text;
   }
 
   function getAllRegions() {
@@ -255,11 +403,9 @@ register('welcome3', (root) => {
       if (pendingRegion) {
         confirmCityBtn.disabled = false;
         confirmCityBtn.classList.add('active');
-        setModalText(`Вы хотите выбрать ${pendingRegion.cityName}?`);
       } else {
         confirmCityBtn.disabled = true;
         confirmCityBtn.classList.remove('active');
-        setModalText('Выбери область на карте');
       }
 
       visualFrame = null;
@@ -267,31 +413,20 @@ register('welcome3', (root) => {
   }
 
   function previewRegion(regionInfo) {
-    if (!regionInfo) {
+    if (!regionInfo || isTouchDevice) {
       return;
     }
 
-    if (pendingRegion && pendingRegion.regionId === regionInfo.regionId) {
-      setModalText(`Вы хотите выбрать ${regionInfo.cityName}?`);
-      return;
-    }
-
-    if (selectedRegion && selectedRegion.regionId === regionInfo.regionId) {
-      setModalText(`Уже выбран город: ${regionInfo.cityName}`);
-      return;
-    }
-
-    setModalText(`Навёлся на ${regionInfo.cityName}`);
+    renderCityPreview(regionInfo);
   }
 
   function resetPreview() {
     if (pendingRegion) {
-      setModalText(`Вы хотите выбрать ${pendingRegion.cityName}?`);
-    } else if (selectedRegion) {
-      setModalText(`Сейчас выбран: ${selectedRegion.cityName}`);
-    } else {
-      setModalText('Выбери область на карте');
+      renderCityPreview(pendingRegion);
+      return;
     }
+
+    renderCityPreview(null);
   }
 
   function choosePendingRegion(regionInfo) {
@@ -300,8 +435,8 @@ register('welcome3', (root) => {
     }
 
     pendingRegion = regionInfo;
-    modalHint.textContent = `Выбрана область: ${regionInfo.cityName}`;
 
+    renderCityPreview(regionInfo);
     updateVisualState();
   }
 
@@ -320,7 +455,7 @@ register('welcome3', (root) => {
     save();
 
     mapModal.classList.add('hidden');
-
+    renderCityPreview(null);
     updateVisualState();
   }
 
@@ -516,43 +651,40 @@ register('welcome3', (root) => {
     applyTransform();
   }
 
-function prepareSvg(svg, mode) {
-  svg.classList.add('ukraine-regions-svg');
-  svg.classList.add(mode);
+  function prepareSvg(svg, mode) {
+    svg.classList.add('ukraine-regions-svg');
+    svg.classList.add(mode);
 
-  svg.removeAttribute('width');
-  svg.removeAttribute('height');
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.removeAttribute('width');
+    svg.removeAttribute('height');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
-  // Сначала скрываем вообще всё внутри SVG
-  svg.querySelectorAll('*').forEach((el) => {
-    el.style.pointerEvents = 'none';
-  });
+    svg.querySelectorAll('*').forEach((el) => {
+      el.style.pointerEvents = 'none';
+    });
 
-  // Скрываем служебные группы, точки, подписи и мусорные элементы
-  svg.querySelectorAll(
-    '#points, #label_points, text, circle, rect, line, polyline, ellipse'
-  ).forEach((el) => {
-    el.style.display = 'none';
-  });
+    svg.querySelectorAll(
+      '#points, #label_points, text, circle, rect, line, polyline, ellipse'
+    ).forEach((el) => {
+      el.style.display = 'none';
+    });
 
-  // Берём только реальные path/polygon области
-  const regions = Array.from(svg.querySelectorAll('path[id], polygon[id]'));
+    const regions = Array.from(svg.querySelectorAll('path[id], polygon[id]'));
 
-  regions.forEach((region) => {
-    const hasRegionData = Boolean(REGION_DATA[region.id]);
+    regions.forEach((region) => {
+      const hasRegionData = Boolean(REGION_DATA[region.id]);
 
-    if (!hasRegionData) {
-      region.style.display = 'none';
-      return;
-    }
+      if (!hasRegionData) {
+        region.style.display = 'none';
+        return;
+      }
 
-    region.style.display = '';
-    region.style.pointerEvents = mode === 'full' ? 'all' : 'none';
-  });
+      region.style.display = '';
+      region.style.pointerEvents = mode === 'full' ? 'all' : 'none';
+    });
 
-  return regions.filter((region) => REGION_DATA[region.id]);
-}
+    return regions.filter((region) => REGION_DATA[region.id]);
+  }
 
   function setupRegion(path, storage, mode) {
     const regionInfo = makeRegionInfo(path.id);
@@ -568,7 +700,7 @@ function prepareSvg(svg, mode) {
 
     path.dataset.cityId = regionInfo.cityId;
     path.dataset.cityName = regionInfo.cityName;
-    path.style.pointerEvents = 'all';
+    path.style.pointerEvents = mode === 'full' ? 'all' : 'none';
 
     if (state.regionId === regionInfo.regionId || state.city === regionInfo.cityId) {
       selectedRegion = regionInfo;
@@ -688,6 +820,7 @@ function prepareSvg(svg, mode) {
     gesture.moved = false;
     gesture.isTouch = false;
 
+    renderCityPreview(null);
     resetTransform();
     updateVisualState();
   });
@@ -702,6 +835,7 @@ function prepareSvg(svg, mode) {
     gesture.moved = false;
     gesture.isTouch = false;
 
+    renderCityPreview(null);
     updateVisualState();
   });
 
