@@ -78,7 +78,7 @@
 .compact-map {
   position: relative;
   width: 100%;
-  aspect-ratio: 1.15 / 1;
+  aspect-ratio: 1532 / 1026;
   overflow: hidden;
   border-radius: 20px;
   background: rgba(0,0,0,0.4);
@@ -244,7 +244,10 @@
 
 .full-map-content {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  aspect-ratio: 1532 / 1026;
   transform-origin: center center;
   will-change: transform;
 }
@@ -504,14 +507,14 @@
 }
 
 .compact-map {
-  min-height: 360px;
+  min-height: 0;
 }
 
 .compact-map-image {
-  position: relative;
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: contain;
 }
 
