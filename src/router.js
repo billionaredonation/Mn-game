@@ -23,8 +23,6 @@ export function show(id, props = {}) {
   if (!screens[id]) {
     const registeredScreens = Object.keys(screens);
 
-    console.error('Screen "' + id + '" is not registered', registeredScreens);
-
     root.innerHTML = `
       <div style="padding:20px;color:white;background:#050505;min-height:100vh;font-family:Arial">
         Ошибка: экран "${id}" не найден<br>
@@ -38,3 +36,4 @@ export function show(id, props = {}) {
   screens[id](root, props);
   window.currentScreen = id;
 }
+
