@@ -1,4 +1,3 @@
-/* простейшие формулы расчёта — потом усложнишь по балансу */
 export const getInflation = ({ moneySupply, gdp }) =>
   clamp(100 * (moneySupply?.delta / (gdp?.value || 1)));
 
