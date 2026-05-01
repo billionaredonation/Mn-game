@@ -1,5 +1,5 @@
-import { register, show } from '../../src/router.js?v=90';
-import { state, save } from '../../src/state.js?v=90';
+import { register, show } from '../../src/router.js?v=91';
+import { state, save } from '../../src/state.js?v=91';
 
 register('welcome2', (root) => {
   root.className = 'page welcome2';
