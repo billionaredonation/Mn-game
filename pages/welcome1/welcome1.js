@@ -1,4 +1,4 @@
-import { register, show } from '../../src/router.js?v=90';
+import { register, show } from '../../src/router.js?v=91';
 
 register('welcome1', (root) => {
   root.className = 'page welcome1';
