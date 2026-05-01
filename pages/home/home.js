@@ -1,16 +1,255 @@
-import { register, show } from '../../src/router.js?v=90';
-import { state, save } from '../../src/state.js?v=90';
-import { ensurePlayer, canWork, applyJobReward } from '../../src/game/player.js?v=90';
-import { getCity, normalizeCityId } from '../../src/game/cities/index.js?v=90';
+import { register, show } from '../../src/router.js?v=91';
+import { state, save } from '../../src/state.js?v=91';
+
+const cityMaps = {
+  vinnytsia: './VinitsaMap.png',
+  lutsk: './LutskMap.png',
+  luhansk: './LuganskMap.png',
+  dnipro: './DneprMap.png',
+  donetsk: './DonetskMap.png',
+  zhytomyr: './ZutomyrMap.png',
+  uzhhorod: './UzgorodMap.png',
+  zaporizhzhia: './Zaporozya.png',
+  'ivano-frankivsk': './IvanoFrankovsk.png',
+  kyiv: './KiyvMap.png',
+  kropyvnytskyi: './Kropivnitskyi.png',
+  crimea: './KrymMap.png',
+  lviv: './Lviv.png',
+  mykolaiv: './Nikolaev.png',
+  odesa: './Odessa.png',
+  poltava: './Poltava.png',
+  rivne: './Rovno.png',
+  sumy: './Sumy.png',
+  ternopil: './Ternopil.png',
+  kharkiv: './Kharkiv.png',
+  kherson: './Kherson.png',
+  khmelnytskyi: './Khmelnitskiy.png',
+  cherkasy: './CherkasyMap.png',
+  chernihiv: './ChernigovMap.png',
+  chernivtsi: './ChernivtsiMap.png'
+};
+
+const cityNames = {
+  vinnytsia: 'Винница',
+  lutsk: 'Луцк',
+  luhansk: 'Луганск',
+  dnipro: 'Днепр',
+  donetsk: 'Донецк',
+  zhytomyr: 'Житомир',
+  uzhhorod: 'Ужгород',
+  zaporizhzhia: 'Запорожье',
+  'ivano-frankivsk': 'Ивано-Франковск',
+  kyiv: 'Киев',
+  kropyvnytskyi: 'Кропивницкий',
+  crimea: 'Крым',
+  lviv: 'Львов',
+  mykolaiv: 'Николаев',
+  odesa: 'Одесса',
+  poltava: 'Полтава',
+  rivne: 'Ровно',
+  sumy: 'Сумы',
+  ternopil: 'Тернополь',
+  kharkiv: 'Харьков',
+  kherson: 'Херсон',
+  khmelnytskyi: 'Хмельницкий',
+  cherkasy: 'Черкассы',
+  chernihiv: 'Чернигов',
+  chernivtsi: 'Черновцы'
+};
+
+const aliases = {
+  odessa: 'odesa',
+  kiev: 'kyiv',
+  kiyv: 'kyiv',
+  zaporizhia: 'zaporizhzhia',
+  zaporozhye: 'zaporizhzhia',
+  nikolaev: 'mykolaiv',
+  rovno: 'rivne'
+};
+
+const defaultJobs = [
+  {
+    id: 'warehouse',
+    title: 'Склад',
+    short: 'СКЛ',
+    x: 32,
+    y: 46,
+    pay: 240,
+    energy: 12,
+    xp: 4,
+    skill: 'strength',
+    description: 'Разгрузка, сортировка и учет товаров. Стабильная работа для старта.'
+  },
+  {
+    id: 'farm',
+    title: 'Ферма',
+    short: 'ФЕР',
+    x: 68,
+    y: 58,
+    pay: 190,
+    energy: 8,
+    xp: 3,
+    skill: 'endurance',
+    description: 'Спокойная работа на хозяйстве. Меньше денег, зато мягче по энергии.'
+  },
+  {
+    id: 'service',
+    title: 'Сервис',
+    short: 'СРВ',
+    x: 52,
+    y: 34,
+    pay: 260,
+    energy: 10,
+    xp: 4,
+    skill: 'charisma',
+    description: 'Обслуживание клиентов и мелкие поручения по городу.'
+  }
+];
+
+const cityJobs = {
+  zaporizhzhia: [
+    defaultJobs[0],
+    {
+      id: 'factory',
+      title: 'Завод',
+      short: 'ЗВД',
+      x: 66,
+      y: 42,
+      pay: 350,
+      energy: 16,
+      xp: 6,
+      skill: 'endurance',
+      description: 'Производственная смена. Хорошие деньги, высокая усталость.'
+    },
+    defaultJobs[2]
+  ],
+  odesa: [
+    {
+      id: 'port',
+      title: 'Порт',
+      short: 'ПРТ',
+      x: 42,
+      y: 62,
+      pay: 330,
+      energy: 15,
+      xp: 5,
+      skill: 'strength',
+      description: 'Погрузка, складирование и работа у причала.'
+    },
+    {
+      id: 'taxi',
+      title: 'Такси',
+      short: 'ТКС',
+      x: 65,
+      y: 38,
+      pay: 270,
+      energy: 9,
+      xp: 4,
+      skill: 'charisma',
+      description: 'Городские поездки и быстрый оборот денег.'
+    },
+    defaultJobs[2]
+  ],
+  kyiv: [
+    {
+      id: 'office',
+      title: 'Офис',
+      short: 'ОФС',
+      x: 50,
+      y: 38,
+      pay: 300,
+      energy: 10,
+      xp: 5,
+      skill: 'intellect',
+      description: 'Административная работа, документы и первые деловые связи.'
+    },
+    {
+      id: 'courier',
+      title: 'Курьер',
+      short: 'КУР',
+      x: 34,
+      y: 61,
+      pay: 260,
+      energy: 12,
+      xp: 4,
+      skill: 'endurance',
+      description: 'Доставка заказов по городу.'
+    },
+    defaultJobs[0]
+  ],
+  lviv: [
+    {
+      id: 'cafe',
+      title: 'Кафе',
+      short: 'КФЕ',
+      x: 46,
+      y: 52,
+      pay: 230,
+      energy: 8,
+      xp: 4,
+      skill: 'charisma',
+      description: 'Работа с гостями, чаевые и быстрый старт.'
+    },
+    defaultJobs[1],
+    defaultJobs[2]
+  ]
+};
+
+function normalizeCityId(cityId) {
+  return aliases[cityId] || cityId || 'zaporizhzhia';
+}
+
+function getCity() {
+  const id = normalizeCityId(state.city || (state.player && state.player.city));
+  const safeId = cityMaps[id] ? id : 'zaporizhzhia';
+
+  return {
+    id: safeId,
+    name: cityNames[safeId] || 'Запорожье',
+    map: (cityMaps[safeId] || './Zaporozya.png') + '?v=91',
+    jobs: cityJobs[safeId] || defaultJobs
+  };
+}
+
+function ensurePlayer() {
+  state.player = state.player || {};
+
+  if (typeof state.player.money !== 'number') state.player.money = 0;
+  if (typeof state.player.energy !== 'number') state.player.energy = 100;
+  if (typeof state.player.xp !== 'number') state.player.xp = 0;
+
+  state.player.skills = state.player.skills || {};
+  if (typeof state.player.skills.strength !== 'number') state.player.skills.strength = 1;
+  if (typeof state.player.skills.endurance !== 'number') state.player.skills.endurance = 1;
+  if (typeof state.player.skills.intellect !== 'number') state.player.skills.intellect = 1;
+  if (typeof state.player.skills.charisma !== 'number') state.player.skills.charisma = 1;
+
+  return state.player;
+}
 
 register('home', (root) => {
+  try {
+    renderHome(root);
+  } catch (error) {
+    console.error(error);
+    root.className = 'page home';
+    root.innerHTML = `
+      <div style="padding:20px;color:white;font-family:Arial">
+        <h3>Ошибка главного меню</h3>
+        <pre style="white-space:pre-wrap">${error.message || error}</pre>
+      </div>
+    `;
+  }
+});
+
+function renderHome(root) {
   root.className = 'page home';
 
-  state.city = normalizeCityId(state.city);
+  const city = getCity();
+  const player = ensurePlayer();
 
-  const city = getCity(state.city);
-  const player = ensurePlayer(state);
-
+  state.city = city.id;
+  state.cityName = city.name;
   save();
 
   let selectedJob = null;
@@ -31,7 +270,7 @@ register('home', (root) => {
       <div class="home-map-viewport" id="mapViewport">
         <div class="home-map-world" id="mapWorld">
           <div class="map-depth"></div>
-          <img class="city-map-image" src="${city.map}" alt="${city.name}" />
+          <img class="city-map-image" id="cityMapImage" src="${city.map}" alt="${city.name}" />
           <div class="map-vignette"></div>
           <div class="map-light"></div>
           <div class="job-points" id="jobPoints"></div>
@@ -63,6 +302,11 @@ register('home', (root) => {
   const mapWorld = root.querySelector('#mapWorld');
   const jobPoints = root.querySelector('#jobPoints');
   const infoPanel = root.querySelector('#infoPanel');
+  const cityMapImage = root.querySelector('#cityMapImage');
+
+  cityMapImage.onerror = () => {
+    cityMapImage.src = './UkraineMap.png?v=91';
+  };
 
   function updateStats() {
     root.querySelector('#moneyValue').textContent = player.money;
@@ -116,11 +360,11 @@ register('home', (root) => {
     city.jobs.forEach((job) => {
       const btn = jobPoints.querySelector('[data-job-id="' + job.id + '"]');
 
-      btn.addEventListener('click', (event) => {
+      btn.onclick = (event) => {
         event.preventDefault();
         event.stopPropagation();
         selectJob(job);
-      });
+      };
     });
   }
 
@@ -152,11 +396,9 @@ register('home', (root) => {
   }
 
   function workSelectedJob() {
-    if (!selectedJob) {
-      return;
-    }
+    if (!selectedJob) return;
 
-    if (!canWork(player, selectedJob)) {
+    if (player.energy < selectedJob.energy) {
       showPanel(`
         <div class="panel-head">
           <div>
@@ -172,7 +414,14 @@ register('home', (root) => {
       return;
     }
 
-    applyJobReward(player, selectedJob);
+    player.money += selectedJob.pay;
+    player.energy = Math.max(0, player.energy - selectedJob.energy);
+    player.xp += selectedJob.xp;
+
+    if (selectedJob.skill && player.skills[selectedJob.skill]) {
+      player.skills[selectedJob.skill] += 0.05;
+    }
+
     save();
     updateStats();
 
@@ -265,9 +514,7 @@ register('home', (root) => {
   });
 
   mapViewport.addEventListener('pointermove', (event) => {
-    if (!camera.dragging) {
-      return;
-    }
+    if (!camera.dragging) return;
 
     camera.x = camera.baseX + event.clientX - camera.startX;
     camera.y = camera.baseY + event.clientY - camera.startY;
@@ -304,4 +551,4 @@ register('home', (root) => {
   renderJobs();
   updateStats();
   centerMap();
-});
+}
