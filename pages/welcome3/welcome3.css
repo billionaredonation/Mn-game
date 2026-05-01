@@ -627,4 +627,69 @@
   }
 }
 
+/* Hard fix for Telegram Desktop narrow preview */
+.welcome-page.welcome3 {
+  padding: 14px 18px !important;
+  overflow-x: hidden !important;
+}
+
+.welcome3-card,
+.welcome3.welcome-page .welcome-card {
+  width: 100% !important;
+  max-width: 380px !important;
+  min-width: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 22px 24px !important;
+  overflow: hidden !important;
+}
+
+.welcome3 .welcome-title {
+  font-size: 32px !important;
+}
+
+.welcome3 .welcome-subtitle {
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+}
+
+.compact-map-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 8px !important;
+  overflow: hidden !important;
+}
+
+.compact-map {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  aspect-ratio: 1 / 0.82 !important;
+  overflow: hidden !important;
+}
+
+.compact-map-image {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+.compact-regions-layer,
+.compact-regions-layer svg {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 520px) {
+  .welcome3-card,
+  .welcome3.welcome-page .welcome-card {
+    max-width: 360px !important;
+    padding: 20px 20px !important;
+  }
+}
+
 
