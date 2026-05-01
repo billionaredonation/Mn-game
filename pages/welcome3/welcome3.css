@@ -578,4 +578,53 @@
   }
 }
 
+/* Telegram Desktop / embedded preview width fix */
+.welcome-page.welcome3 {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding-left: 14px;
+  padding-right: 14px;
+  overflow-x: hidden;
+}
+
+.welcome3 .welcome-card,
+.welcome3-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 18px;
+  padding-right: 18px;
+  overflow: hidden;
+}
+
+.compact-map-card,
+.compact-map {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.compact-map-image,
+.compact-regions-layer,
+.compact-regions-layer svg {
+  max-width: 100%;
+}
+
+@media (max-width: 520px) {
+  .welcome-page.welcome3 {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .welcome3 .welcome-card,
+  .welcome3-card {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
 
