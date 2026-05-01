@@ -1,4 +1,4 @@
-const APP_VERSION = '90';
+const APP_VERSION = '91';
 
 function renderBootError(error) {
   const root = document.getElementById('app');
@@ -6,9 +6,7 @@ function renderBootError(error) {
 
   console.error(error);
 
-  if (!root) {
-    return;
-  }
+  if (!root) return;
 
   root.innerHTML = `
     <div style="padding:20px;color:white;background:#050505;min-height:100vh;font-family:Arial">
@@ -40,11 +38,6 @@ async function boot() {
   const st = stateModule.getState();
   const nickname = st.nickname || (st.player && st.player.nickname);
   const city = st.city || (st.player && st.player.city);
-  const screens = routerModule.screens;
-
-  if (!screens.welcome1 || !screens.welcome2 || !screens.welcome3 || !screens.home) {
-    throw new Error('Screens not registered: ' + Object.keys(screens).join(', '));
-  }
 
   if (!nickname) {
     routerModule.show('welcome1');
@@ -57,5 +50,6 @@ async function boot() {
 
 expandTelegramWebApp();
 boot().catch(renderBootError);
+
 
 
