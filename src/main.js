@@ -1,10 +1,14 @@
+const APP_VERSION = '90';
+
 function renderBootError(error) {
   const root = document.getElementById('app');
-  const message = error && error.stack ? error.stack : String(error && error.message ? error.message : error);
+  const message = error && error.message ? error.message : String(error);
 
   console.error(error);
 
-  if (!root) return;
+  if (!root) {
+    return;
+  }
 
   root.innerHTML = `
     <div style="padding:20px;color:white;background:#050505;min-height:100vh;font-family:Arial">
@@ -21,16 +25,14 @@ function expandTelegramWebApp() {
 }
 
 async function boot() {
-  expandTelegramWebApp();
-
-  const router = await import('./router.js?v=90');
-  const stateModule = await import('./state.js?v=90');
+  const routerModule = await import('./router.js?v=' + APP_VERSION);
+  const stateModule = await import('./state.js?v=' + APP_VERSION);
 
   await Promise.all([
-    import('../pages/welcome1/welcome1.js?v=90'),
-    import('../pages/welcome2/welcome2.js?v=90'),
-    import('../pages/welcome3/welcome3.js?v=90'),
-    import('../pages/home/home.js?v=90')
+    import('../pages/welcome1/welcome1.js?v=' + APP_VERSION),
+    import('../pages/welcome2/welcome2.js?v=' + APP_VERSION),
+    import('../pages/welcome3/welcome3.js?v=' + APP_VERSION),
+    import('../pages/home/home.js?v=' + APP_VERSION)
   ]);
 
   stateModule.initRuntime();
@@ -38,15 +40,22 @@ async function boot() {
   const st = stateModule.getState();
   const nickname = st.nickname || (st.player && st.player.nickname);
   const city = st.city || (st.player && st.player.city);
+  const screens = routerModule.screens;
+
+  if (!screens.welcome1 || !screens.welcome2 || !screens.welcome3 || !screens.home) {
+    throw new Error('Screens not registered: ' + Object.keys(screens).join(', '));
+  }
 
   if (!nickname) {
-    router.show('welcome1');
+    routerModule.show('welcome1');
   } else if (!city) {
-    router.show('welcome3');
+    routerModule.show('welcome3');
   } else {
-    router.show('home');
+    routerModule.show('home');
   }
 }
 
+expandTelegramWebApp();
 boot().catch(renderBootError);
+
 
