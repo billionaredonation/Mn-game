@@ -1,4 +1,4 @@
-const APP_VERSION = '91';
+const APP_VERSION = '92';
 
 function renderBootError(error) {
   const root = document.getElementById('app');
@@ -6,7 +6,9 @@ function renderBootError(error) {
 
   console.error(error);
 
-  if (!root) return;
+  if (!root) {
+    return;
+  }
 
   root.innerHTML = `
     <div style="padding:20px;color:white;background:#050505;min-height:100vh;font-family:Arial">
@@ -39,10 +41,8 @@ async function boot() {
   const nickname = st.nickname || (st.player && st.player.nickname);
   const city = st.city || (st.player && st.player.city);
 
-  if (!nickname) {
+  if (!nickname || !city) {
     routerModule.show('welcome1');
-  } else if (!city) {
-    routerModule.show('welcome3');
   } else {
     routerModule.show('home');
   }
@@ -50,6 +50,4 @@ async function boot() {
 
 expandTelegramWebApp();
 boot().catch(renderBootError);
-
-
 
