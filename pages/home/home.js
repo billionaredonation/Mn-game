@@ -7,6 +7,7 @@ register('home', (root) => {
   root.className = 'page home';
 
   state.city = normalizeCityId(state.city);
+
   const city = getCity(state.city);
   const player = ensurePlayer(state);
 
@@ -31,6 +32,7 @@ register('home', (root) => {
         <div class="home-map-world" id="mapWorld">
           <div class="map-depth"></div>
           <img class="city-map-image" src="${city.map}" alt="${city.name}" />
+          <div class="map-vignette"></div>
           <div class="map-light"></div>
           <div class="job-points" id="jobPoints"></div>
         </div>
@@ -38,14 +40,17 @@ register('home', (root) => {
 
       <div class="home-hud">
         <button class="hud-btn" id="profileBtn" type="button">Профиль</button>
-        <div class="hud-city">${city.name}</div>
+        <div class="hud-city">
+          <span>${city.name}</span>
+          <small>${state.nickname || 'игрок'}</small>
+        </div>
         <button class="hud-btn" id="skillsBtn" type="button">Навыки</button>
       </div>
 
       <div class="player-strip">
-        <span>Деньги: <b id="moneyValue">${player.money}</b></span>
-        <span>Энергия: <b id="energyValue">${player.energy}</b></span>
-        <span>Опыт: <b id="xpValue">${player.xp}</b></span>
+        <span>Деньги <b id="moneyValue">${player.money}</b></span>
+        <span>Энергия <b id="energyValue">${player.energy}</b></span>
+        <span>Опыт <b id="xpValue">${Math.floor(player.xp)}</b></span>
       </div>
 
       <button class="center-map-btn" id="centerMapBtn" type="button">Центр</button>
@@ -71,11 +76,11 @@ register('home', (root) => {
   }
 
   function clampCamera() {
-    camera.scale = Math.max(0.85, Math.min(2.6, camera.scale));
+    const maxOffset = 360 * camera.scale;
 
-    const max = 360 * camera.scale;
-    camera.x = Math.max(-max, Math.min(max, camera.x));
-    camera.y = Math.max(-max, Math.min(max, camera.y));
+    camera.scale = Math.max(0.86, Math.min(2.7, camera.scale));
+    camera.x = Math.max(-maxOffset, Math.min(maxOffset, camera.x));
+    camera.y = Math.max(-maxOffset, Math.min(maxOffset, camera.y));
   }
 
   function centerMap() {
@@ -85,6 +90,16 @@ register('home', (root) => {
     applyCamera();
   }
 
+  function showPanel(html) {
+    infoPanel.innerHTML = html;
+    infoPanel.classList.remove('hidden');
+  }
+
+  function closePanel() {
+    infoPanel.classList.add('hidden');
+    selectedJob = null;
+  }
+
   function renderJobs() {
     jobPoints.innerHTML = city.jobs.map((job) => `
       <button
@@ -92,6 +107,7 @@ register('home', (root) => {
         data-job-id="${job.id}"
         type="button"
         style="left:${job.x}%;top:${job.y}%"
+        aria-label="${job.title}"
       >
         <span>${job.short}</span>
       </button>
@@ -101,15 +117,11 @@ register('home', (root) => {
       const btn = jobPoints.querySelector('[data-job-id="' + job.id + '"]');
 
       btn.addEventListener('click', (event) => {
+        event.preventDefault();
         event.stopPropagation();
         selectJob(job);
       });
     });
-  }
-
-  function showPanel(html) {
-    infoPanel.innerHTML = html;
-    infoPanel.classList.remove('hidden');
   }
 
   function selectJob(job) {
@@ -140,7 +152,9 @@ register('home', (root) => {
   }
 
   function workSelectedJob() {
-    if (!selectedJob) return;
+    if (!selectedJob) {
+      return;
+    }
 
     if (!canWork(player, selectedJob)) {
       showPanel(`
@@ -170,7 +184,9 @@ register('home', (root) => {
         </div>
         <button class="panel-close" id="closePanelBtn" type="button">×</button>
       </div>
+
       <p>Ты заработал ${selectedJob.pay}, получил ${selectedJob.xp} опыта и потратил ${selectedJob.energy} энергии.</p>
+
       <button class="work-btn" id="workBtn" type="button">Поработать еще</button>
     `);
 
@@ -187,12 +203,15 @@ register('home', (root) => {
         </div>
         <button class="panel-close" id="closePanelBtn" type="button">×</button>
       </div>
+
       <p>Город: ${city.name}</p>
+
       <div class="job-stats">
         <span>Деньги <b>${player.money}</b></span>
         <span>Энергия <b>${player.energy}</b></span>
         <span>Опыт <b>${Math.floor(player.xp)}</b></span>
       </div>
+
       <button class="reset-btn" id="resetBtn" type="button">Сбросить прогресс</button>
     `);
 
@@ -209,6 +228,7 @@ register('home', (root) => {
         </div>
         <button class="panel-close" id="closePanelBtn" type="button">×</button>
       </div>
+
       <div class="skills-list">
         <span>Сила <b>${player.skills.strength.toFixed(1)}</b></span>
         <span>Выносливость <b>${player.skills.endurance.toFixed(1)}</b></span>
@@ -218,11 +238,6 @@ register('home', (root) => {
     `);
 
     root.querySelector('#closePanelBtn').onclick = closePanel;
-  }
-
-  function closePanel() {
-    infoPanel.classList.add('hidden');
-    selectedJob = null;
   }
 
   function resetProgress() {
@@ -250,10 +265,12 @@ register('home', (root) => {
   });
 
   mapViewport.addEventListener('pointermove', (event) => {
-    if (!camera.dragging) return;
+    if (!camera.dragging) {
+      return;
+    }
 
-    camera.x = camera.baseX + (event.clientX - camera.startX);
-    camera.y = camera.baseY + (event.clientY - camera.startY);
+    camera.x = camera.baseX + event.clientX - camera.startX;
+    camera.y = camera.baseY + event.clientY - camera.startY;
 
     clampCamera();
     applyCamera();
