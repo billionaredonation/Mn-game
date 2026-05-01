@@ -1,6 +1,6 @@
-import { register, show } from '../../src/router.js?v=90';
-import { state, save, getState } from '../../src/state.js?v=90';
-import { citiesBase } from '../../src/data/citiesBase.js?v=90';
+import { register, show } from '../../src/router.js?v=91';
+import { state, save, getState } from '../../src/state.js?v=91';
+import { citiesBase } from '../../src/data/citiesBase.js?v=91';
 import { getInflation, getDevaluation, getStateAssetsShare } from '../../src/lib/economy.js?v=90';
 
 const MAP_IMG = './UkraineMap.png?v=9';
