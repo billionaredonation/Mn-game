@@ -1,5 +1,5 @@
-import { register, show } from '../../src/router.js?v=91';
-import { state, save } from '../../src/state.js?v=91';
+import { register, show } from '../../src/router.js?v=92';
+import { state, save } from '../../src/state.js?v=92';
 
 const cityMaps = {
   vinnytsia: './VinitsaMap.png',
