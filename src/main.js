@@ -1,58 +1,52 @@
-import { show } from './router.js';
-import { initRuntime, getState } from './state.js';
-
-import '../pages/welcome1/welcome1.js';
-import '../pages/welcome2/welcome2.js';
-import '../pages/welcome3/welcome3.js';
-import '../pages/home/home.js';
-
 function renderBootError(error) {
+  const root = document.getElementById('app');
+  const message = error && error.stack ? error.stack : String(error && error.message ? error.message : error);
+
   console.error(error);
 
-  const root = document.getElementById('app');
   if (!root) return;
 
   root.innerHTML = `
-    <div style="
-      min-height:100vh;
-      background:#050505;
-      color:#fff;
-      padding:20px;
-      font-family:Arial,sans-serif;
-      white-space:pre-wrap;
-    ">
-      Ошибка запуска:
-
-      ${error?.stack || error?.message || error}
+    <div style="padding:20px;color:white;background:#050505;min-height:100vh;font-family:Arial">
+      <h3 style="margin:0 0 10px">Ошибка запуска</h3>
+      <pre style="white-space:pre-wrap;font-size:13px;opacity:.85">${message}</pre>
     </div>
   `;
 }
 
-async function boot() {
-  try {
-    window.Telegram?.WebApp?.expand?.();
-
-    initRuntime();
-
-    const state = getState();
-
-    const nickname = state.nickname || state.player?.nickname;
-    const city = state.city || state.player?.city;
-
-    if (!nickname) {
-      show('welcome1');
-      return;
-    }
-
-    if (!city) {
-      show('welcome3');
-      return;
-    }
-
-    show('home');
-  } catch (error) {
-    renderBootError(error);
+function expandTelegramWebApp() {
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.expand) {
+    window.Telegram.WebApp.expand();
   }
 }
 
-boot();
+async function boot() {
+  expandTelegramWebApp();
+
+  const router = await import('./router.js?v=90');
+  const stateModule = await import('./state.js?v=90');
+
+  await Promise.all([
+    import('../pages/welcome1/welcome1.js?v=90'),
+    import('../pages/welcome2/welcome2.js?v=90'),
+    import('../pages/welcome3/welcome3.js?v=90'),
+    import('../pages/home/home.js?v=90')
+  ]);
+
+  stateModule.initRuntime();
+
+  const st = stateModule.getState();
+  const nickname = st.nickname || (st.player && st.player.nickname);
+  const city = st.city || (st.player && st.player.city);
+
+  if (!nickname) {
+    router.show('welcome1');
+  } else if (!city) {
+    router.show('welcome3');
+  } else {
+    router.show('home');
+  }
+}
+
+boot().catch(renderBootError);
+
