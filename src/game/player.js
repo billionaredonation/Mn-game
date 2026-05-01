@@ -29,3 +29,4 @@ export function applyJobReward(player, job) {
 
   return player;
 }
+
