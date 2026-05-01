@@ -26,6 +26,34 @@ const cityMaps = {
   chernivtsi: './ChernivtsiMap.png'
 };
 
+const cityNames = {
+  vinnytsia: 'Винница',
+  lutsk: 'Луцк',
+  luhansk: 'Луганск',
+  dnipro: 'Днепр',
+  donetsk: 'Донецк',
+  zhytomyr: 'Житомир',
+  uzhhorod: 'Ужгород',
+  zaporizhzhia: 'Запорожье',
+  'ivano-frankivsk': 'Ивано-Франковск',
+  kyiv: 'Киев',
+  kropyvnytskyi: 'Кропивницкий',
+  crimea: 'Крым',
+  lviv: 'Львов',
+  mykolaiv: 'Николаев',
+  odesa: 'Одесса',
+  poltava: 'Полтава',
+  rivne: 'Ровно',
+  sumy: 'Сумы',
+  ternopil: 'Тернополь',
+  kharkiv: 'Харьков',
+  kherson: 'Херсон',
+  khmelnytskyi: 'Хмельницкий',
+  cherkasy: 'Черкассы',
+  chernihiv: 'Чернигов',
+  chernivtsi: 'Черновцы'
+};
+
 const commonJobs = [
   {
     id: 'warehouse',
@@ -154,34 +182,6 @@ const cityJobs = {
   ]
 };
 
-const cityNames = {
-  vinnytsia: 'Винница',
-  lutsk: 'Луцк',
-  luhansk: 'Луганск',
-  dnipro: 'Днепр',
-  donetsk: 'Донецк',
-  zhytomyr: 'Житомир',
-  uzhhorod: 'Ужгород',
-  zaporizhzhia: 'Запорожье',
-  'ivano-frankivsk': 'Ивано-Франковск',
-  kyiv: 'Киев',
-  kropyvnytskyi: 'Кропивницкий',
-  crimea: 'Крым',
-  lviv: 'Львов',
-  mykolaiv: 'Николаев',
-  odesa: 'Одесса',
-  poltava: 'Полтава',
-  rivne: 'Ровно',
-  sumy: 'Сумы',
-  ternopil: 'Тернополь',
-  kharkiv: 'Харьков',
-  kherson: 'Херсон',
-  khmelnytskyi: 'Хмельницкий',
-  cherkasy: 'Черкассы',
-  chernihiv: 'Чернигов',
-  chernivtsi: 'Черновцы'
-};
-
 const aliases = {
   odessa: 'odesa',
   kiev: 'kyiv',
@@ -207,3 +207,4 @@ export function getCity(cityId) {
     jobs: cityJobs[fallbackId] || commonJobs
   };
 }
+
