@@ -1,3 +1,3 @@
-const tgbot = process.env.Tg 
+const tgbot = process.env.TG_Token 
 
 
